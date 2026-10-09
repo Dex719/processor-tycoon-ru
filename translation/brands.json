@@ -1,0 +1,65 @@
+{
+ "AICompany": {
+  "Inlet": "Intel",
+  "Integrated Electronics": "Intel Corporation",
+  "EMD": "AMD",
+  "Enhanced Micro Devices": "Advanced Micro Devices",
+  "Cyrux": "Cyrix",
+  "Pilog": "Zilog",
+  "P Integrated Logic": "Zilog, Inc.",
+  "Phairchild": "Fairchild",
+  "IDM": "IBM",
+  "Morotola": "Motorola",
+  "Texas Increments": "Texas Instruments",
+  "TCMS": "TSMC",
+  "Koshiba": "Toshiba",
+  "SolarFoundries": "GlobalFoundries",
+  "IVA Technologies": "VIA Technologies"
+ },
+ "IconPlaceholder": {
+  "IDM": "IBM",
+  "Pear": "Apple",
+  "HB": "HP",
+  "Tell": "Dell",
+  "Lenuevo": "Lenovo",
+  "Asos": "ASUS",
+  "Mintendo": "Nintendo",
+  "Zony": "Sony",
+  "Akari": "Atari",
+  "Gesa": "Sega",
+  "Macrosoft": "Microsoft",
+  "Texas Increments": "Texas Instruments"
+ },
+ "ContractNameData": {
+  "IDM": "IBM",
+  "Pear": "Apple",
+  "HB": "HP",
+  "Tell": "Dell",
+  "Lenuevo": "Lenovo",
+  "Asos": "ASUS",
+  "Mintendo": "Nintendo",
+  "Zony": "Sony",
+  "Akari": "Atari",
+  "Gesa": "Sega",
+  "Macrosoft": "Microsoft",
+  "Texas Increments": "Texas Instruments"
+ },
+ "CpuNameTemplate": {
+  "Pentum ": "Pentium ",
+  "Pentum G": "Pentium G",
+  "Kore i": "Core i",
+  "em": "Am",
+  "Athon X": "Athlon X",
+  "PX ": "FX ",
+  "Rozan ": "Ryzen ",
+  "THUNDER": "POWER",
+  "KLC ": "TLCS-",
+  "TX-": "TMS",
+  "TMX ": "TMS ",
+  "P": "Z",
+  "P-": "Z-"
+ },
+ "AIBehaviourController": {
+  "EM": "AM"
+ }
+}

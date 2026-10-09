@@ -1,0 +1,1566 @@
+[
+ {
+  "en": "\n<color={0}>Hiding</color> {1} <color={2}>fully optimized {3}</color>",
+  "ru": "\n<color={0}>Скрыто</color> <color={2}>полностью оптимизированных {3}:</color> {1}",
+  "sites": "*"
+ },
+ {
+  "en": " (Too High)",
+  "ru": " (слишком много)",
+  "sites": "*"
+ },
+ {
+  "en": " (Too Low)",
+  "ru": " (слишком мало)",
+  "sites": "*"
+ },
+ {
+  "en": " (Wrong Type)",
+  "ru": " (неверный тип)",
+  "sites": "*"
+ },
+ {
+  "en": " ({0} line)",
+  "ru": " ({0} линия)",
+  "sites": "*"
+ },
+ {
+  "en": " ({0} lines)",
+  "ru": " ({0} лин.)",
+  "sites": "*"
+ },
+ {
+  "en": " created!",
+  "ru": " создан!",
+  "sites": "*"
+ },
+ {
+  "en": " has expired!",
+  "ru": " истёк!",
+  "sites": "*"
+ },
+ {
+  "en": " has released a new CPU!",
+  "ru": " выпустила новый процессор!",
+  "sites": "*"
+ },
+ {
+  "en": " has released a new Node!",
+  "ru": " выпустила новый техпроцесс!",
+  "sites": "*"
+ },
+ {
+  "en": " lines",
+  "ru": " лин.",
+  "sites": "*"
+ },
+ {
+  "en": " lines, ",
+  "ru": " лин., ",
+  "sites": "*"
+ },
+ {
+  "en": " mm",
+  "ru": " мм",
+  "sites": "*"
+ },
+ {
+  "en": " mm",
+  "ru": " мм",
+  "sites": "*"
+ },
+ {
+  "en": " mm²",
+  "ru": " мм²",
+  "sites": "*"
+ },
+ {
+  "en": " mm²",
+  "ru": " мм²",
+  "sites": "*"
+ },
+ {
+  "en": " refined!",
+  "ru": " доработан!",
+  "sites": "*"
+ },
+ {
+  "en": " Required)",
+  "ru": " — требуется)",
+  "sites": "*"
+ },
+ {
+  "en": " Required)</color>",
+  "ru": " — требуется)</color>",
+  "sites": "*"
+ },
+ {
+  "en": " signed a contract with ",
+  "ru": " подписала контракт с ",
+  "sites": "*"
+ },
+ {
+  "en": " units",
+  "ru": " шт.",
+  "sites": "*"
+ },
+ {
+  "en": " W",
+  "ru": " Вт",
+  "sites": "*"
+ },
+ {
+  "en": " watts</style>",
+  "ru": " Вт</style>",
+  "sites": "*"
+ },
+ {
+  "en": " went bankrupt!",
+  "ru": " обанкротилась!",
+  "sites": "*"
+ },
+ {
+  "en": " years",
+  "ru": " г.",
+  "sites": "*"
+ },
+ {
+  "en": " yield:",
+  "ru": " — выход годных:",
+  "sites": "*"
+ },
+ {
+  "en": "'s Factory",
+  "ru": ": фабрика",
+  "sites": "*"
+ },
+ {
+  "en": "(Client)",
+  "ru": "(клиент)",
+  "sites": "*"
+ },
+ {
+  "en": "(Provider)",
+  "ru": "(поставщик)",
+  "sites": "*"
+ },
+ {
+  "en": "/d",
+  "ru": "/день",
+  "sites": "*"
+ },
+ {
+  "en": "/m",
+  "ru": "/мес.",
+  "sites": "*"
+ },
+ {
+  "en": "/m)",
+  "ru": "/мес.)",
+  "sites": "*"
+ },
+ {
+  "en": "/m</style></color> -> <style=",
+  "ru": "/мес.</style></color> -> <style=",
+  "sites": "*"
+ },
+ {
+  "en": "/mm²",
+  "ru": "/мм²",
+  "sites": "*"
+ },
+ {
+  "en": "/mm²",
+  "ru": "/мм²",
+  "sites": "*"
+ },
+ {
+  "en": "/unit",
+  "ru": "/шт.",
+  "sites": "*"
+ },
+ {
+  "en": "/y",
+  "ru": "/год",
+  "sites": "*"
+ },
+ {
+  "en": "0 Days",
+  "ru": "0 дн.",
+  "sites": "*"
+ },
+ {
+  "en": "1 technology",
+  "ru": "1 технологией",
+  "sites": "*"
+ },
+ {
+  "en": "</color> in taxes.",
+  "ru": "</color>.",
+  "sites": "*"
+ },
+ {
+  "en": "Active Contracts: {0}",
+  "ru": "Активные контракты: {0}",
+  "sites": "*"
+ },
+ {
+  "en": "Aggressive",
+  "ru": "Агрессивно",
+  "sites": "*"
+ },
+ {
+  "en": "Ahead of Time",
+  "ru": "Опережение",
+  "sites": "*"
+ },
+ {
+  "en": "AI",
+  "ru": "ИИ",
+  "sites": "*"
+ },
+ {
+  "en": "All",
+  "ru": "Все",
+  "sites": "*"
+ },
+ {
+  "en": "All Time",
+  "ru": "За всё время",
+  "sites": "*"
+ },
+ {
+  "en": "Any",
+  "ru": "Любой",
+  "sites": "*"
+ },
+ {
+  "en": "Apr",
+  "ru": "апр",
+  "sites": "*"
+ },
+ {
+  "en": "are",
+  "ru": "которые",
+  "sites": "*"
+ },
+ {
+  "en": "Athon",
+  "ru": "Athlon",
+  "sites": "*"
+ },
+ {
+  "en": "Aug",
+  "ru": "авг",
+  "sites": "*"
+ },
+ {
+  "en": "Bad",
+  "ru": "Плохо",
+  "sites": "*"
+ },
+ {
+  "en": "Bankrupt",
+  "ru": "Банкрот",
+  "sites": "*"
+ },
+ {
+  "en": "Bankruptcy in ",
+  "ru": "Банкротство через ",
+  "sites": "*"
+ },
+ {
+  "en": "became a fabless company!",
+  "ru": "стала fabless-компанией!",
+  "sites": "*"
+ },
+ {
+  "en": "Behind",
+  "ru": "Отставание",
+  "sites": "*"
+ },
+ {
+  "en": "Bottleneck: ",
+  "ru": "Узкое место: ",
+  "sites": "*"
+ },
+ {
+  "en": "Build",
+  "ru": "Построить",
+  "sites": "*"
+ },
+ {
+  "en": "Build Manufacturing Division",
+  "ru": "Создать произв. подразделение",
+  "sites": "*"
+ },
+ {
+  "en": "building",
+  "ru": "здание",
+  "sites": "*"
+ },
+ {
+  "en": "buildings",
+  "ru": "зд.",
+  "sites": "*"
+ },
+ {
+  "en": "Busy Refining",
+  "ru": "Идёт доработка",
+  "sites": "*"
+ },
+ {
+  "en": "C/T",
+  "ru": "Я/П",
+  "sites": "*"
+ },
+ {
+  "en": "Cache",
+  "ru": "Кэш",
+  "sites": "*"
+ },
+ {
+  "en": "Cache Capacity: {0}-{1} KB",
+  "ru": "Объём кэша: {0}-{1} KB",
+  "sites": "*"
+ },
+ {
+  "en": "Cache Cost: ",
+  "ru": "Стоимость кэша: ",
+  "sites": "*"
+ },
+ {
+  "en": "Client",
+  "ru": "Клиент",
+  "sites": "*"
+ },
+ {
+  "en": "Company",
+  "ru": "Компания",
+  "sites": "*"
+ },
+ {
+  "en": "Competitive",
+  "ru": "Наравне",
+  "sites": "*"
+ },
+ {
+  "en": "Confirm",
+  "ru": "Применить",
+  "sites": "*"
+ },
+ {
+  "en": "Construction Cost:",
+  "ru": "Стоимость строительства:",
+  "sites": "*"
+ },
+ {
+  "en": "Consumption",
+  "ru": "Энергопотребление",
+  "sites": "*"
+ },
+ {
+  "en": "Consumption Reduction:",
+  "ru": "Снижение потребления:",
+  "sites": "*"
+ },
+ {
+  "en": "Contract Already Exists!",
+  "ru": "Контракт уже заключён!",
+  "sites": "*"
+ },
+ {
+  "en": "Contract length",
+  "ru": "Срок контракта",
+  "sites": "*"
+ },
+ {
+  "en": "Contract signed!",
+  "ru": "Контракт подписан!",
+  "sites": "*"
+ },
+ {
+  "en": "Contract terminated!",
+  "ru": "Контракт расторгнут!",
+  "sites": "*"
+ },
+ {
+  "en": "Copy Folder Path",
+  "ru": "Копировать путь",
+  "sites": "*"
+ },
+ {
+  "en": "Cost: ",
+  "ru": "Стоимость: ",
+  "sites": "*"
+ },
+ {
+  "en": "CPU",
+  "ru": "Процессоры",
+  "sites": [
+   "ProcessorTycoon.Desktop.Hardware.HardwareWindow::InitializeSpreadsheets#0",
+   "ProcessorTycoon.Desktop.Hardware.HardwareWindow::InitializeSpreadsheets#1",
+   "ProcessorTycoon.MarketSystem.UI.MarketSalesSpreadsheetWindow::InitializeSpreadsheets#0",
+   "ProcessorTycoon.MarketSystem.UI.MarketSalesSpreadsheetWindow::InitializeSpreadsheets#1",
+   "ProcessorTycoon.Menu.MenuGameSetup::.ctor#0",
+   "ProcessorTycoon.StringFormatter::CompanyType#0"
+  ]
+ },
+ {
+  "en": "CPU - ",
+  "ru": "Процессор — ",
+  "sites": "*"
+ },
+ {
+  "en": "CPU Division",
+  "ru": "подразделения процессоров",
+  "sites": "*"
+ },
+ {
+  "en": "CPU, Fabless",
+  "ru": "ЦП, fabless",
+  "sites": "*"
+ },
+ {
+  "en": "CPU, Foundry",
+  "ru": "ЦП, фаундри",
+  "sites": "*"
+ },
+ {
+  "en": "CPUs",
+  "ru": "CPU",
+  "sites": "*"
+ },
+ {
+  "en": "CPUs: {0}",
+  "ru": "ЦП: {0}",
+  "sites": "*"
+ },
+ {
+  "en": "Create",
+  "ru": "Создать",
+  "sites": "*"
+ },
+ {
+  "en": "Create & Refine",
+  "ru": "Создать и доработать",
+  "sites": "*"
+ },
+ {
+  "en": "Current:",
+  "ru": "Текущая:",
+  "sites": "*"
+ },
+ {
+  "en": "Cyrux no longer has patent issues!",
+  "ru": "У Cyrix больше нет проблем с патентами!",
+  "sites": "*"
+ },
+ {
+  "en": "Days since last save: ",
+  "ru": "Дней с последнего сохранения: ",
+  "sites": "*"
+ },
+ {
+  "en": "DD/MM/YYYY",
+  "ru": "ДД/ММ/ГГГГ",
+  "sites": "*"
+ },
+ {
+  "en": "Dec",
+  "ru": "дек",
+  "sites": "*"
+ },
+ {
+  "en": "decreased",
+  "ru": "снизились",
+  "sites": "*"
+ },
+ {
+  "en": "Default",
+  "ru": "Стандартная",
+  "sites": "*"
+ },
+ {
+  "en": "Density",
+  "ru": "Плотность",
+  "sites": "*"
+ },
+ {
+  "en": "Density Increase:",
+  "ru": "Прирост плотности:",
+  "sites": "*"
+ },
+ {
+  "en": "Detailed",
+  "ru": "Подробно",
+  "sites": "*"
+ },
+ {
+  "en": "Development Cost:",
+  "ru": "Стоимость разработки:",
+  "sites": "*"
+ },
+ {
+  "en": "Die Size: ",
+  "ru": "Площадь кристалла: ",
+  "sites": "*"
+ },
+ {
+  "en": "DIP or PLCC",
+  "ru": "DIP или PLCC",
+  "sites": "*"
+ },
+ {
+  "en": "Disabled",
+  "ru": "Выключено",
+  "sites": "*"
+ },
+ {
+  "en": "Dorun",
+  "ru": "Duron",
+  "sites": "*"
+ },
+ {
+  "en": "Dual Core",
+  "ru": "Двухъядерный",
+  "sites": "*"
+ },
+ {
+  "en": "Easy",
+  "ru": "Легко",
+  "sites": "*"
+ },
+ {
+  "en": "Emails: {0}",
+  "ru": "Писем: {0}",
+  "sites": "*"
+ },
+ {
+  "en": "Enabled",
+  "ru": "Включено",
+  "sites": "*"
+ },
+ {
+  "en": "Error",
+  "ru": "Ошибка",
+  "sites": "*"
+ },
+ {
+  "en": "exclusive",
+  "ru": "эксклюзивное",
+  "sites": "*"
+ },
+ {
+  "en": "Exclusivity",
+  "ru": "Эксклюзивность",
+  "sites": "*"
+ },
+ {
+  "en": "Factory",
+  "ru": "Фабрика",
+  "sites": "*"
+ },
+ {
+  "en": "Factory expansion completed!",
+  "ru": "Расширение фабрики завершено!",
+  "sites": "*"
+ },
+ {
+  "en": "Fast",
+  "ru": "Быстро",
+  "sites": "*"
+ },
+ {
+  "en": "Favorable price",
+  "ru": "Выгодная цена",
+  "sites": "*"
+ },
+ {
+  "en": "Feb",
+  "ru": "фев",
+  "sites": "*"
+ },
+ {
+  "en": "Fees: {0}% markup, {1}% royalty",
+  "ru": "Сборы: наценка {0}%, роялти {1}%",
+  "sites": "*"
+ },
+ {
+  "en": "Fines from contracts: <color=",
+  "ru": "Штрафы: <color=",
+  "sites": "*"
+ },
+ {
+  "en": "Fines: <color=",
+  "ru": "Штрафы: <color=",
+  "sites": "*"
+ },
+ {
+  "en": "Founded",
+  "ru": "Основана",
+  "sites": "*"
+ },
+ {
+  "en": "Foundry",
+  "ru": "Фаундри",
+  "sites": "*"
+ },
+ {
+  "en": "Foundry Services",
+  "ru": "Контрактное производство",
+  "sites": "*"
+ },
+ {
+  "en": "Frequency",
+  "ru": "Частота",
+  "sites": "*"
+ },
+ {
+  "en": "Frequency Increase:",
+  "ru": "Прирост частоты:",
+  "sites": "*"
+ },
+ {
+  "en": "Fullscreen",
+  "ru": "Полноэкранный",
+  "sites": "*"
+ },
+ {
+  "en": "Fully Refined ({0}/{1})",
+  "ru": "Полностью доработан ({0}/{1})",
+  "sites": "*"
+ },
+ {
+  "en": "FY: ",
+  "ru": "Выход: ",
+  "sites": "*"
+ },
+ {
+  "en": "Good",
+  "ru": "Хорошо",
+  "sites": "*"
+ },
+ {
+  "en": "Graph Sales",
+  "ru": "График продаж",
+  "sites": "*"
+ },
+ {
+  "en": "Hard",
+  "ru": "Сложно",
+  "sites": "*"
+ },
+ {
+  "en": "has built their own fabs!",
+  "ru": "построила собственные фабрики!",
+  "sites": "*"
+ },
+ {
+  "en": "Hexa Core",
+  "ru": "Шестиядерный",
+  "sites": "*"
+ },
+ {
+  "en": "High End",
+  "ru": "Высокий",
+  "sites": "*"
+ },
+ {
+  "en": "Highest",
+  "ru": "Максимум",
+  "sites": "*"
+ },
+ {
+  "en": "Idle",
+  "ru": "Простаивает",
+  "sites": "*"
+ },
+ {
+  "en": "Impossible",
+  "ru": "Невозможно",
+  "sites": "*"
+ },
+ {
+  "en": "Income",
+  "ru": "Доход",
+  "sites": "*"
+ },
+ {
+  "en": "increased",
+  "ru": "выросли",
+  "sites": "*"
+ },
+ {
+  "en": "Industries",
+  "ru": "Промышл.",
+  "sites": "*"
+ },
+ {
+  "en": "is",
+  "ru": "который",
+  "sites": "*"
+ },
+ {
+  "en": "Iterations: {0}",
+  "ru": "Итерации: {0}",
+  "sites": "*"
+ },
+ {
+  "en": "Jan",
+  "ru": "янв",
+  "sites": "*"
+ },
+ {
+  "en": "Jul",
+  "ru": "июл",
+  "sites": "*"
+ },
+ {
+  "en": "Jun",
+  "ru": "июн",
+  "sites": "*"
+ },
+ {
+  "en": "Kore 2 Duo",
+  "ru": "Core 2 Duo",
+  "sites": "*"
+ },
+ {
+  "en": "Kore 2 Hexa",
+  "ru": "Core 2 Hexa",
+  "sites": "*"
+ },
+ {
+  "en": "Kore 2 Octa",
+  "ru": "Core 2 Octa",
+  "sites": "*"
+ },
+ {
+  "en": "Kore 2 Quad",
+  "ru": "Core 2 Quad",
+  "sites": "*"
+ },
+ {
+  "en": "Kore i",
+  "ru": "Core i",
+  "sites": "*"
+ },
+ {
+  "en": "Kore i7 8086K",
+  "ru": "Core i7 8086K",
+  "sites": "*"
+ },
+ {
+  "en": "Kore Ultra",
+  "ru": "Core Ultra",
+  "sites": "*"
+ },
+ {
+  "en": "L1 Cache",
+  "ru": "Кэш L1",
+  "sites": "*"
+ },
+ {
+  "en": "L1 Cache (per core)",
+  "ru": "Кэш L1 (на ядро)",
+  "sites": "*"
+ },
+ {
+  "en": "L2 Cache",
+  "ru": "Кэш L2",
+  "sites": "*"
+ },
+ {
+  "en": "L2 Cache (per core)",
+  "ru": "Кэш L2 (на ядро)",
+  "sites": "*"
+ },
+ {
+  "en": "L3 Cache",
+  "ru": "Кэш L3",
+  "sites": "*"
+ },
+ {
+  "en": "L3 Cache (shared)",
+  "ru": "Кэш L3 (общий)",
+  "sites": "*"
+ },
+ {
+  "en": "Last Day",
+  "ru": "Последний день",
+  "sites": "*"
+ },
+ {
+  "en": "less",
+  "ru": "меньше",
+  "sites": "*"
+ },
+ {
+  "en": "line",
+  "ru": "линия",
+  "sites": "*"
+ },
+ {
+  "en": "lines",
+  "ru": "лин.",
+  "sites": "*"
+ },
+ {
+  "en": "Locked Until {0}",
+  "ru": "Недоступно до {0}",
+  "sites": "*"
+ },
+ {
+  "en": "Low End",
+  "ru": "Низкий",
+  "sites": "*"
+ },
+ {
+  "en": "Maintenance Cost:",
+  "ru": "Стоимость обслуживания:",
+  "sites": "*"
+ },
+ {
+  "en": "Manufacturing Division",
+  "ru": "производственного подразделения",
+  "sites": "*"
+ },
+ {
+  "en": "Mar",
+  "ru": "мар",
+  "sites": "*"
+ },
+ {
+  "en": "Market",
+  "ru": "Рынок",
+  "sites": "*"
+ },
+ {
+  "en": "Market Share",
+  "ru": "Доля рынка",
+  "sites": "*"
+ },
+ {
+  "en": "Market Share: ",
+  "ru": "Доля рынка: ",
+  "sites": "*"
+ },
+ {
+  "en": "May",
+  "ru": "май",
+  "sites": "*"
+ },
+ {
+  "en": "Memory",
+  "ru": "Память",
+  "sites": "*"
+ },
+ {
+  "en": "Mid Range",
+  "ru": "Средний",
+  "sites": "*"
+ },
+ {
+  "en": "Missed Sales",
+  "ru": "Упущ. продажи",
+  "sites": "*"
+ },
+ {
+  "en": "MM/DD/YYYY",
+  "ru": "ММ/ДД/ГГГГ",
+  "sites": "*"
+ },
+ {
+  "en": "mm²",
+  "ru": "мм²",
+  "sites": "*"
+ },
+ {
+  "en": "mm²",
+  "ru": "мм²",
+  "sites": "*"
+ },
+ {
+  "en": "Money",
+  "ru": "Деньги",
+  "sites": "*"
+ },
+ {
+  "en": "more",
+  "ru": "больше",
+  "sites": "*"
+ },
+ {
+  "en": "MT-68000",
+  "ru": "MC68000",
+  "sites": "*"
+ },
+ {
+  "en": "MT-680{0}0",
+  "ru": "MC680{0}0",
+  "sites": "*"
+ },
+ {
+  "en": "MT-68{0}0",
+  "ru": "MC68{0}0",
+  "sites": "*"
+ },
+ {
+  "en": "Multiple Cores: ",
+  "ru": "Многоядерность: ",
+  "sites": "*"
+ },
+ {
+  "en": "n/a",
+  "ru": "н/д",
+  "sites": "*"
+ },
+ {
+  "en": "Net Worth",
+  "ru": "Капитал",
+  "sites": "*"
+ },
+ {
+  "en": "New",
+  "ru": "Новый",
+  "sites": "*"
+ },
+ {
+  "en": "New Socket",
+  "ru": "Новый сокет",
+  "sites": "*"
+ },
+ {
+  "en": "No",
+  "ru": "Нет",
+  "sites": "*"
+ },
+ {
+  "en": "No CPU Division",
+  "ru": "Нет подразделения ЦП",
+  "sites": "*"
+ },
+ {
+  "en": "no longer offers foundry services!",
+  "ru": "больше не предлагает услуги контрактного производства!",
+  "sites": "*"
+ },
+ {
+  "en": "No Manufacturing Division",
+  "ru": "Нет произв. подразделения",
+  "sites": "*"
+ },
+ {
+  "en": "No Offer",
+  "ru": "Без предл.",
+  "sites": "*"
+ },
+ {
+  "en": "No Production Capacity",
+  "ru": "Нет произв. мощностей",
+  "sites": "*"
+ },
+ {
+  "en": "No, cancel",
+  "ru": "Нет, отмена",
+  "sites": "*"
+ },
+ {
+  "en": "node",
+  "ru": "техпроцессов",
+  "sites": "*"
+ },
+ {
+  "en": "nodes",
+  "ru": "техпроцессов",
+  "sites": "*"
+ },
+ {
+  "en": "non-exclusive",
+  "ru": "неэксклюзивное",
+  "sites": "*"
+ },
+ {
+  "en": "None",
+  "ru": "Нет",
+  "sites": "*"
+ },
+ {
+  "en": "Normal",
+  "ru": "Нормально",
+  "sites": [
+   "ProcessorTycoon.Desktop.GameplaySettings.GameplaySettingsWindow::.ctor#0",
+   "ProcessorTycoon.Menu.MenuGameSetup::.ctor#0",
+   "ProcessorTycoon.RatingTranslator::.cctor#0",
+   "ProcessorTycoon.RatingTranslator::.cctor#1",
+   "ProcessorTycoon.RatingTranslator::.cctor#2",
+   "ProcessorTycoon.Save.UI.LoadWindow::.ctor#0"
+  ]
+ },
+ {
+  "en": "Not Enough Investment!",
+  "ru": "Недостаточно инвестиций!",
+  "sites": "*"
+ },
+ {
+  "en": "Not interested",
+  "ru": "Не заинтересованы",
+  "sites": "*"
+ },
+ {
+  "en": "Not Supported",
+  "ru": "Не поддерживается",
+  "sites": "*"
+ },
+ {
+  "en": "Nov",
+  "ru": "ноя",
+  "sites": "*"
+ },
+ {
+  "en": "now offers foundry services!",
+  "ru": "теперь предлагает услуги контрактного производства!",
+  "sites": "*"
+ },
+ {
+  "en": "Oct",
+  "ru": "окт",
+  "sites": "*"
+ },
+ {
+  "en": "Octa Core",
+  "ru": "Восьмиядерный",
+  "sites": "*"
+ },
+ {
+  "en": "Our contract with ",
+  "ru": "Наш контракт с ",
+  "sites": "*"
+ },
+ {
+  "en": "Out of Stock!",
+  "ru": "Нет в наличии!",
+  "sites": "*"
+ },
+ {
+  "en": "Outdated",
+  "ru": "Устарело",
+  "sites": "*"
+ },
+ {
+  "en": "Package",
+  "ru": "Корпус",
+  "sites": "*"
+ },
+ {
+  "en": "Passive",
+  "ru": "Пассивно",
+  "sites": "*"
+ },
+ {
+  "en": "Path Copied!",
+  "ru": "Путь скопирован!",
+  "sites": "*"
+ },
+ {
+  "en": "Paused",
+  "ru": "Пауза",
+  "sites": "*"
+ },
+ {
+  "en": "Pentum",
+  "ru": "Pentium",
+  "sites": "*"
+ },
+ {
+  "en": "PGA or LGA",
+  "ru": "PGA или LGA",
+  "sites": "*"
+ },
+ {
+  "en": "Phaenom",
+  "ru": "Phenom",
+  "sites": "*"
+ },
+ {
+  "en": "Popularity",
+  "ru": "Популярн.",
+  "sites": "*"
+ },
+ {
+  "en": "Potential Sales",
+  "ru": "Потенц. продажи",
+  "sites": "*"
+ },
+ {
+  "en": "Price",
+  "ru": "Цена",
+  "sites": "*"
+ },
+ {
+  "en": "Process",
+  "ru": "Техпроц.",
+  "sites": "*"
+ },
+ {
+  "en": "Production capacity",
+  "ru": "Производственные мощности",
+  "sites": "*"
+ },
+ {
+  "en": "Production Not Viable",
+  "ru": "Производство невозможно",
+  "sites": "*"
+ },
+ {
+  "en": "Production: ",
+  "ru": "Производство: ",
+  "sites": "*"
+ },
+ {
+  "en": "Products",
+  "ru": "Продукты",
+  "sites": "*"
+ },
+ {
+  "en": "Profit",
+  "ru": "Прибыль",
+  "sites": "*"
+ },
+ {
+  "en": "Profit Margin: <color=",
+  "ru": "Рентабельность: <color=",
+  "sites": "*"
+ },
+ {
+  "en": "Profit: <color=",
+  "ru": "Прибыль: <color=",
+  "sites": "*"
+ },
+ {
+  "en": "Projects: {0}",
+  "ru": "Проекты: {0}",
+  "sites": "*"
+ },
+ {
+  "en": "Promising too many lines",
+  "ru": "Обещано слишком много линий",
+  "sites": "*"
+ },
+ {
+  "en": "Provider",
+  "ru": "Поставщик",
+  "sites": "*"
+ },
+ {
+  "en": "Pwr",
+  "ru": "Энерг.",
+  "sites": "*"
+ },
+ {
+  "en": "PX-{0}{1}{2}",
+  "ru": "FX-{0}{1}{2}",
+  "sites": "*"
+ },
+ {
+  "en": "Quad Core",
+  "ru": "Четырёхъядерный",
+  "sites": "*"
+ },
+ {
+  "en": "Refine ({0}/{1})",
+  "ru": "Доработать ({0}/{1})",
+  "sites": "*"
+ },
+ {
+  "en": "Refinement {0}",
+  "ru": "Доработка {0}",
+  "sites": "*"
+ },
+ {
+  "en": "Remaining Cost: ",
+  "ru": "Оставшиеся затраты: ",
+  "sites": "*"
+ },
+ {
+  "en": "Remaining Cost: $0",
+  "ru": "Оставшиеся затраты: $0",
+  "sites": "*"
+ },
+ {
+  "en": "Remaining Cost: <style=",
+  "ru": "Оставшиеся затраты: <style=",
+  "sites": "*"
+ },
+ {
+  "en": "Research",
+  "ru": "Исследование",
+  "sites": "*"
+ },
+ {
+  "en": "Research project completed!",
+  "ru": "Исследовательский проект завершён!",
+  "sites": "*"
+ },
+ {
+  "en": "Research Speed:",
+  "ru": "Скорость исследований:",
+  "sites": "*"
+ },
+ {
+  "en": "Retire",
+  "ru": "Снять",
+  "sites": "*"
+ },
+ {
+  "en": "Revenue Growth: <color=",
+  "ru": "Рост выручки: <color=",
+  "sites": "*"
+ },
+ {
+  "en": "Rozan {0} {1}{2}",
+  "ru": "Ryzen {0} {1}{2}",
+  "sites": "*"
+ },
+ {
+  "en": "Safe Temperature: ",
+  "ru": "Безопасная температура: ",
+  "sites": "*"
+ },
+ {
+  "en": "Select Contract",
+  "ru": "Выберите контракт",
+  "sites": "*"
+ },
+ {
+  "en": "Sell Division: ",
+  "ru": "Продать подразд.: ",
+  "sites": "*"
+ },
+ {
+  "en": "Semprion",
+  "ru": "Sempron",
+  "sites": "*"
+ },
+ {
+  "en": "Sent Offer",
+  "ru": "С предл.",
+  "sites": "*"
+ },
+ {
+  "en": "Sep",
+  "ru": "сен",
+  "sites": "*"
+ },
+ {
+  "en": "Sign Contract",
+  "ru": "Подписать контракт",
+  "sites": "*"
+ },
+ {
+  "en": "Signing would cause them to break a contract",
+  "ru": "Подписание вынудит их нарушить контракт",
+  "sites": "*"
+ },
+ {
+  "en": "Simplified",
+  "ru": "Упрощённо",
+  "sites": "*"
+ },
+ {
+  "en": "Single Core",
+  "ru": "Одноядерный",
+  "sites": "*"
+ },
+ {
+  "en": "Slow",
+  "ru": "Медленно",
+  "sites": "*"
+ },
+ {
+  "en": "Socket",
+  "ru": "Сокет",
+  "sites": "*"
+ },
+ {
+  "en": "Socket ",
+  "ru": "Сокет ",
+  "sites": "*"
+ },
+ {
+  "en": "Socket (",
+  "ru": "Сокет (",
+  "sites": "*"
+ },
+ {
+  "en": "Socket - ",
+  "ru": "Сокет — ",
+  "sites": "*"
+ },
+ {
+  "en": "SolarFoundries",
+  "ru": "GlobalFoundries",
+  "sites": "*"
+ },
+ {
+  "en": "Sold",
+  "ru": "Продано",
+  "sites": "*"
+ },
+ {
+  "en": "Spreadsheet",
+  "ru": "Таблица",
+  "sites": "*"
+ },
+ {
+  "en": "Stock",
+  "ru": "Запас",
+  "sites": "*"
+ },
+ {
+  "en": "Storage: <color=",
+  "ru": "Продажа запасов: <color=",
+  "sites": "*"
+ },
+ {
+  "en": "Target Is Bankrupt!",
+  "ru": "Компания — банкрот!",
+  "sites": "*"
+ },
+ {
+  "en": "Team #1",
+  "ru": "Команда #1",
+  "sites": "*"
+ },
+ {
+  "en": "Technologies",
+  "ru": "Технологии",
+  "sites": "*"
+ },
+ {
+  "en": "Texas Increments",
+  "ru": "Texas Instruments",
+  "sites": "*"
+ },
+ {
+  "en": "The first refinement is underway",
+  "ru": "Первая доработка уже началась",
+  "sites": "*"
+ },
+ {
+  "en": "They will accept (",
+  "ru": "Они согласятся (",
+  "sites": "*"
+ },
+ {
+  "en": "They will not accept (",
+  "ru": "Они не согласятся (",
+  "sites": "*"
+ },
+ {
+  "en": "Time: {0} days",
+  "ru": "Время: {0} дн.",
+  "sites": "*"
+ },
+ {
+  "en": "Today",
+  "ru": "Сегодня",
+  "sites": "*"
+ },
+ {
+  "en": "Transistor Density: ",
+  "ru": "Плотность транзисторов: ",
+  "sites": "*"
+ },
+ {
+  "en": "Type",
+  "ru": "Тип",
+  "sites": "*"
+ },
+ {
+  "en": "Unfavorable price",
+  "ru": "Невыгодная цена",
+  "sites": "*"
+ },
+ {
+  "en": "Unit Cost",
+  "ru": "Себест.",
+  "sites": "*"
+ },
+ {
+  "en": "until {0} {1}",
+  "ru": "до {0} {1}",
+  "sites": "*"
+ },
+ {
+  "en": "Very Aggressive",
+  "ru": "Сверхагрессивно",
+  "sites": "*"
+ },
+ {
+  "en": "Very bad",
+  "ru": "Очень плохо",
+  "sites": "*"
+ },
+ {
+  "en": "Very Behind",
+  "ru": "Сильное отставание",
+  "sites": "*"
+ },
+ {
+  "en": "Very Easy",
+  "ru": "Очень легко",
+  "sites": "*"
+ },
+ {
+  "en": "Very fast",
+  "ru": "Очень быстро",
+  "sites": "*"
+ },
+ {
+  "en": "Very good",
+  "ru": "Очень хорошо",
+  "sites": "*"
+ },
+ {
+  "en": "Very Hard",
+  "ru": "Очень сложно",
+  "sites": "*"
+ },
+ {
+  "en": "Very Passive",
+  "ru": "Очень пассивно",
+  "sites": "*"
+ },
+ {
+  "en": "Very slow",
+  "ru": "Очень медленно",
+  "sites": "*"
+ },
+ {
+  "en": "Visionary",
+  "ru": "Визионер",
+  "sites": "*"
+ },
+ {
+  "en": "Wafer Cost: ",
+  "ru": "Стоимость пластины: ",
+  "sites": "*"
+ },
+ {
+  "en": "Wafer Supply Agreement",
+  "ru": "Соглашение о поставке пластин",
+  "sites": "*"
+ },
+ {
+  "en": "We didn't pay any taxes.",
+  "ru": "Налогов мы не платили.",
+  "sites": "*"
+ },
+ {
+  "en": "We payed <color=",
+  "ru": "Мы заплатили налогов на сумму <color=",
+  "sites": "*"
+ },
+ {
+  "en": "Windowed",
+  "ru": "Оконный",
+  "sites": "*"
+ },
+ {
+  "en": "Year",
+  "ru": "Год",
+  "sites": "*"
+ },
+ {
+  "en": "Yearly",
+  "ru": "Ежегодно",
+  "sites": "*"
+ },
+ {
+  "en": "Yes",
+  "ru": "Да",
+  "sites": "*"
+ },
+ {
+  "en": "Yes, delete",
+  "ru": "Да, удалить",
+  "sites": "*"
+ },
+ {
+  "en": "Yes, overwrite",
+  "ru": "Да, перезаписать",
+  "sites": "*"
+ },
+ {
+  "en": "Yield Rate: ",
+  "ru": "Выход годных: ",
+  "sites": "*"
+ },
+ {
+  "en": "You can now create sockets!",
+  "ru": "Теперь вы можете создавать сокеты!",
+  "sites": "*"
+ },
+ {
+  "en": "You can now use <style=Bold>",
+  "ru": "Теперь вы можете использовать <style=Bold>",
+  "sites": "*"
+ },
+ {
+  "en": "{0} Cores",
+  "ru": "{0}-ядерный",
+  "sites": "*"
+ },
+ {
+  "en": "{0} day",
+  "ru": "{0} день",
+  "sites": "*"
+ },
+ {
+  "en": "{0} days",
+  "ru": "{0} дн.",
+  "sites": "*"
+ },
+ {
+  "en": "{0} line",
+  "ru": "{0} линия",
+  "sites": "*"
+ },
+ {
+  "en": "{0} lines",
+  "ru": "{0} лин.",
+  "sites": "*"
+ },
+ {
+  "en": "{0} lines ({1}%)",
+  "ru": "{0} лин. ({1}%)",
+  "sites": "*"
+ },
+ {
+  "en": "{0} pins",
+  "ru": "{0} конт.",
+  "sites": "*"
+ },
+ {
+  "en": "{0} technologies",
+  "ru": "{0} технологиями",
+  "sites": "*"
+ },
+ {
+  "en": "{0}, {1} mm",
+  "ru": "{0}, {1} мм",
+  "sites": "*"
+ },
+ {
+  "en": "{0}: {1} ms",
+  "ru": "{0}: {1} мс",
+  "sites": "*"
+ },
+ {
+  "en": "{0}{1} lines ({2} wafers)",
+  "ru": "{0}{1} лин. ({2} пластин)",
+  "sites": "*"
+ }
+]

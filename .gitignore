@@ -1,0 +1,6 @@
+__pycache__/
+*.pyc
+_ru_build_*/
+# game files must never be committed
+*.unity3d
+Assembly-CSharp.dll

@@ -1,0 +1,9 @@
+{
+ "game": "Processor Tycoon",
+ "game_version": "0.2.3",
+ "unity": "6000.0.65f1",
+ "original_sha256": {
+  "data.unity3d": "b365ec52c612864f35bb070120c72c98b10904514cd47821eb52362fee92ee73",
+  "Assembly-CSharp.dll": "db9742b22bfcd55312e75a4a424ce509fa5228788673eb8b4ecb5ffffd7f3f4d"
+ }
+}

@@ -4,3 +4,11 @@ _ru_build_*/
 # game files must never be committed
 *.unity3d
 Assembly-CSharp.dll
+# mod build outputs and third-party binaries (Harmony is distributed via releases)
+mod/build/
+mod/lib/*.dll
+# game assemblies are only read as compiler references; a stray copy must never be committed
+UnityEngine*.dll
+Unity.TextMeshPro.dll
+mscorlib.dll
+netstandard.dll

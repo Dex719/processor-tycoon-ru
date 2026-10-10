@@ -67,7 +67,7 @@ namespace PTMod.Core
             try
             {
                 WarnIfUnknownOwner(featureId, "a modifier on '" + channel + "'");
-                EnsureDay();
+                if (durationDays > 0) EnsureDay();
                 ModifierEntry entry = Registry.Add(featureId, channel, scope, multiplier, durationDays, reasonKey, reasonArgs);
                 return entry == null ? null : entry.Id;
             }
@@ -445,10 +445,13 @@ namespace PTMod.Core
             Registry.Invalidate();
         }
 
-        /// <summary>A feature was switched on or off, faulted or became unavailable: the entries and providers it owns start or stop applying.</summary>
+        /// <summary>
+        /// A feature was switched on or off, faulted or became unavailable: the entries and providers it owns start or stop applying. Every channel is
+        /// dropped, not only those where the feature has records - a provider of another feature may look at this feature's state.
+        /// </summary>
         private static void OnFeatureStateChanged(string featureId, FeatureState state)
         {
-            Registry.FeatureStateChanged(featureId);
+            Registry.Invalidate();
         }
 
         // ---- internals ----

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using PTMod.Core.Logic.Companies;
 using PTMod.Core.Logic.Conditions;
+using PTMod.Core.Logic.Ids;
 using PTMod.Core.Logic.Json;
 using ICompany = ProcessorTycoon.CompanySystem.ICompany;
 
@@ -23,8 +24,10 @@ namespace PTMod.Core
     /// <item><b>Register.</b> A feature adds a predicate with <see cref="Register"/> in its <c>Register</c> method, under its own prefix:
     /// <c>ModConditions.Register("es.hasFab", "event-system", factory)</c>; the factory reads the parameters of the JSON object (<see cref="ConditionArgs"/> does
     /// the typed reading and the error paths) and returns an <see cref="ICondition"/>, for example a <see cref="DelegateCondition"/>. A name that is taken, that has no dot
-    /// while the owner is a feature, or that does not start with the prefix of its feature is refused: <c>false</c>, a warning, and the refusal is kept in
-    /// <see cref="Rejected"/> for the self-check (AC-19.3). The predicates of the framework are registered at the Declare stage and have no dot in the name.
+    /// while the owner is a feature, or that does not start with the prefix of its feature (the table <c>prefixes</c> of <c>core.json</c>, checked by
+    /// <see cref="ModIds.IsPredicateNameAllowed"/> through <see cref="ModIdsAdapter"/>: <c>es.hasFab</c> yes, <c>hasFab</c> and <c>ms.hasFab</c> no for <c>event-system</c>)
+    /// is refused: <c>false</c>, a warning, and the refusal is kept in <see cref="Rejected"/> with its reason for the self-check (AC-11.2, AC-19.3).
+    /// The predicates of the framework are registered at the Declare stage and have no dot in the name.
     /// A condition a feature's factory returns is wrapped: it is false while its feature is not active, and an exception it throws is counted against that
     /// feature (FR-2) and then makes the whole tree false.</item>
     /// </list>
@@ -101,7 +104,7 @@ namespace PTMod.Core
             string owner = string.IsNullOrEmpty(ownerFeature) ? CoreId : ownerFeature;
             try
             {
-                // The prefix of a feature is checked by the registry's NamePolicy (ModIds.IsPredicateNameAllowed); the structural rules are its own.
+                // The prefix of a feature is checked by the registry's NamePolicy (ModIds.IsPredicateNameAllowed, see Registry); the structural rules are its own.
                 string error;
                 Func<JsonObject, List<string>, string, ICondition> registered = factory;
                 if (factory != null && owner != CoreId) registered = (node, errors, path) => OwnByFeature(owner, type, factory(node, errors, path));
@@ -112,7 +115,7 @@ namespace PTMod.Core
                     return true;
                 }
 
-                ModLog.Warn(owner, "conditions: predicate \"" + type + "\" is refused: " + error);
+                ModLog.Warn(owner, "conditions: predicate \"" + type + "\" is refused: " + ReasonOf(ownerFeature, type, error));
                 return false;
             }
             catch (Exception ex)
@@ -146,10 +149,21 @@ namespace PTMod.Core
 
         // ---- core services ----
 
-        /// <summary>Refused registrations in the order they happened (the self-check reports them: AC-19.3, FR-11 item 6).</summary>
+        /// <summary>
+        /// Refused registrations in the order they happened (the self-check reports them: AC-19.3, FR-11 item 6). A name that breaks the convention of
+        /// identifiers (no prefix of the owner, the prefix of another feature) carries the reason of <see cref="ModIds.Explain"/>, which names the prefix the
+        /// owner has to use (<c>the predicate name "hasFab" must start with "es."</c>); any other refusal carries the registry's own reason. A copy.
+        /// </summary>
         internal static IReadOnlyList<RejectedPredicate> Rejected
         {
-            get { return Registry.Rejected; }
+            get
+            {
+                IReadOnlyList<RejectedPredicate> refused = Registry.Rejected;
+                var result = new List<RejectedPredicate>(refused.Count);
+                foreach (RejectedPredicate item in refused)
+                    result.Add(new RejectedPredicate(item.Type, item.OwnerFeature, ReasonOf(item.OwnerFeature, item.Type, item.Reason)));
+                return result;
+            }
         }
 
         /// <summary>The feature that registered the predicate (<c>mod-framework</c> for the core ones); null for an unknown name.</summary>
@@ -158,7 +172,7 @@ namespace PTMod.Core
             return Registry.OwnerOf(type);
         }
 
-        /// <summary>The table of predicates (the prefix rule is plugged into its <see cref="PredicateRegistry.NamePolicy"/>).</summary>
+        /// <summary>The table of predicates (the prefix rule, <see cref="ModIdsAdapter.IsPredicateNameAllowed"/>, is its <see cref="PredicateRegistry.NamePolicy"/>).</summary>
         internal static PredicateRegistry Registry
         {
             get
@@ -168,13 +182,13 @@ namespace PTMod.Core
 
                 try
                 {
-                    registry = Predicates.CreateRegistry();
+                    registry = Predicates.CreateRegistry(ModIdsAdapter.IsPredicateNameAllowed);
                 }
                 catch (Exception ex)
                 {
                     // The core predicates are plain data; this is a defect. Features can still register theirs, and conditions with a core predicate fail to parse.
                     ModLog.Error(CoreId, "conditions: the predicates of the framework could not be registered", ex);
-                    registry = new PredicateRegistry();
+                    registry = new PredicateRegistry(ModIdsAdapter.IsPredicateNameAllowed);
                 }
                 _registry = registry;
                 return registry;
@@ -253,6 +267,18 @@ namespace PTMod.Core
             context = new ConditionContext(state, today, key);
             _context = context;
             return context;
+        }
+
+        /// <summary>
+        /// Why a registration was refused, for the log and the self-check: when the name breaks the convention of identifiers the words of <see cref="ModIds.Explain"/>
+        /// (they say which prefix the owner has), otherwise the registry's <paramref name="registryReason"/> (the name is taken, has a bad shape, no factory).
+        /// </summary>
+        private static string ReasonOf(string ownerFeature, string type, string registryReason)
+        {
+            if (string.IsNullOrEmpty(ownerFeature)) return registryReason;
+
+            string rule = ModIdsAdapter.Explain(IdKind.PredicateName, ownerFeature, type);
+            return rule ?? registryReason;
         }
 
         /// <summary>Puts the condition a feature's factory built under the feature's account (null stays null: the factory has reported its errors).</summary>

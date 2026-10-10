@@ -513,10 +513,20 @@ namespace PTMod.Core
             RaiseNotice("core.save.writeFailed", error);
         }
 
-        /// <summary>The game's version as the game writes it into its own saves; a constant, so no game class is touched at run time.</summary>
+        /// <summary>The game's version as the game writes it into its own saves. Read through reflection: a direct
+        /// reference to the const would be baked into PTMod.dll at compile time and never follow a game update.</summary>
         private static string GameVersionText()
         {
-            return ProcessorTycoon.GameVersion.Current;
+            try
+            {
+                var field = typeof(ProcessorTycoon.GameVersion).GetField("Current",
+                    System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static);
+                return field?.GetValue(null) as string ?? "unknown";
+            }
+            catch (Exception)
+            {
+                return "unknown";
+            }
         }
 
         // ---- participants ----

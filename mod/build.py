@@ -150,6 +150,12 @@ class Game:
 def find_game(game_dir_arg):
     raw = game_dir_arg or os.environ.get('PT_GAME_DIR')
     if not raw:
+        # a game folder next to the repository (<repo>/../Processor Tycoon) is used when nothing is given
+        sibling = os.path.join(os.path.dirname(os.path.dirname(HERE)), 'Processor Tycoon')
+        if os.path.isdir(sibling):
+            raw = sibling
+            say('папка игры не указана, взята соседняя: %s' % sibling)
+    if not raw:
         raise BuildError(
             'Не указана папка игры.\n'
             '  Передайте её параметром: python mod/build.py --game-dir "C:\\Games\\Processor Tycoon"\n'
@@ -425,7 +431,13 @@ def build_tests(layout, csc, release):
     if not os.path.isdir(layout.tests):
         raise BuildError('Нет папки тестов %s.' % layout.tests)
     files = []
-    for folder in (os.path.join(layout.src, 'Core', 'Logic'), os.path.join(layout.src, 'Core', 'Compat'), layout.tests):
+    folders = [os.path.join(layout.src, 'Core', 'Logic'), os.path.join(layout.src, 'Core', 'Compat'), layout.tests]
+    # pure logic of each feature (Features/<Pascal>/Logic/**) has no Unity or game references, so the tests build it too
+    features = os.path.join(layout.src, 'Features')
+    if os.path.isdir(features):
+        folders += [os.path.join(features, name, 'Logic') for name in sorted(os.listdir(features))
+                    if not (release and is_release_excluded('features/%s/' % name))]
+    for folder in folders:
         files += [os.path.join(folder, *f.split('/')) for f in _walk(folder, '.cs')]
     exe = os.path.join(layout.build, TESTS_ASSEMBLY + '.exe')
     _remove(exe, os.path.join(layout.build, TESTS_ASSEMBLY + '.pdb'))

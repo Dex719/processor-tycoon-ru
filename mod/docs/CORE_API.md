@@ -12,13 +12,25 @@
     bool Optional   // A failure of this method is logged and the start continues (default: the start fails, the mod stays off).
 ```
 
+## `src/PTMod/Core/Bootstrap/DisableConfirmation.cs` — `PTMod.Core`
+
+```csharp
+class DisableConfirmation   // The question a feature wants the player to answer before the hub switches it off (FR-3 item 8, FR-17 item 3): what <c>FeatureContext.ConfirmBeforeDisable</c>
+    string MessageKey   // The key of the body of the question in <see cref="ModL10n"/> (<c>{0}</c>, <c>{1}</c>... are <see cref="Args"/>). An empty key, or one no table knows, makes the hub
+    string[] Args   // The arguments of the message, already formatted for the player (money with the game's formatter, dates with the game's formatter); null for none.
+    string ConfirmLabelKey   // The key of the caption of the "Yes" button (for example "Turn off and settle"); null or empty gives <c>core.common.yes</c>.
+```
+
 ## `src/PTMod/Core/Bootstrap/FeatureContext.cs` — `PTMod.Core`
 
 ```csharp
 class FeatureContext   // What a feature uses in <see cref="IModFeature.Register"/> to declare its needs (FR-3). One object per feature for the whole session:
     void Patch(Type patchClass)   // Declares the patches of the feature: the <see cref="ModPatchAttribute"/> methods of <paramref name="patchClass"/>, a static class in
     void Param(ParamSpec spec)   // Declares a parameter of the feature (a hub slider, toggle or number; FR-6). <see cref="ParamSpec.FeatureId"/> is always this
+    void HubPage(string titleKey, Action<UnityEngine.RectTransform> build)   // Gives the feature a settings page in the hub (FR-17): the "Settings" button of the feature's row opens it under a "Back" button and the heading
+    void ConfirmBeforeDisable(Func<DisableConfirmation> provider)   // Asks the hub to question the player before it switches the feature off (FR-3 item 8, FR-17 item 3): <c>ctx.ConfirmBeforeDisable(BuildConfirmation)</c>.
     IDisposable OnTick(TickPhase phase, Action handler, int priority = 0, TickOptions options = TickOptions.None)   // Subscribes a handler of the feature to a phase of the game day (FR-4): <c>ctx.OnTick(TickPhase.DayPassed, OnDay)</c>, not a
+    void SaveParticipant(IModSaveParticipant participant)   // Registers the feature's holder of a section of the side save file (FR-5): <c>ctx.SaveParticipant(new MySaveParticipant())</c>. The
 ```
 
 ## `src/PTMod/Core/Bootstrap/FeatureInfo.cs` — `PTMod.Core`
@@ -72,7 +84,8 @@ class ModFeatures   // The feature registry (FR-3): the features found by <c>[Mo
     static bool WantsEnabled(string featureId)   // The player's choice for the feature (the position of the hub toggle), including a choice waiting for the scene to change.
     static bool HasPendingChange(string featureId)   // A switch of a feature without hot toggle waits for the scene to change ("takes effect after loading a save", FR-3 item 5).
     static string FeatureOfType(Type type)   // The feature that owns code of this type, by namespace: <c>PTMod.Features.&lt;Name&gt;[.…]</c> gives the slug of &lt;Name&gt;
-    static void SetEnabled(string featureId, bool enabled)   // The player switches a feature (the hub; no confirmation here - the hub asks first). The choice is saved in <c>ptmod_settings.json</c>
+    static void SetEnabled(string featureId, bool enabled)   // The player switches a feature (the hub; no confirmation here - the hub asks first, see <see cref="GetDisableConfirmation"/>; a call from code
+    static DisableConfirmation GetDisableConfirmation(string featureId)   // What the hub has to ask the player before it calls <c>SetEnabled(featureId, false)</c> (FR-3 item 8, AC-3.3, AC-17.3): the feature's
 ```
 
 ## `src/PTMod/Core/Bootstrap/PTModHost.cs` — `PTMod.Core`
@@ -87,6 +100,68 @@ class PTModHost : MonoBehaviour   // The mod's one persistent object (FR-1 item 
     void Stop(Coroutine coroutine)   // Stops a coroutine started by <see cref="Run"/>; null is ignored.
 ```
 
+## `src/PTMod/Core/Companies/ModCompanies.cs` — `PTMod.Core`
+
+```csharp
+class ModCompanies   // The companies of the world for the mod (FR-13, D7): the stable string key of a company (<c>player</c>, <c>ai:&lt;UniqueID&gt;</c>), the way back from
+    const string PlayerKey = CompanyKey.Player   // Key of the player's company.
+    int Id
+    ICompany Company
+    static string KeyOf(ICompany company)   // The key of a company: <c>player</c> for the player's company, <c>ai:&lt;UniqueID&gt;</c> for an AI company, null for null and for anything
+    static ICompany Resolve(string key)   // The company with this key, or null when there is none in the world (the key is not valid, the company has not been spawned yet, the
+    static bool IsPlayer(ICompany company)   // True for the player's company; false for null and for every other company.
+    static event Action Changed   // The set of companies or a company's bankruptcy changed (a company spawned, a company went bankrupt, the game became ready, the scene
+```
+
+## `src/PTMod/Core/Conditions/GameStateAdapter.cs` — `PTMod.Core`
+
+```csharp
+    readonly HashSet<int> Ids = new HashSet<int>()
+    int CpuCount = -1
+    DateTime? GameStartDate()
+    int? DifficultyLevel()
+    bool? CheatsEnabled()
+    bool? IsPgaEra()
+    int? FlagValue(string featureId, string key)
+    bool? IsFeatureActive(string featureId)
+    IReadOnlyList<string> AiCompanyKeys()
+    bool? CompanyExists(string companyKey)
+    bool? IsBankrupt(string companyKey)
+    double? MoneyAmount(string companyKey)
+    bool? IsInDefault(string companyKey)
+    int? DaysInDefault(string companyKey)
+    string CompanyType(string companyKey)
+    int? TeamCount(string companyKey)
+    double? ProfitLastMonth(string companyKey)
+    double? RevenueLastMonth(string companyKey)
+    double? ReputationOf(string companyKey)
+    int? CpuCount(string companyKey, bool includeRetired)
+    bool? HasCpuOnMarket(string companyKey)
+    int? ProductionLinesAllocated(string companyKey)
+    int? FactoryLines(string companyKey)
+    int? ActiveOemContracts(string companyKey)
+    bool? OemOfferSent(string companyKey)
+    int? BusinessContractsSigned(string companyKey)
+    double? MarketShare(string companyKey, MarketWindow window)
+    double? SegmentShare(string companyKey, string segment, MarketWindow window)
+    bool? IsTechnologyResearched(string companyKey, string name)
+    bool? IsResearchActive(string companyKey)
+    int? TechnologiesResearched(string companyKey)
+```
+
+## `src/PTMod/Core/Conditions/ModConditions.cs` — `PTMod.Core`
+
+```csharp
+class ModConditions   // The library of conditions (FR-11): a JSON description such as <c>{"all":[{"type":"dateAtLeast","year":1980},{"type":"oemContractsActiveAtLeast","count":1}]}</c>
+    static ICondition Parse(JsonNode node, List<string> errors, string path = "$")   // Parses a condition (<c>type</c> with its parameters, or <c>all</c> / <c>any</c> with a list, or <c>not</c> with a node). Errors are added to
+    static bool Evaluate(ICondition condition, ICompany subject = null)   // Evaluates a condition now, from the point of view of <paramref name="subject"/> (the player when null): the predicates without an explicit
+    static bool Register(string type, string ownerFeature, Func<JsonObject, List<string>, string, ICondition> factory)   // Makes the predicate <paramref name="type"/> available in JSON. <paramref name="type"/> of a feature is <c>&lt;prefix&gt;.&lt;name&gt;</c> (D28); the names of the
+    static void InvalidateCaches()   // Drops the cached lists of the adapter (CPUs, AI companies, CPU ids). The cache lives for one game day and ends by itself when a company goes bankrupt
+    FeatureCondition(string owner, string type, ICondition inner)
+    bool Evaluate(ConditionContext ctx)
+    string Describe()
+```
+
 ## `src/PTMod/Core/Content/ModContent.cs` — `PTMod.Core`
 
 ```csharp
@@ -97,6 +172,15 @@ class ModContent   // Loads the JSON content of the features (FR-10, decision 00
     static IReadOnlyList<T> LoadRecords<T>(   // Loads a record file (<c>{ "schema": N, "records": [ { "id": "..." } ] }</c>): the built-in records in file order, with the
     static JsonObject LoadConfig(string featureId, string file, int supportedSchema)   // Loads a config file (<c>{ "schema": N, ... }</c>): the override is merged into the built-in object field by field (nested objects
     static ContentReport ReportOf(string featureId, string file)   // What happened when the file was last loaded, or null when it was not loaded (yet). The key is the content folder and the file, with or without ".json".
+```
+
+## `src/PTMod/Core/Credit/ModCredit.cs` — `PTMod.Core`
+
+```csharp
+class ModCredit   // The one place to read a company's default threshold (FR-24, D23): the threshold the game applies at this moment, whether the transpiler
+    static float ThresholdOf(ICompany company)   // The default threshold of <paramref name="company"/>: a negative number compared with its balance like the game does (the company goes into
+    static float DebtLimitOf(ICompany company)   // The positive debt limit of <paramref name="company"/>: <c>−ThresholdOf(company)</c>. 0 without a bank.
+    static float PlayerDebtLimit()   // The player's debt limit, positive: <c>−ThresholdOf(player)</c> - what the patched interface of the game shows (P11: the credit left, the
 ```
 
 ## `src/PTMod/Core/Events/ModEvents.cs` — `PTMod.Core`
@@ -246,6 +330,23 @@ class ReservedTarget   // One reserved game method (FR-2 item 6): a feature's pa
     bool Rejects(string featureId, PatchKind kind)   // The patch is refused: the kind is covered and the feature is neither the core nor, for a feature formula, the owner. The owner's
     string Hint()   // The hint for the player in the current language (<see cref="UseInstead"/> with <see cref="Name"/> and <see cref="Api"/>):
     string Describe()   // One English line for the log: why the target is closed and what to use.
+```
+
+## `src/PTMod/Core/Hub/FeaturesTab.cs` — `PTMod.Core`
+
+```csharp
+    FeatureInfo Info
+    ToggleUI Toggle
+    TMP_Text Line
+    bool HasSettings
+```
+
+## `src/PTMod/Core/Hub/ModHub.cs` — `PTMod.Core`
+
+```csharp
+class ModHub   // The mods hub (FR-17): one modal window with a tab bar, opened by the "Mods" button of the taskbar (<see cref="HubEntryButton"/>) or by <see cref="Open"/>.
+    static void Open()   // Opens the hub on the tab last shown (the Features tab the first time). A window already open is only brought to the front. Does nothing outside the game scene, where the
+    static void Close()   // Closes the hub window (the time goes on). Closed already: does nothing.
 ```
 
 ## `src/PTMod/Core/L10n/ModL10n.cs` — `PTMod.Core`
@@ -436,6 +537,18 @@ class ContentReport   // What happened while a content file was loaded (FR-10; <
     ContentReport(string featureId, string file)
 ```
 
+## `src/PTMod/Core/Logic/Credit/CreditMath.cs` — `PTMod.Core.Logic.Credit`
+
+```csharp
+class CreditMath   // The arithmetic of the channel <c>bank.creditLimit</c> (FR-12 item 19, FR-24): the one place where the default threshold of a company is
+    const float MinDebtLimit = 1e6f   // The floor of <c>CentralBank.UpdateCreditLimit</c>: the debt limit is never below 1 million.
+    static float Threshold(float debtLimit, float companyMultiplier, bool perCompanyActive)   // The default threshold of a company - a negative number, compared with the balance like the game does (default when
+    static float LimitOf(float threshold)   // The positive debt limit behind a threshold (<c>ModCredit.DebtLimitOf</c>, <c>PlayerDebtLimit</c>): <c>−threshold</c>, 0 for a zero threshold.
+    static float GlobalDebtLimit(float gameDebtLimit, float globalMultiplier)   // Patch P9: the debt limit after <c>CentralBank.UpdateCreditLimit</c> with the global multiplier applied, <c>max(1e6, limit × M)</c>. A multiplier
+    static float CompanyMultiplier(float companyProduct, float globalProduct)   // The company's part of <c>bank.creditLimit</c>: its product over the global product, <c>M(company) / M(global)</c>, because the global part is
+    static bool IsUsable(float multiplier)   // A multiplier the formulas accept: finite and 0 or more.
+```
+
 ## `src/PTMod/Core/Logic/Events/ReleaseDeduper.cs` — `PTMod.Core.Logic.Events`
 
 ```csharp
@@ -501,6 +614,34 @@ class FeatureStateMachine   // State model of the feature registry (FR-3). Per f
     IReadOnlyList<FeatureTransition> SetEnabled(string id, bool enabled)   // The player turns the feature on or off. Remembered even when the feature cannot run now (a faulted or
     IReadOnlyList<FeatureTransition> Fault(string id, string detail)   // Circuit breaker tripped: the feature is Faulted until the game restarts (no way back, <see cref="SetEnabled"/>
     IReadOnlyList<FeatureTransition> MarkUnavailable(string id, string detail)   // The feature cannot run for good (a required patch target is missing, a patch is rejected): Unavailable
+```
+
+## `src/PTMod/Core/Logic/Ids/ModIds.cs` — `PTMod.Core.Logic.Ids`
+
+```csharp
+enum IdKind   // The kinds of identifier the naming convention (FR-25, D28) covers. The kind decides the character that follows the prefix:
+class ModIds   // The identifier convention of the mod (FR-25, D28), as pure checks over the table "feature to prefixes" (<c>prefixes</c> in <c>core.json</c>, 17 rows).
+    const string CoreFeatureId = FeatureGraph.CoreFeatureId   // The id of the framework itself; its row of the table is <c>core</c>, and its predicates are the ones without a dot.
+    const int MaxPrefixLength = 16   // Longest prefix a row of the table may hold.
+    static int Load(JsonObject prefixes, List<string> problems = null)   // Builds the table from the <c>prefixes</c> object of <c>core.json</c> (<c>{ "market-shocks": ["ms"], "scenarios-achievements": ["scn", "chl", "ach"] }</c>)
+    static void Clear()   // Empties the table (every check answers no until the next <see cref="Load"/>). For tests and for a failed start.
+    static IReadOnlyList<string> PrefixesOf(string featureId)   // The prefixes of the feature in the order of its row (<c>["scn", "chl", "ach"]</c>); an empty list for an unknown feature, never null.
+    static string FeatureOfPrefix(string prefix)   // The feature that owns the prefix (<c>"ms"</c> gives <c>market-shocks</c>); null for an unknown prefix. Exact match, no separator.
+    static bool IsL10nKeyAllowed(string featureId, string key)   // A key of the string tables of <paramref name="featureId"/>: <c>&lt;prefix&gt;.&lt;rest&gt;</c> with one of the prefixes of the feature (the framework's is <c>core</c>).
+    static bool IsPredicateNameAllowed(string featureId, string name)   // A predicate name for <c>ModConditions.Register</c>: <c>&lt;prefix&gt;.&lt;name&gt;</c> for a feature; for the framework (<see cref="CoreFeatureId"/>) any
+    static bool IsEventIdAllowed(string featureId, string eventId)   // An event id of the content of <c>event-system</c>: <c>&lt;prefix&gt;.&lt;name&gt;</c> with a prefix of the feature that owns the pack.
+    static bool IsTagAllowed(string featureId, string tag)   // A tag of a mod mail: <c>&lt;prefix&gt;:&lt;...&gt;</c> with a prefix of the sending feature. A null or empty tag is not allowed here (a mail may have no tag; the caller decides what that means).
+    static bool IsAllowed(IdKind kind, string featureId, string id)   // The same check by <paramref name="kind"/> (a validator that handles all kinds the same way).
+    static string Explain(IdKind kind, string featureId, string id)   // Why <paramref name="id"/> is not allowed for <paramref name="featureId"/> - one English sentence for a log line or a report, naming the identifier and
+    static string FeatureOfId(IdKind kind, string id)   // The feature whose prefix <paramref name="id"/> starts with: <c>"ms.earthquake"</c> gives <c>market-shocks</c>. A predicate without a dot belongs to the framework.
+    static char SeparatorOf(IdKind kind)   // The character after the prefix: ':' for a tag, '.' for everything else.
+    readonly Dictionary<string, ReadOnlyCollection<string>> ByFeature = new Dictionary<string, ReadOnlyCollection<string>>(StringComparer.Ordinal)
+    readonly Dictionary<string, string> ByPrefix = new Dictionary<string, string>(StringComparer.Ordinal)
+    readonly List<string> FeatureOrder = new List<string>()
+    ReadOnlyCollection<string> Features
+    Table()
+    void Seal()
+    string OwnerOfPrefixAt(string id, int length)   // The feature that owns the first <paramref name="length"/> characters of <paramref name="id"/> as a prefix; null when none does.
 ```
 
 ## `src/PTMod/Core/Logic/Json/JsonArray.cs` — `PTMod.Core.Logic.Json`
@@ -794,6 +935,38 @@ class InboxOrder   // The order of the mail list (FR-14 item 11, AC-14.10), as a
     static bool IsOrdered(IReadOnlyList<DateTime> dates, IReadOnlyList<int> ids)   // True when the list is already in the right order (the sorter then skips the work and leaves the list alone).
 ```
 
+## `src/PTMod/Core/Logic/Mail/InboxSortPlan.cs` — `PTMod.Core.Logic.Mail`
+
+```csharp
+    InboxMove(int row, int slot)
+    int Row
+    int Slot
+    static InboxMove[] Compute(IReadOnlyList<int> siblings, IReadOnlyList<DateTime> dates, IReadOnlyList<int> ids)   // The moves that put the rows in date order; empty when they are in order already (the sorter then leaves the list alone).
+```
+
+## `src/PTMod/Core/Logic/Mail/MailAnswerRules.cs` — `PTMod.Core.Logic.Mail`
+
+```csharp
+    static bool IsChoiceActive(MailRecordModel mail, MailChoiceModel choice, bool featureActive)   // A choice can be pressed: the mail is unanswered, the choice enabled, and the feature running.
+    static bool IsActionActive(MailActionModel action, bool featureActive)   // An action can be pressed: enabled, the feature running, and either repeatable or not used yet.
+    static MailAnswerResult TryResolve(MailRecordModel mail, string choiceId, string resolution)   // Fixes the answer: <c>ChoiceId</c> and <c>Resolution</c> (one of the <c>MailRecordModel.Resolution*</c> answers, not Pending). Only an unanswered
+    static MailAnswerResult TryUseAction(MailRecordModel mail, string actionId, bool featureActive, out MailActionModel action)   // The player pressed an action: it must exist and be active. It is marked used; a non-repeatable one is switched off for good. The mail is not
+    static bool SetChoiceState(MailRecordModel mail, string choiceId, bool enabled, string disabledReasonKey, string[] args)   // A feature's call: the choice is enabled or not, with a reason (a table key and its arguments) only while it is not. False when the mail or
+    static bool SetActionState(MailRecordModel mail, string actionId, bool enabled, string disabledReasonKey, string[] args)   // A feature's call: the action is enabled or not, with a reason only while it is not. A used non-repeatable action stays off (it is
+```
+
+## `src/PTMod/Core/Logic/Mail/MailPanelModel.cs` — `PTMod.Core.Logic.Mail`
+
+```csharp
+    MailPanelKind Kind
+    string Id   // The id of the choice or action; null for a line.
+    string Text = string.Empty   // The text of the line or the caption of the button.
+    bool Enabled = true   // A button can be pressed (always true for a line).
+    string Tip = string.Empty   // The hint of a button: its own tooltip text and, when it is gray, the reason; empty for none.
+    static List<MailPanelItem> Build(MailRecordModel mail, DateTime today, bool featureActive, IMailPanelTexts texts)
+    static string Signature(IList<MailPanelItem> items)   // A text that is equal for two panels exactly when they look and behave the same (the kind, id, state, text and hint of every row); the runtime
+```
+
 ## `src/PTMod/Core/Logic/Mail/MailPriority.cs` — `PTMod.Core`
 
 ```csharp
@@ -890,6 +1063,14 @@ class MailRecordModel   // One mod mail without Unity or game objects (FR-14): w
     string Validate()   // Checks a mail that a feature wants to send. Returns null when it is acceptable, otherwise the first problem (English, one line):
     MailRecordDto ToDto()   // The side file form of the record (see the class remarks for the queued case). Empty strings and empty lists are written as null,
     static MailRecordModel FromDto(MailRecordDto dto, bool queued, Action<string> warn)   // Reads one record of the side file. <paramref name="queued"/> tells which list it came from (<c>queue</c> or <c>mails</c>).
+```
+
+## `src/PTMod/Core/Logic/Mail/MailTimeoutRules.cs` — `PTMod.Core.Logic.Mail`
+
+```csharp
+    static List<MailRecordModel> Due(IReadOnlyList<MailRecordModel> mails, DateTime today)   // The delivered, unanswered mails whose deadline is <paramref name="today"/> or earlier and that can be answered by their default choice, in the
+    static bool CanApplyDefault(MailRecordModel mail)   // The mail names a default choice and it is one of the mail's choices.
+    static int DaysLeft(DateTime deadline, DateTime today)   // Whole days from <paramref name="today"/> to the deadline; 0 on the deadline day and after it.
 ```
 
 ## `src/PTMod/Core/Logic/Modifiers/BalanceRange.cs` — `PTMod.Core.Logic.Modifiers`
@@ -1429,6 +1610,23 @@ class BatchCounter   // The depth counter of the batch run of a month (FR-4 item
     bool Reset()   // Forgets an open run (the scene was left inside it, a finalizer never came): depth 0 without an end to report. True when a run was
 ```
 
+## `src/PTMod/Core/Logic/Ui/ConfirmFlow.cs` — `PTMod.Core.Logic.Ui`
+
+```csharp
+    ConfirmRequest(string title, string message, string yesKey, string noKey, Action onYes, Action onNo)
+    string Title
+    string Message
+    string YesKey
+    string NoKey
+    Action OnYes
+    Action OnNo
+    bool IsSameQuestion(ConfirmRequest other)   // Same texts and same callbacks (a delegate is equal when its target and method are): asking it twice is asking it once.
+    ConfirmArrival Enqueue(ConfirmRequest request)   // A new question. Nothing open and nothing waiting makes it the open one (<see cref="ConfirmArrival.ShowNow"/>); otherwise it joins the end of the line, so a callback
+    ConfirmRequest Take()   // The answer comes: hands over the open question (it is no longer open) - once. Null when none is open: a second click, or the close after an answer.
+    ConfirmRequest Advance()   // Makes the first waiting question the open one and returns it; null while one is open or none waits.
+    List<ConfirmRequest> Drain()   // Empties the dialog and returns what was in it, the open question first. The caller answers or drops them.
+```
+
 ## `src/PTMod/Core/Logic/Ui/SliderMath.cs` — `PTMod.Core.Logic.Ui`
 
 ```csharp
@@ -1439,12 +1637,327 @@ class SliderMath   // The arithmetic of <c>ModUI.Slider</c> (FR-16 item 5), with
     static string Format(float value, float step)   // The value as text with the decimals of the step, the invariant culture (a continuous slider shows up to two decimals).
 ```
 
+## `src/PTMod/Core/Logic/Ui/TooltipHover.cs` — `PTMod.Core.Logic.Ui`
+
+```csharp
+    TooltipHover(ITooltipHost host, TooltipTextSource source)
+    bool Showing   // The tooltip was asked for and not yet cancelled.
+    void PointerEntered()   // The pointer entered the element.
+    void PointerExited()   // The pointer left the element, or the element was hidden or destroyed.
+```
+
+## `src/PTMod/Core/Mail/InboxSorter.cs` — `PTMod.Core`
+
+```csharp
+    UnityEngine.Transform Transform
+    int Sibling; // index among the children of the parent
+    DateTime Date
+    int Id
+```
+
+## `src/PTMod/Core/Mail/MailActions.cs` — `PTMod.Core`
+
+```csharp
+class ModMail   // The answers of a mod mail (FR-14 items 3-5, 7): the handlers the features register, the click of a choice or an action, the programmatic
+    static void RegisterChoiceHandler(string featureId, Action<ModMailRecord, string> handler)   // Registers the handler of the answers to the choices of the mails <paramref name="featureId"/> sent: <c>handler(record, choiceId)</c>, once per
+    static void RegisterActionHandler(string featureId, Action<ModMailRecord, string> handler)   // Registers the handler of the actions of the mails <paramref name="featureId"/> sent: <c>handler(record, actionId)</c> at each click on an active
+    static bool Resolve(int mailId, string choiceId)   // The feature answers the mail itself (the event was cancelled, the offer is gone): the answer is fixed as <see cref="MailResolution.Programmatic"/>,
+    static void SetChoiceState(int mailId, string choiceId, bool enabled, string disabledReasonKey = null, params string[] args)   // Switches a choice of the mail on or off. A disabled choice is gray, and <paramref name="disabledReasonKey"/> (a table key, filled with
+    static void SetActionState(int mailId, string actionId, bool enabled, string disabledReasonKey = null, params string[] args)   // Switches an action of the mail on or off, like <see cref="SetChoiceState"/>. An action with <c>Repeatable = false</c> that was used stays inactive
+    static void Refresh(int mailId)   // Draws the open letter again (its buttons, its status lines): for a feature that changed something the core cannot see. Does nothing when the
+    static void SetStatusLine(int mailId, string text)   // The line under the text of the mail (a feature's timer: "Осталось 3 дня"); null or empty removes it. It is stored with the mail and comes
+```
+
+## `src/PTMod/Core/Mail/MailFactory.cs` — `PTMod.Core`
+
+```csharp
+    GameEmail Email
+    GameEmailMessage Message
+    object Add(int mailId, DateTime date, bool read, string title, string text)
+    bool IsRead(object handle, bool fallback)
+    void Retext(object handle, string title, string text)
+    void Release(object handle)
+```
+
+## `src/PTMod/Core/Mail/MailStore.cs` — `PTMod.Core`
+
+```csharp
+    void ResetToDefaults()
+    void Read(JsonNode block, int schema)
+    JsonNode Write()
+```
+
+## `src/PTMod/Core/Mail/MailTimeouts.cs` — `PTMod.Core`
+
+```csharp
+class ModMail   // The answer periods of mod mail (FR-14 item 7, AC-14.2, AC-14.8): when the deadline of an unanswered mail comes, its default choice is applied as
+```
+
+## `src/PTMod/Core/Mail/MailView.cs` — `PTMod.Core`
+
+```csharp
+    string Label(string key, LocText inline)
+    string Tip(string key)
+    string Reason(string key, string[] args)
+    string DaysLeft(int days)
+    string Answer(string label, bool afterDeadline)
+    string FeatureOff(string featureId)
+```
+
+## `src/PTMod/Core/Mail/ModMail.cs` — `PTMod.Core`
+
+```csharp
+class ModMailChoice   // A one-shot answer button of a mod mail (FR-14 item 3): the first click calls the sending feature's choice handler exactly once, fixes the
+    string Id
+    string LabelKey
+    LocText Label
+    string TooltipKey
+    bool Enabled = true   // False: the button is gray (not enough money, a condition is not met) and shows <see cref="DisabledReasonKey"/>.
+    string DisabledReasonKey
+    string[] DisabledReasonArgs
+class ModMailAction   // A reusable button of a mod mail (FR-14 item 4): it calls the feature's action handler and never closes the mail ("Подсказки",
+    string Id
+    string LabelKey
+    LocText Label
+    string TooltipKey
+    bool Repeatable = true   // False: the action becomes inactive after the first click (the mail stays open).
+    bool Enabled = true
+    string DisabledReasonKey
+    string[] DisabledReasonArgs
+class ModMailMessage   // What a feature hands to <see cref="ModMail.Send"/>. Texts are table keys (<see cref="TitleKey"/>, <see cref="BodyKey"/>) with already
+    string FeatureId   // The sending feature; must be a known feature (the core's id is accepted too).
+    string Tag   // <c>&lt;prefix&gt;:&lt;...&gt;</c> (FR-25): <c>onb:&lt;stepId&gt;</c>, <c>scn:briefing:&lt;runId&gt;</c>; tells the mails of a feature apart, <c>Find</c> looks for it.
+    string TitleKey
+    string BodyKey
+    LocText Title
+    LocText Body
+    string[] Args   // Already formatted arguments of both texts ({0}, {1}, ...).
+    MailPriority Priority = MailPriority.Normal
+    List<ModMailChoice> Choices   // Null or empty: the mail has no choice.
+    List<ModMailAction> Actions   // Null or empty: the mail has no action.
+    int TimeoutDays   // The answer period in days counted from the day of DELIVERY, not of sending (AC-14.8); 0 = no deadline.
+    string DefaultChoiceId   // The choice applied when the period passes; required when <see cref="TimeoutDays"/> is above 0.
+enum MailResolution   // Who answered a mod mail.
+class ModMailRecord   // A mod mail as the features see it (<see cref="ModMail.Get"/>, <see cref="ModMail.Find"/>, <see cref="ModMail.Delivered"/>): a live,
+class ModMail   // The mod's mail (FR-14): letters in the game's own inbox with a mod id (100000 and above), sent by the features and kept in the side file.
+    const int FirstModMailId = MailRecordModel.FirstId   // The first id of a mod mail. Id 0 is the game's Year Summary and small ids are the game's; the core hands out ids from its counter
+    static int Send(ModMailMessage message)   // Sends a mail: the message is checked and copied, gets its id and waits in the queue until the next delivery (usually the same day,
+    static ModMailRecord Get(int mailId)   // The mail with this id, delivered or queued; null for an unknown id.
+    static ModMailRecord Find(string featureId, string tag)   // The latest mail (the highest id, delivered or queued) of the feature with exactly this tag; null when there is none. This is how a
+    static IReadOnlyList<ModMailRecord> FindAll(string featureId, string tagPrefix = null)   // The mails of the feature, delivered and queued, in the order they were sent; with <paramref name="tagPrefix"/> only those whose
+    static event Action<ModMailRecord> Delivered   // A mail reached the inbox: <see cref="ModMailRecord.DeliveredOn"/> is the delivery day, the deadline (if any) is counted from it
+```
+
+## `src/PTMod/Core/Modifiers/ModChannels.cs` — `PTMod.Core`
+
+```csharp
+class ModChannels   // The names of the channels the core declares (FR-12 items 1 and 15; the bounds are in <c>core.json</c>, 27 entries) and the reading of that
+    const string ResearchSpeed = "research.speed"
+    const string ResearchCost = "research.cost"
+    const string ProductionUnitCost = "production.unitCost"
+    const string ProductionOutput = "production.output"
+    const string FactoryOperatingCost = "factory.operatingCost"
+    const string MarketRatingCpu = "market.rating.cpu"
+    const string PopularityGain = "popularity.gain"
+    const string CpuFailureRate = "cpu.failureRate"
+    const string ContractReward = "contract.reward"
+    const string ContractSignChance = "contract.signChance"
+    const string BankInterest = "bank.interest"
+    const string BankCreditLimit = "bank.creditLimit"
+    const string Taxes = "taxes"
+    const string ConstructionCost = "construction.cost"
+    const string DevelopmentCost = "development.cost"
+    const string DevelopmentCostDesign = "development.cost.design"   // P19: <c>CpuMath.ProjectCost</c>, the context carries a <see cref="DesignContext"/>; never cached.
+    const string MarketDemandHighEnd = "market.demand.highend"
+    const string MarketDemandMidRange = "market.demand.midrange"
+    const string MarketDemandLowEnd = "market.demand.lowend"
+    const string MarketDemandIndustries = "market.demand.industries"
+    const string ProductionMemoryCost = "production.memoryCost"; // market-shocks
+    const string ProductionWaferCost = "production.waferCost"; // market-shocks
+    const string GpuDemand = "gpu.demand"; // gpu-product-line
+    const string GpuRating = "gpu.rating"; // gpu-product-line
+    const string GpuVramCost = "gpu.vramCost"; // gpu-product-line
+    const string AcquisitionPrice = "acquisition.price"; // rival-acquisitions
+    static string MarketDemand(Segment segment)   // The channel of the demand of one CPU segment (<c>market.demand.highend</c> and so on); null for <see cref="Segment.Any"/>.
+    static string GpuDemandSegment(string segmentId)   // The channel of one GPU segment, <c>gpu.demand.&lt;segmentId&gt;</c> (a member of the family <c>gpu.demand.*</c>); null for an empty or malformed id.
+```
+
+## `src/PTMod/Core/Modifiers/ModModifiers.cs` — `PTMod.Core`
+
+```csharp
+class ModModifiers   // Named multiplier channels for the formulas of the game (FR-12): features multiply a formula by adding saved entries or by registering
+    static string Add(string featureId, string channel, ModifierScope scope, float multiplier,   // Adds a saved entry: <paramref name="multiplier"/> (finite, 0 or more) on <paramref name="channel"/> for <paramref name="scope"/>, owned by
+    static bool Remove(string entryId)   // Removes one entry by its id; false if there is none.
+    static int RemoveAll(string featureId, string channel = null)   // Removes the entries of a feature, all of them or those of one channel; returns how many. Providers stay (they are removed with the process).
+    static void RegisterProvider(string featureId, string channel, Func<ModifierContext, float> provider, string reasonKey = null)   // Registers a provider: a function of the question that returns a multiplier (0 or more). It is not saved - register it once, in
+    static void RegisterReasonedProvider(string featureId, string channel, Func<ModifierContext, ProviderResult> provider)   // Registers a provider that returns a reason with every call (<see cref="ProviderResult"/>: a ModL10n key and its arguments), for
+    static float Get(string channel, ModifierContext ctx)   // The multiplier of a channel for a question: the product of the applicable entries and providers, held to the channel's balance range
+    static ModifierBreakdown Explain(string channel, ModifierContext ctx)   // The breakdown behind <see cref="Get"/> for the same question (never cached, calls the providers): the applied multipliers with their
+    static bool HasAny(string channel)   // True when something is registered on the channel (an entry or a provider of any feature, one that applies to the question or not): the
+    static bool DeclareChannel(ChannelSpec spec)   // Declares a channel of a feature, for a name the registry of the core does not have (the 27 channels of <c>core.json</c> are declared at
+    static bool IsDeclared(string channel)   // True when a declaration covers the name: the exact name or a family such as <c>gpu.demand.*</c>.
+    static ChannelSpec SpecOf(string channel)   // A copy of the declaration that covers the name (for a member of a family, the family's), or null.
+    static void Invalidate(string channel = null)   // Drops the cached values of a channel (all channels when null) and raises <see cref="ChannelChanged"/>: the next question is answered anew.
+    static void Invalidate(string channel, string companyKey)   // Drops the cached values of one company in a channel (all channels when null); other companies keep theirs.
+    static event Action<string> ChannelChanged   // The value of a channel may have changed (an entry or provider came or went, an entry ended, the channel was declared, a feature changed
+```
+
+## `src/PTMod/Core/Modifiers/ModifierContext.cs` — `PTMod.Core`
+
+```csharp
+class DesignContext   // The CPU being designed, for the channel <c>development.cost.design</c> (patch P19 on <c>CpuMath.ProjectCost</c>, FR-12 item 12): the parts the
+    GamePackage Package
+    GameProcessNode Node
+    GameMemory Memory
+    float Frequency
+struct ModifierContext   // What a formula asks a channel about (FR-12): who (<see cref="Company"/> / <see cref="CompanyKey"/>), which CPU, which market segment, which
+    ICompany Company
+    string CompanyKey   // <c>player</c> or <c>ai:&lt;UniqueID&gt;</c>; null means "take it from <see cref="Company"/>".
+    GameCpu Cpu
+    GameContract Contract   // Only in P8 (<c>contract.signChance</c>); otherwise null. The ID of the contract goes into the cache key.
+    DesignContext Design   // Only in P19 (<c>development.cost.design</c>); otherwise null. Such values are not cached.
+    static ModifierContext For(ICompany company)   // A context for a company (the player's or an AI company's).
+    static ModifierContext For(ICompany company, GameCpu cpu, Segment segment = Segment.Any)   // A context for a CPU of a company, optionally in a segment.
+    static ModifierContext ForKey(string companyKey)   // A context from a company key only (no game object at hand).
+```
+
+## `src/PTMod/Core/Modifiers/ModifiersSaveParticipant.cs` — `PTMod.Core`
+
+```csharp
+    int Restored   // Entries put back into the registry.
+    int Ended   // Entries whose end date had come: not restored, nothing to report (the game moved on).
+    int Dropped   // Entries that could not be used (a bad field, a bad scope or date, or the registry refused them); each is a warning.
+    void ResetToDefaults()
+    void Read(JsonNode block, int schema)
+    JsonNode Write()
+```
+
+## `src/PTMod/Core/Modifiers/Patches/ModCreditHooks.cs` — `PTMod.Core`
+
+```csharp
+    static float Threshold(float vanillaThreshold, ICompany company)   // P10: the default threshold of <paramref name="company"/> in <c>BankruptcyHandler.TickBankruptcies</c>. <paramref name="vanillaThreshold"/> is
+    static float PlayerDebtLimit(GameCentralBank bank)   // P11: the debt limit the player's interface shows (<c>MoneyBalance.UpdateUI</c>: the credit left; <c>Money.UpdateMoneyText</c> and
+```
+
+## `src/PTMod/Core/Modifiers/Patches/ProduceWafersPatch.cs` — `PTMod.Core`
+
+```csharp
+    bool UnitCostLent   // <see cref="UnitCost"/> was replaced and has to be given back.
+    bool FailureRateLent   // <see cref="FailureRate"/> was replaced and has to be given back.
+    bool Output   // <c>production.output</c> has records: the postfix measures the day's output and may add to it.
+    float UnitCost
+    float FailureRate
+    int ProducedLastDay
+```
+
+## `src/PTMod/Core/Modifiers/Patches/SignChancePatch.cs` — `PTMod.Core`
+
+```csharp
+    OfferAccess(MethodInfo getCpu, MethodInfo setChance)
+```
+
+## `src/PTMod/Core/NewGame/ModNewGame.cs` — `PTMod.Core`
+
+```csharp
+enum NewGameOptionKind   // What a simple option of the new-game panel is drawn as.
+class NewGameOption   // A simple option of a feature on the panel "Mods..." of the new-game window (<see cref="ModNewGame.RegisterOption"/>). The class is only a
+    string FeatureId   // The feature the option belongs to (its slug). The option is shown only while that feature is Enabled.
+    string Id   // The name of the option inside the feature; with <see cref="FeatureId"/> it is the key of the saved value (<c>feature.id</c>).
+    string LabelKey   // <see cref="ModL10n"/> key of the caption (a text no table knows is shown as it is).
+    string TooltipKey   // <see cref="ModL10n"/> key of the hover text; null or empty for none.
+    NewGameOptionKind Kind
+    bool DefaultOn   // The state of a <see cref="NewGameOptionKind.Toggle"/> the player has not touched.
+    List<string> ChoiceKeys = new List<string>()   // Keys of the entries of a <see cref="NewGameOptionKind.Dropdown"/>; at least one.
+    int DefaultIndex   // The entry of a <see cref="NewGameOptionKind.Dropdown"/> the player has not changed (clamped to the entries).
+class ModNewGame   // The slot of the mod in the new-game window: options, sections and the start of a new game (FR-18, decision D26).
+    static event Action<PlayerInitialData> BeforeStart   // The player pressed "Start": the one place where a feature may change <c>PlayerInitialData</c> (P17).
+    static void RegisterOption(NewGameOption option)   // Puts a simple option (a switch or a drop-down list) on the panel "Mods..." of the new-game window.
+    static bool GetToggle(string featureId, string optionId)   // The state of a switch of the panel: the player's choice, else <see cref="NewGameOption.DefaultOn"/>; false for an option nobody registered.
+    static int GetChoice(string featureId, string optionId)   // The entry of a drop-down list of the panel: the player's pick, else <see cref="NewGameOption.DefaultIndex"/>, kept inside the entries; 0 for an
+    void ResetToDefaults()
+    void Read(JsonNode block, int schema)
+    JsonNode Write()
+```
+
+## `src/PTMod/Core/NewGame/NewGameSections.cs` — `PTMod.Core`
+
+```csharp
+class ModNewGame
+    static void RegisterSection(string featureId, Action<RectTransform> build, int order = 100)   // Puts a free section of widgets on the panel "Mods..." of the new-game window (FR-18 item 5).
+```
+
+## `src/PTMod/Core/NewGame/PreviewPatch.cs` — `PTMod.Core`
+
+```csharp
+class ModNewGame
+    static event Action PreviewChanged   // The settings of the new-game window changed (start year, company type, difficulty, cheats): refresh your texts from <see cref="Preview"/>.
+```
+
+## `src/PTMod/Core/Notify/ModNotify.cs` — `PTMod.Core`
+
+```csharp
+class ModNotify   // Short pop-up notifications in the game's own style (FR-15): <see cref="Show"/> and <see cref="ShowKey"/> put a text on the screen through
+    static void Show(string featureId, string message, string secondary = null)   // Shows a notification: <paramref name="message"/> is the main line, <paramref name="secondary"/> an optional second one (the game
+    static void ShowKey(string featureId, string key, params object[] args)   // language when the call is made (a missing key shows as <c>[key]</c> and is warned about by <see cref="ModL10n"/>). Never throws.
+    NotifyItem(string featureId, string message, string secondary)
+    string FeatureId
+    string Message
+    string Secondary   // The second line, or null.
+    NotifyDayReport(string featureId, DateTime date, int dropped, int limit)
+    string FeatureId
+    DateTime Date
+    int Dropped
+    int Limit   // The limit that was in force.
+    const int DefaultQueueLimit = 20
+    const int DefaultMaxPerFeaturePerDay = 5
+    const int LimitCeiling = 1000   // Limits are clamped to [1, <see cref="LimitCeiling"/>]; a zero limit would hold or drop everything.
+    NotifyBook(int queueLimit, int maxPerFeaturePerDay, string protectedFeature)
+    int QueueLimit   // Notifications that may wait.
+    int MaxPerFeaturePerDay   // Pop-ups of one feature per game day.
+    int Configure(int queueLimit, int maxPerFeaturePerDay)   // Changes both limits (clamped). A queue longer than the new limit loses its oldest items beyond the protected ones; the number lost
+    bool Enqueue(NotifyItem item, out NotifyItem lost)   // Puts the notification at the end of the queue. When the queue is full the oldest unprotected item is dropped for it; if there is
+    NotifyItem Dequeue()   // Takes the oldest waiting notification; null when none waits.
+    bool Contains(NotifyItem item)   // True when this very item waits.
+    int RemoveWhere(Predicate<NotifyItem> match)   // Drops the waiting items that match; returns how many.
+    int Clear()   // Drops every waiting item; returns how many.
+    bool TryAdmit(string featureId, DateTime today)   // Counts one showing of <paramref name="featureId"/> on the game day <paramref name="today"/>. True: it may be shown. False: the feature
+    int ShownOn(string featureId, DateTime day)   // Pop-ups counted for the feature on that day.
+    int DroppedOn(string featureId, DateTime day)   // Notifications dropped for the feature on that day and not reported yet.
+    void RollDays(DateTime today)   // Closes the counters of every date but <paramref name="today"/>: that day is over (or is another game's).
+    void CloseDays()   // Closes every counter (a new game, a scene left); the ones that dropped something become reports.
+    IReadOnlyList<NotifyDayReport> TakeReports()   // The reports of the days that were closed since the last call, oldest first; null when there are none.
+    DayCounter(DateTime date)
+    DateTime Date
+    int Shown
+    int Dropped
+```
+
 ## `src/PTMod/Core/Random/ModRandom.cs` — `PTMod.Core`
 
 ```csharp
 class ModRandom   // The deterministic random numbers of the mod (FR-9): named streams derived from one world seed of the game, saved with the game. The
     static IModRng Stream(string streamId)   // The stream with this id: created on first use, the same object afterwards (it keeps its place in the sequence across saving and loading).
     static void SetSeedForNewGame(uint seed)   // A scenario's own world seed for the new game that is being started (<c>ModNewGame.BeforeStart</c>): the same scenario then plays the same
+    void ResetToDefaults()
+    void Read(JsonNode block, int schema)
+    JsonNode Write()
+```
+
+## `src/PTMod/Core/Reputation/ModReputation.cs` — `PTMod.Core`
+
+```csharp
+class ModReputation   // The brand reputation of every company (FR-13): one number in [0, 100] per company, 50 for a company that never had a change, shared by the
+    const float Min = ReputationStore.Min   // Lowest reputation.
+    const float Max = ReputationStore.Max   // Highest reputation.
+    const float Default = ReputationStore.Default   // The reputation of a company that never had a change, a new AI company included.
+    static float Get(ICompany company)   // The reputation of the company: <see cref="Default"/> for a company that has none, for null and for a company without a key.
+    static float Get(string companyKey)   // The reputation of the company with this key (<c>player</c>, <c>ai:3</c>); <see cref="Default"/> for an unknown or invalid key.
+    static IReadOnlyList<ReputationChange> History(string companyKey)   // The changes made by <see cref="Add"/> and <see cref="Set"/> (never the drift), oldest first, at most <c>reputation.historyPerCompany</c> of
+    static void Add(ICompany company, float delta, string reason)   // Changes the reputation of the company by <paramref name="delta"/>, keeps it in [0, 100], writes a history entry (the requested delta, the
+    static void Set(ICompany company, float value, string reason)   // Sets the reputation of the company to <paramref name="value"/> (kept in [0, 100]), writes a history entry with the effective change and
+    static void Drift(ICompany company, float rate, float target = Default)   // Moves the reputation of one company towards <paramref name="target"/> by the share <paramref name="rate"/> of the distance
+    static event Action<string, float, float, string> Changed   // A reputation was changed by <see cref="Add"/> or <see cref="Set"/> (never by the drift): company key, old value, new value, reason.
+    static event Action Drifted   // The monthly drift of all companies is done (once per month, after the last company moved). The values already differ from the month before, so
     void ResetToDefaults()
     void Read(JsonNode block, int schema)
     JsonNode Write()
@@ -1474,6 +1987,26 @@ class ModFlags   // The feature flags of a save (<c>ModSave.Flags</c>; the block
     JsonNode Write()
 ```
 
+## `src/PTMod/Core/Save/ModSave.cs` — `PTMod.Core`
+
+```csharp
+interface IModSaveParticipant : ISideFileParticipant   // A holder of one section of the side save file (FR-5): what a feature registers with <c>FeatureContext.SaveParticipant</c>. The core calls it
+class ModSave   // The side save file of the mod (FR-5, decision 0004): <c>&lt;name&gt;.ptmod.json</c> beside the game's <c>&lt;name&gt;.txt</c> in
+    const int FileSchema = SideFileModel.FileSchema   // Format version of the file itself (the top-level <c>schema</c>).
+    string Key
+    object[] Args
+    static void Register(IModSaveParticipant participant)   // Registers a participant for the section <see cref="ISideFileParticipant.SectionId"/>. Features use <c>ctx.SaveParticipant(...)</c> in
+    static event Action AfterRead   // Every participant has been given its data after a load (or, with no file, its defaults). The place to wire what depends on several features.
+    static event Action BeforeWrite   // The side file is about to be collected (a save is being written): the last moment to hand state over to a participant.
+    void ResetToDefaults()
+    void Read(JsonNode block, int schema)
+    JsonNode Write()
+    GuardedParticipant(string owner, string section, IModSaveParticipant inner)
+    void ResetToDefaults()
+    void Read(JsonObject section, int schema)
+    JsonObject Write()
+```
+
 ## `src/PTMod/Core/Segments/ModSegments.cs` — `PTMod.Core`
 
 ```csharp
@@ -1482,6 +2015,57 @@ class ModSegments   // The market segment of a CPU (FR-23 items 6-7): the single
     static Segment Classify(float price)   // The segment of a CPU sold at <paramref name="price"/> by the current budgets of the market and the band
     static Segment FromSales(int soldHighEnd, int soldMidRange, int soldLowEnd, int soldIndustries)   // The segment with the most sales (a tie goes to the smaller index: HighEnd, MidRange, LowEnd, Industries); nothing sold gives <see cref="Segment.Any"/>.
     static Segment DominantBySales(Cpu cpu)   // The segment where <paramref name="cpu"/> sold most yesterday (<c>SoldLastDayBy*</c>); <see cref="Segment.Any"/> for a null CPU or when nothing was sold.
+```
+
+## `src/PTMod/Core/SelfCheck/ModSelfCheck.cs` — `PTMod.Core`
+
+```csharp
+enum SelfCheckStage   // The three moments at which the mod checks itself (FR-19, design.md "Самопроверка на старте").
+enum CheckSeverity
+class SelfCheckItem   // One finding of the self-check. <see cref="Area"/>, <see cref="Message"/> and <see cref="Hint"/> are in the current language and follow a language switch.
+    SelfCheckStage Stage
+    CheckSeverity Severity
+    string Area   // The part of the mod the finding is about ("Патчи", "Строки"), for grouping.
+    string Message   // What is wrong, for the player (the Diagnostics tab).
+    string Hint   // What to do about it; null when there is nothing to suggest.
+    string Detail   // The same finding in English with every detail the log has (names of tables, counts); not translated.
+class SelfCheckStageResult   // What one run of a stage came to; <see cref="ModSelfCheck.Stages"/> has one per stage, also for a stage that has not run.
+    SelfCheckStage Stage
+    bool Ran   // The stage has run in this session (false: the hub shows "not run yet").
+    int Errors
+    int Warnings
+    long ElapsedMs   // How long the checks took, in milliseconds (the budget is <see cref="ModSelfCheck.StageBudgetMs"/>).
+    IReadOnlyList<SelfCheckItem> Items   // The findings of the run, errors first; empty for a stage that passed or has not run.
+class ModSelfCheck   // The mod's check of itself (FR-19): after every start it looks at what the mod stands on - Harmony, the game's version, the methods the patches
+    const int StageBudgetMs = 300   // FR-19 item 6: a stage takes no longer than this; more is logged as a warning with the time of every group.
+    static IReadOnlyList<SelfCheckItem> Run(SelfCheckStage stage)   // Runs the checks of a stage now, replaces the stored result of the stage, writes the summary and the findings to the log and, with errors, shows the
+    MemberRow(SelfCheckStage stage, string typeName, MemberKind kind, string name, string expectedType)
+    SelfCheckStage Stage
+    string TypeName
+    MemberKind Kind
+    string Name
+    string ExpectedType   // The full name of the type the core expects the member to have, or null when only its existence matters.
+    TargetRow(string patch, string typeName, string method, string target, string owner, bool isCore)
+    string Patch
+    string TypeName
+    string Method
+    string Target   // <c>Class.Method</c> as the patch registry names it.
+    string Owner   // The feature the target belongs to: the core, or the owner of a feature formula.
+    bool IsCore   // The core declares a patch on it (P1-P23); F1 and F2 are the patches of <c>market-shocks</c>.
+    string Source
+    string Feature
+    string FirstKey
+    int Count
+    StageRun(SelfCheckStage stage)
+    SelfCheckStage Stage
+    List<SelfCheckItem> Items
+    HashSet<string> ReportedTargets   // Targets (<c>Class.Method</c>) the registry check named already, so the table check does not name them again.
+    HashSet<string> DeclaredByCore   // Targets of the patches the core declared.
+    bool BackendDown   // There is no patch backend (the Harmony finding stands for every patch).
+    SelfCheckItem Add(CheckSeverity severity, CheckArea area, string key, string english, CheckHint hint, params object[] args)
+    SelfCheckItem AddOnce(CheckSeverity severity, CheckArea area, string key, string english, CheckHint hint, string dedupeKey, params object[] args)   // <see cref="Add"/> unless an earlier stage reported the same thing (<paramref name="dedupeKey"/>) or this run did; null then.
+    void Group(CheckArea area, string name, Action body)   // Runs one group of checks: a failure inside is logged and becomes a warning, the other groups still run; the time is kept for the log.
+    string TimingsText()
 ```
 
 ## `src/PTMod/Core/Settings/ModProfile.cs` — `PTMod.Core`
@@ -1608,23 +2192,11 @@ struct TickStats   // How long the mod's tick handlers took over the last 30 gam
     void Removed(string typeName)
 ```
 
-## `src/PTMod/Core/UI/ConfirmDialog.cs` — `PTMod.Core.Logic.Ui`
+## `src/PTMod/Core/UI/ConfirmDialog.cs` — `PTMod.Core`
 
 ```csharp
 class ModUI   // The confirmation dialog of <see cref="ModUI"/> (FR-16 item 8): the <c>Confirm</c> half of the <c>partial</c> class, next to the tooltip bridge in
     static void Confirm(string title, string message, Action onYes, Action onNo = null,   // A modal "Yes / No" question on a <c>Window.Modal</c> window of the game, one window for the whole mod: time stands while it is open (the template's
-    ConfirmRequest(string title, string message, string yesKey, string noKey, Action onYes, Action onNo)
-    string Title
-    string Message
-    string YesKey
-    string NoKey
-    Action OnYes
-    Action OnNo
-    bool IsSameQuestion(ConfirmRequest other)   // Same texts and same callbacks (a delegate is equal when its target and method are): asking it twice is asking it once.
-    ConfirmArrival Enqueue(ConfirmRequest request)   // A new question. Nothing open and nothing waiting makes it the open one (<see cref="ConfirmArrival.ShowNow"/>); otherwise it joins the end of the line, so a callback
-    ConfirmRequest Take()   // The answer comes: hands over the open question (it is no longer open) - once. Null when none is open: a second click, or the close after an answer.
-    ConfirmRequest Advance()   // Makes the first waiting question the open one and returns it; null while one is open or none waits.
-    List<ConfirmRequest> Drain()   // Empties the dialog and returns what was in it, the open question first. The caller answers or drops them.
 ```
 
 ## `src/PTMod/Core/UI/ModUI.cs` — `PTMod.Core`
@@ -1704,14 +2276,15 @@ enum TemplateHow   // How <see cref="TemplateLocator"/> found a template.
     List<string> MissingComponents = new List<string>()   // Components of <see cref="UiTemplate.Expected"/> that the template's subtree does not have.
 ```
 
-## `src/PTMod/Core/UI/TooltipBridge.cs` — `PTMod.Core.Logic.Ui`
+## `src/PTMod/Core/UI/TooltipBridge.cs` — `PTMod.Core`
 
 ```csharp
 class ModUI   // The bridge to the game's tooltips (FR-16 item 9): the <c>Tooltip</c> half of the <c>partial</c> class, next to <c>Confirm</c> in <c>ConfirmDialog.cs</c>.
 struct TooltipText   // The text of one tooltip: the header line (may be empty) and the body.
-    string Header, Content
-    TooltipText(string header, string content)
-    static void Tooltip(GameObject target, string header, string content)   // A fixed tooltip on an element. Putting a second one on the same element replaces the first (the <c>TooltipData</c> is kept); two empty texts remove the tooltip's text, nothing is shown.
+    string Header   // The header line; empty (or null) hides the header line of the game's tooltip.
+    string Content   // The body text; the game's own tokens in it (<c>#nodeList</c>, <c>#contractList</c>) are expanded by the game.
+    TooltipText(string header, string content)   // Both parts at once.
+    static void Tooltip(GameObject target, string header, string content)   // A fixed tooltip on an element. Putting a second one on the same element replaces the first (the <c>TooltipData</c> is kept); with two empty texts nothing is shown.
     static void Tooltip(GameObject target, Func<TooltipText> provider)   // A tooltip whose text is made when the pointer enters the element: <paramref name="provider"/> runs under the guard of the feature it belongs to (an exception is counted against it and
     static void ShowTooltip(string header, string content,   // Asks the game to show a tooltip at the pointer, after its own delay unless <paramref name="delayOverride"/> says otherwise (seconds, 0 or more). It replaces a tooltip that is waiting.
     static void HideTooltip()   // Cancels the tooltip that is waiting or open (the game's <c>CancelTrigger</c>). Does nothing, and throws nothing, where there is none.
@@ -1720,10 +2293,6 @@ struct TooltipText   // The text of one tooltip: the header line (may be empty) 
     bool Start(string header, string content)
     void Cancel()
     void Release()
-    TooltipHover(ITooltipHost host, TooltipTextSource source)
-    bool Showing   // The tooltip was asked for and not yet cancelled.
-    void PointerEntered()   // The pointer entered the element.
-    void PointerExited()   // The pointer left the element, or the element was hidden or destroyed.
 ```
 
 ## `src/PTMod/Core/UI/Widgets.cs` — `PTMod.Core`
@@ -1746,7 +2315,5 @@ class ModUI   // The widgets of <see cref="ModUI"/> (FR-16 item 5): button and c
     float Max
     float Step
     float Last
-    void OnPointerEnter(PointerEventData eventData)
-    void OnPointerExit(PointerEventData eventData)
 ```
 

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using PTMod.Core.Logic.Ids;
 using PTMod.Core.Logic.Mail;
 
 namespace PTMod.Core
@@ -198,19 +199,22 @@ namespace PTMod.Core
     /// <c>MailView.cs</c> (the panel of buttons in the open letter, patch P16).
     /// <list type="bullet">
     /// <item><b>Sending.</b> <see cref="Send"/> checks the message, takes an id from the core's counter (a feature never picks one) and puts
-    /// the mail into the queue; it never shows anything by itself. The queue is the pure <see cref="MailQueue"/>: the order
+    /// the mail into the queue; it never shows anything by itself. A tag that does not start with a prefix of the feature (<c>onb:...</c>, FR-25) is one warning in the
+    /// log, not a refusal. The queue is the pure <see cref="MailQueue"/>: the order
     /// <see cref="MailPriority.Critical"/>, <see cref="MailPriority.Normal"/>, <see cref="MailPriority.Low"/>, the daily limits (3, and 2 per feature, for
     /// Normal and Low), the overflow rule and the save format are its.</item>
-    /// <item><b>Delivery.</b> Once a game day (the day tick, after the features' own day handlers, so a mail sent by a feature on a day is
-    /// delivered the same day when the limits allow), at the end of a batch run of a month and when the game becomes ready. Nothing is
-    /// delivered while the new-game fast-forward runs, while the loading screen is up, during a batch run, before the game is ready, or while the
-    /// game's inbox is not there; such mail waits in the queue (FR-14 item 13). A delivered mail is made a letter of the game's
-    /// <c>EmailWindow</c> dated with the day of delivery, then <see cref="Delivered"/> is raised.</item>
+    /// <item><b>Delivery.</b> The schedule is <see cref="MailScheduler"/>'s (<c>MailScheduler.cs</c>): once a game day (the day tick, after the
+    /// features' own day handlers, so a mail sent by a feature on a day is delivered the same day when the limits allow), at the end of a batch
+    /// run of a month and when the game becomes ready. Nothing is delivered while the new-game fast-forward runs, while the loading screen is up,
+    /// during a batch run, before the game is ready, or while the game's inbox is not there; such mail waits in the queue (FR-14 item 13). This
+    /// class holds what a delivery needs: <see cref="PutInInbox"/> makes the mail a letter of the game's <c>EmailWindow</c> dated with the day of
+    /// delivery, <see cref="RaiseDelivered"/> raises <see cref="Delivered"/> after the queue filled in <see cref="ModMailRecord.DeliveredOn"/>.</item>
     /// <item><b>The game's save does not see the letters</b> (P15, <c>MailPatches</c>): they are cut out of <c>EmailWindow.GetEmails</c>, the
     /// only list the game's save is made from, and stored in the side file with the queue. If that patch is not in force, delivery waits
     /// (a letter must never land in the game's own save).</item>
     /// <item><b>Restoring.</b> On <c>ModTicks.BeforeGameReady</c> (after the side file is read) every delivered mail becomes a letter again, oldest
-    /// first, with its date, reading state and status line, and its text is drawn in the current language; the queue goes on as it was.
+    /// first, with its date, reading state and status line, and its text is drawn in the current language; the queue goes on as it was. The
+    /// game puts every new letter on top of the list, so <c>InboxSorter</c> (<c>InboxSorter.cs</c>) then puts the whole list in date order.
     /// A change of the language redraws the letters in place.</item>
     /// </list>
     /// Main thread only. Nothing here throws into the game or into a feature; a failure of the service is counted against the core's unit
@@ -229,13 +233,12 @@ namespace PTMod.Core
         // The unit of the circuit breaker is the part before the first '/': every failure of the mail service counts against one unit.
         private const string SendSite = "ModMail/send";
         private const string QuerySite = "ModMail/query";
-        private const string DeliverSite = "ModMail/deliver";
         private const string RestoreSite = "ModMail/restore";
         private const string LanguageSite = "ModMail/language";
         private const string SceneSite = "ModMail/scene";
 
-        /// <summary>Runs after the features' own day handlers (a higher priority runs earlier; theirs is 0 unless they say otherwise).</summary>
-        private const int DeliveryPriority = -1000;
+        /// <summary>Runs after the features' own day handlers (a higher priority runs earlier; theirs is 0 unless they say otherwise); <see cref="MailScheduler"/> subscribes with it.</summary>
+        private const int DeliveryPriority = MailScheduler.DayPriority;
 
         private static bool _restorePending;   // delivered mails that still have to become letters (the inbox was not there yet)
         private static bool _guardWarned;      // the P15 warning was written in this session
@@ -372,25 +375,23 @@ namespace PTMod.Core
         }
 
         /// <summary>
-        /// The letters of the delivered mails were put into the inbox after a load (at least one). The inbox sorter of TSK-062 puts the list in
-        /// date order here: the game puts every new letter first, so restored letters would otherwise sit above the game's own.
+        /// The letters of the delivered mails were put into the inbox after a load (at least one). <c>InboxSorter</c> puts the list in date order
+        /// on this event: the game puts every new letter first, so restored letters would otherwise sit above the game's own.
         /// </summary>
         internal static event Action InboxRestored;
 
         // ---- the start (core init) ----
 
         /// <summary>
-        /// Declare stage: the block <c>mail</c> of the section of the core, the day tick, the end of a batch run, the moment the game is ready
-        /// and the language. After <c>ModSave</c> (order -1000), whose handler of <c>BeforeGameReady</c> reads the side file first.
+        /// Declare stage: the block <c>mail</c> of the section of the core and the language. The moments of delivery (the day tick, the end of a
+        /// batch run, the moment the game is ready) are <see cref="MailScheduler"/>'s; its <c>BeforeGameReady</c> handler calls
+        /// <see cref="RestoreInbox"/> after <c>ModSave</c> (order -1000) read the side file.
         /// </summary>
         [CoreInit(CoreInitStage.Declare, 100, Optional = true)]
         internal static void DeclareMail()
         {
             CoreSection.RegisterPart(MailStore.Part);
 
-            ModTicks.Subscribe(CoreId, TickPhase.DayPassed, OnDayPassed, DeliveryPriority);
-            ModTicks.BatchEnded += OnBatchEnded;
-            ModTicks.BeforeGameReady += OnBeforeGameReady;
             ModL10n.LanguageChanged += OnLanguageChanged;
         }
 
@@ -448,77 +449,102 @@ namespace PTMod.Core
             {
                 ModLog.Debug(feature, "mail: #" + id.ToString(CultureInfo.InvariantCulture) + (string.IsNullOrEmpty(record.Tag) ? string.Empty : " [" + record.Tag + "]")
                                       + " is in the queue, priority " + record.Priority + ", " + MailStore.Queue.QueuedCount.ToString(CultureInfo.InvariantCulture) + " waiting");
+                WarnAboutTag(feature, record.Tag);
             }
             return id;
         }
 
-        // ---- delivery ----
+        /// <summary>
+        /// The convention of FR-25 item 4 (AC-25.2): a tag is <c>&lt;prefix&gt;:&lt;...&gt;</c> with a prefix of the sending feature (<c>onb:welcome</c>). A tag that is not
+        /// gets one warning under the feature's id when the mail is queued, and the mail goes on as it is: the convention is checked, not enforced, because
+        /// the tag is only the name the feature looks the mail up by. A mail without a tag has nothing to check. Never throws.
+        /// </summary>
+        private static void WarnAboutTag(string feature, string tag)
+        {
+            if (string.IsNullOrEmpty(tag)) return;
+
+            try
+            {
+                string problem = ModIdsAdapter.Explain(IdKind.Tag, feature, tag);
+                if (problem != null) ModLog.Warn(feature, "mail: tag without the prefix of the feature - " + problem + "; the mail is sent as it is");
+            }
+            catch (Exception ex)
+            {
+                // The mail is in the queue already: a failing check must not turn that into a failed Send.
+                ModLog.Debug(CoreId, "mail: the tag could not be checked (" + ex.GetType().Name + ")");
+            }
+        }
+
+        // ---- delivery (the schedule is MailScheduler's) ----
 
         /// <summary>
-        /// One delivery pass: puts the mails the queue releases into the inbox and raises <see cref="Delivered"/> for each. Does nothing (the mail
-        /// stays in the queue) while the game is not ready, the fast-forward runs, a batch run is on, the loading screen is up (unless the game
-        /// just became ready: that moment is under the loading screen), the inbox is not there or the patch P15 is not in force. Returns the
-        /// number of mails delivered. Called by the day tick, at the end of a batch run and when the game becomes ready.
+        /// One delivery pass now, as <see cref="MailScheduler"/> makes it: puts the mails the queue releases into the inbox and raises
+        /// <see cref="Delivered"/> for each. Does nothing (the mail stays in the queue) while the game is not ready, the fast-forward runs, a batch
+        /// run is on, the loading screen is up (unless the game just became ready: that moment is under the loading screen), the inbox is not
+        /// there or the patch P15 is not in force. Returns the number of mails delivered. The scheduler calls it for the day tick, the end of a
+        /// batch run and the moment the game is ready.
         /// </summary>
         /// <param name="atGameReady">The call comes from the moment the game became ready: the loading screen does not hold the mail back.</param>
         internal static int DeliverDue(bool atGameReady)
         {
-            int delivered = 0;
-            ModHooks.Guard(CoreId, DeliverSite, () => { delivered = DeliverCore(atGameReady); });
-            return delivered;
+            return MailScheduler.DeliverDue(atGameReady);
         }
 
         /// <summary><see cref="DeliverDue(bool)"/> for the day tick and the end of a batch run.</summary>
         internal static int DeliverDue()
         {
-            return DeliverDue(false);
+            return MailScheduler.DeliverDue(false);
         }
 
-        private static int DeliverCore(bool atGameReady)
+        /// <summary>Delivered mails whose letters wait for the inbox (it was not there at <see cref="RestoreInbox"/>); the scheduler restores them first.</summary>
+        internal static bool RestorePending
         {
-            MailQueue queue = MailStore.Queue;
-            if (queue.QueuedCount == 0 && !_restorePending) return 0;
+            get { return _restorePending; }
+        }
 
-            MailEnv env = MailStore.Env;
-            if (!env.IsGameReady() || env.IsFastForwarding() || env.IsBatchRun()) return 0;
-            if (!atGameReady && env.IsLoading()) return 0;
-            if (!CanTouchInbox()) return 0;
-
+        /// <summary>The inbox was not there when the game became ready and is now: the letters of the delivered mails come back (oldest first) before today's mail.</summary>
+        internal static void RestorePendingLetters()
+        {
             if (_restorePending) RestoreCore();
-            if (queue.QueuedCount == 0) return 0;
-
-            DateTime today = env.Today();
-            if (today == default(DateTime)) return 0;   // no game date: the deadline of a delivery would have no meaning
-
-            IReadOnlyList<MailRecordModel> due = queue.DeliverDue(today, true, false);
-            for (int i = 0; i < due.Count; i++)
-            {
-                MailRecordModel record = due[i];
-                ShowOne(record);
-                ModLog.Debug(record.FeatureId, "mail: #" + record.MailId.ToString(CultureInfo.InvariantCulture) + " is delivered"
-                                               + (record.Deadline.HasValue ? ", the answer is due " + record.Deadline.Value.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture) : string.Empty));
-                ModHooks.Raise("ModMail.Delivered", Delivered, MailStore.ViewOf(record));
-            }
-            return due.Count;
         }
 
         /// <summary>
         /// The inbox and the patch that keeps the letters out of the game's save are both there. The inbox missing is the normal state before
-        /// the game scene is up (quiet); the patch missing is a fault and is written once.
+        /// the game scene is up (quiet); the patch missing is a fault and is written once (<see cref="ReportMissingSaveGuard"/>).
         /// </summary>
-        private static bool CanTouchInbox()
+        internal static bool CanTouchInbox()
         {
             if (!MailFactory.IsReady) return false;
             if (MailStore.Env.IsSaveGuardActive()) return true;
 
-            if (!_guardWarned)
-            {
-                _guardWarned = true;
-                ModLog.Error(CoreId, "mail: the patch P15 (EmailWindow.GetEmails) is not in force, so a mod mail would be written into the game's own save; "
-                                     + "mod mail is held back (" + MailStore.Queue.QueuedCount.ToString(CultureInfo.InvariantCulture) + " in the queue, "
-                                     + MailStore.Queue.DeliveredCount.ToString(CultureInfo.InvariantCulture) + " delivered not shown) until it is");
-            }
+            ReportMissingSaveGuard();
             return false;
+        }
+
+        /// <summary>The patch P15 (<c>EmailWindow.GetEmails</c>) is not in force: one error in the log per session, the mail waits.</summary>
+        internal static void ReportMissingSaveGuard()
+        {
+            if (_guardWarned) return;
+
+            _guardWarned = true;
+            ModLog.Error(CoreId, "mail: the patch P15 (EmailWindow.GetEmails) is not in force, so a mod mail would be written into the game's own save; "
+                                 + "mod mail is held back (" + MailStore.Queue.QueuedCount.ToString(CultureInfo.InvariantCulture) + " in the queue, "
+                                 + MailStore.Queue.DeliveredCount.ToString(CultureInfo.InvariantCulture) + " delivered not shown) until it is");
+        }
+
+        /// <summary>
+        /// Makes the mail a letter of the inbox, dated with the day of delivery. A failure is logged and the mail is skipped for this session (it
+        /// comes back with the next load); false then. The mail counts as delivered either way: its timers run.
+        /// </summary>
+        internal static bool PutInInbox(MailRecordModel record)
+        {
+            return ShowOne(record);
+        }
+
+        /// <summary>Raises <see cref="Delivered"/> for a mail the queue has just delivered (<see cref="ModMailRecord.DeliveredOn"/> and the deadline are filled in).</summary>
+        internal static void RaiseDelivered(MailRecordModel record)
+        {
+            ModHooks.Raise("ModMail.Delivered", Delivered, MailStore.ViewOf(record));
         }
 
         /// <summary>Makes the mail a letter of the inbox. A failure is logged and the mail is skipped for this session (it comes back with the next load).</summary>
@@ -564,7 +590,7 @@ namespace PTMod.Core
             }
             if (todo.Count == 0) return;
 
-            // The game puts each new letter on top, so the oldest goes first and the newest ends up highest (the sorter of TSK-062 then merges them with the game's own).
+            // The game puts each new letter on top, so the oldest goes first and the newest ends up highest (InboxSorter then merges them with the game's own).
             todo.Sort(CompareDelivery);
 
             int shown = 0;
@@ -584,22 +610,6 @@ namespace PTMod.Core
         }
 
         // ---- events of the game ----
-
-        private static void OnDayPassed()
-        {
-            DeliverDue();
-        }
-
-        private static void OnBatchEnded()
-        {
-            DeliverDue();
-        }
-
-        private static void OnBeforeGameReady(GameReadyReason reason)
-        {
-            RestoreInbox();
-            DeliverDue(true);
-        }
 
         private static void OnLanguageChanged()
         {

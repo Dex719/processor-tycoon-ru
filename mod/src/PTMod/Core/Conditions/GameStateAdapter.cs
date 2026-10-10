@@ -48,7 +48,7 @@ namespace PTMod.Core
         private const string CoreId = ModLog.CoreFeatureId;
         private const string SitePrefix = "conditions/";
 
-        /// <summary>Segment numbers used inside the adapter: the four market segments, and the whole market.</summary>
+        /// <summary>The number of market segments (highend, midrange, lowend, industries).</summary>
         private const int Segments = 4;
 
         private static readonly HashSet<string> Warned = new HashSet<string>(StringComparer.Ordinal);

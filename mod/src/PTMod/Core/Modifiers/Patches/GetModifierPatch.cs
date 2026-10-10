@@ -20,10 +20,11 @@ namespace PTMod.Core
     /// <item><b>Failure</b> is the core's unit <c>P1</c>: the exception is counted, <c>__result</c> keeps the game's value, and after
     /// <c>hooks.faultThreshold</c> failures the patch stops answering until the game restarts.</item>
     /// </list>
-    /// To check in the game (the owner does this in TSK-053): with <c>framework-sample</c> enabled and an entry <c>research.speed ×1.5</c> for
-    /// <c>Player</c>, the research of the player's technology progresses 1.5 times faster than in the same save without the entry while the AI
-    /// companies' does not change; the new game's menu shows the same preview values with and without the entry; with the feature switched off the
-    /// speed is vanilla again and the entry is still in the next side file.
+    /// To check in the game (the owner does this with <c>framework-sample</c>, TSK-053): with the feature
+    /// on, the player's company has <c>research.speed ×1.25</c> for 90 days - the same technology researches 1.25 times faster than with the feature
+    /// off, the AI companies' research is unchanged; the new game's menu shows the same perk previews with the feature on and off (AC-12.5); the
+    /// entry is in the side file (<c>modifiers</c> of <c>mod-framework</c>), survives a save and a load, and ends on its date (AC-12.4); with the
+    /// feature switched off the speed is vanilla again and the entry is kept. In <c>Player.log</c>: <c>hooks: ... P1</c> applied, no <c>P1/postfix</c> faults.
     /// </summary>
     internal static class GetModifierPatch
     {

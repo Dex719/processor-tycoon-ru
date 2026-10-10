@@ -1,0 +1,38 @@
+{
+ "bankruptcy-recovery": [],
+ "contract-transparency": [],
+ "cpu-architectures": [
+  "research-tree-ux"
+ ],
+ "design-flaw-recalls": [
+  "event-system"
+ ],
+ "event-system": [],
+ "first-year-onboarding": [],
+ "gpu-product-line": [],
+ "historical-events": [
+  "design-flaw-recalls",
+  "event-system",
+  "rival-personalities"
+ ],
+ "market-shocks": [
+  "event-system"
+ ],
+ "platform-generations": [],
+ "press-reviews": [
+  "design-flaw-recalls"
+ ],
+ "research-tree-ux": [],
+ "rival-acquisitions": [
+  "bankruptcy-recovery"
+ ],
+ "rival-personalities": [
+  "design-flaw-recalls",
+  "event-system",
+  "rival-acquisitions"
+ ],
+ "scenarios-achievements": [
+  "first-year-onboarding",
+  "rival-acquisitions"
+ ]
+}

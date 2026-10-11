@@ -1,0 +1,65 @@
+{
+  "schema": 1,
+  "records": [
+    {
+      "id": "electronics_today",
+      "name": { "key": "press.outlet.electronics_today", "ru": "Электроника сегодня", "en": "Electronics Today" },
+      "years": [1971, 1992],
+      "segments": ["HighEnd", "MidRange", "LowEnd", "Industries"],
+      "weightShift": {},
+      "bias": 0,
+      "noiseSigma": 3,
+      "fallback": { "from": 1971, "to": 1992 }
+    },
+    {
+      "id": "embedded_digest",
+      "name": { "key": "press.outlet.embedded_digest", "ru": "Встраиваемые системы", "en": "Embedded Digest" },
+      "years": [1971, 2030],
+      "segments": ["LowEnd", "Industries"],
+      "weightShift": { "efficiency": 0.10, "performance": -0.10 },
+      "bias": 1,
+      "noiseSigma": 3,
+      "fallback": null
+    },
+    {
+      "id": "kilobyte",
+      "name": { "key": "press.outlet.kilobyte", "ru": "КилоБайт", "en": "KiloByte Monthly" },
+      "years": [1976, 2030],
+      "segments": ["HighEnd", "MidRange", "LowEnd"],
+      "weightShift": {},
+      "bias": 0,
+      "noiseSigma": 3,
+      "fallback": { "from": 1993, "to": 1996 }
+    },
+    {
+      "id": "business_pc",
+      "name": { "key": "press.outlet.business_pc", "ru": "Деловой ПК", "en": "Business PC Weekly" },
+      "years": [1982, 2030],
+      "segments": ["MidRange", "LowEnd"],
+      "weightShift": { "value": 0.15, "performance": -0.15 },
+      "bias": 2,
+      "noiseSigma": 3,
+      "fallback": null
+    },
+    {
+      "id": "overclock_world",
+      "name": { "key": "press.outlet.overclock_world", "ru": "Мир разгона", "en": "Overclock World" },
+      "years": [1988, 2030],
+      "segments": ["HighEnd", "MidRange"],
+      "weightShift": { "performance": 0.15, "value": -0.10, "thermal": -0.05 },
+      "bias": -3,
+      "noiseSigma": 4,
+      "fallback": null
+    },
+    {
+      "id": "silicon_review",
+      "name": { "key": "press.outlet.silicon_review", "ru": "Кремниевый обзор", "en": "Silicon Review Online" },
+      "years": [1997, 2030],
+      "segments": ["HighEnd", "MidRange", "LowEnd", "Industries"],
+      "weightShift": {},
+      "bias": -1,
+      "noiseSigma": 2,
+      "fallback": { "from": 1997, "to": 2030 }
+    }
+  ]
+}

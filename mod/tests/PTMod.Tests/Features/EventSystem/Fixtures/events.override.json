@@ -1,0 +1,122 @@
+{
+  "schema": 1,
+  "records": [
+    {
+      "id": "es.trade_show",
+      "category": "universal",
+      "title": {
+        "key": "es.trade_show.title"
+      },
+      "text": {
+        "key": "es.trade_show.text"
+      },
+      "cause": {
+        "key": "es.trade_show.cause"
+      },
+      "trigger": {
+        "type": "DailyChance"
+      },
+      "conditions": {
+        "all": [
+          {
+            "type": "cpuOnMarket"
+          },
+          {
+            "type": "dateAtLeast",
+            "year": 1976
+          }
+        ]
+      },
+      "weight": 99,
+      "cooldownDays": 365,
+      "targets": {
+        "type": "Player"
+      },
+      "timerDays": 14,
+      "defaultChoice": "skip",
+      "choices": [
+        {
+          "id": "big_booth",
+          "textKey": "es.trade_show.big_booth",
+          "effects": [
+            {
+              "type": "Money",
+              "params": {
+                "direction": "Spend",
+                "origin": "Development",
+                "revenueFraction": [
+                  0.03,
+                  0.04
+                ],
+                "min": 40000,
+                "max": 12000000
+              }
+            },
+            {
+              "type": "ModifierTimed",
+              "params": {
+                "channel": "popularity.gain",
+                "multiplier": 1.25
+              },
+              "durationDays": 120
+            }
+          ]
+        },
+        {
+          "id": "small_booth",
+          "textKey": "es.trade_show.small_booth",
+          "effects": [
+            {
+              "type": "Money",
+              "params": {
+                "direction": "Spend",
+                "origin": "Development",
+                "revenueFraction": [
+                  0.01,
+                  0.015
+                ],
+                "min": 15000,
+                "max": 4000000
+              }
+            },
+            {
+              "type": "ModifierTimed",
+              "params": {
+                "channel": "popularity.gain",
+                "multiplier": 1.1
+              },
+              "durationDays": 90
+            }
+          ]
+        },
+        {
+          "id": "skip",
+          "textKey": "es.trade_show.skip",
+          "effects": []
+        }
+      ]
+    },
+    {
+      "id": "es.extra",
+      "category": "universal",
+      "title": {
+        "key": "es.extra.title"
+      },
+      "text": {
+        "key": "es.extra.text"
+      },
+      "trigger": {
+        "type": "DailyChance"
+      },
+      "weight": 3,
+      "effects": [
+        {
+          "type": "Reputation",
+          "params": {
+            "delta": 1
+          }
+        }
+      ]
+    }
+  ]
+}

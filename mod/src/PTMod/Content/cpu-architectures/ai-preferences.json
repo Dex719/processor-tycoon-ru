@@ -1,0 +1,17 @@
+{
+  "schema": 1,
+  "records": [
+    { "id": "intel",             "uniqueId": 0,  "lagYears": 0, "weights": { "proprietary": 0.2, "x86": 1.0, "x86_64": 1.0, "arm": 0.1, "arm64": 0.1 } },
+    { "id": "amd",               "uniqueId": 1,  "lagYears": 1, "weights": { "proprietary": 0.2, "x86": 1.0, "x86_64": 1.2, "arm": 0.2, "arm64": 0.3 } },
+    { "id": "zilog",             "uniqueId": 2,  "lagYears": 3, "weights": { "proprietary": 1.0, "arm": 0.5 } },
+    { "id": "texas-instruments", "uniqueId": 3,  "lagYears": 2, "weights": { "proprietary": 1.0, "arm": 1.0, "arm64": 0.8, "riscv": 0.5 } },
+    { "id": "ibm",               "uniqueId": 4,  "lagYears": 0, "weights": { "proprietary": 1.0, "risc": 1.2, "x86": 0.3 } },
+    { "id": "fairchild",         "uniqueId": 5,  "lagYears": 3, "weights": { "proprietary": 1.0, "risc": 0.4, "arm": 0.4 } },
+    { "id": "toshiba",           "uniqueId": 6,  "lagYears": 2, "weights": { "proprietary": 0.8, "arm": 1.0, "arm64": 1.0, "riscv": 0.6 } },
+    { "id": "motorola",          "uniqueId": 7,  "lagYears": 1, "weights": { "proprietary": 1.0, "risc": 1.0, "arm": 0.6, "arm64": 0.6 } },
+    { "id": "cyrix",             "uniqueId": 10, "lagYears": 1, "weights": { "proprietary": 0.2, "x86": 1.0 } },
+    { "id": "via",               "uniqueId": 11, "lagYears": 2, "weights": { "proprietary": 0.3, "x86": 1.0, "x86_64": 0.8 } },
+    { "id": "digital-devices",   "uniqueId": 12, "lagYears": 0, "weights": { "proprietary": 1.0, "risc": 1.2 } },
+    { "id": "default", "default": true,          "lagYears": 2, "weights": { "proprietary": 1.0, "x86": 0.6, "risc": 0.4, "arm": 0.6, "x86_64": 0.6, "arm64": 0.6, "riscv": 0.4 } }
+  ]
+}

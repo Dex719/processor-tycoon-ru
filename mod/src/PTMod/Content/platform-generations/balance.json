@@ -1,0 +1,18 @@
+{
+  "schema": 1,
+  "installedBase": { "lifetimeMonths": 60, "contractUnitWeight": 0.5 },
+  "rating": {
+    "ibMaxBonus": 0.10, "ibSaturationShare": 0.40, "sharedWeight": 0.25,
+    "earlyBonus": 0.06, "earlyDurationMonths": 60, "earlyAdopterSlots": 3,
+    "churnPenalty": 0.10, "minSocketLifeMonths": 36, "churnDurationMonths": 24, "churnMinBaseShare": 0.02,
+    "customOnSameBaseIsCompatible": true,
+    "industriesWeight": 0.5, "minMult": 0.85, "maxMult": 1.20
+  },
+  "oem": {
+    "mode": "auto",
+    "contractTypes": [ 1, 2 ],
+    "marketAverageMinGenOrder": 2,
+    "adoptBonus": 0.20, "lagPenalty1": 0.25, "lagPenalty2": 0.50, "fullPlatformBonus": 0.05,
+    "oemLoyaltyBonus": 0.10, "minChanceMult": 0.40, "maxChanceMult": 1.40
+  }
+}

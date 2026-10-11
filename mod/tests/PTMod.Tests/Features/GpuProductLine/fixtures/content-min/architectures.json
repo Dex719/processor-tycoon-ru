@@ -1,0 +1,7 @@
+{
+  "schema": 1,
+  "records": [
+    { "id": "a.one", "nameKey": "gpu.test.a1", "year": 1981, "transistorsPerUnit": 15000, "opsPerClock": 1, "clockRatio": 0.5, "bytesPerOp": 2.0, "powerCoef": 0.02, "complexity": 0.3, "dieMaterialCost": 8, "projectCost": 4000000, "projectDays": 120, "features": ["2d"] },
+    { "id": "a.two", "nameKey": "gpu.test.a2", "year": 1995, "transistorsPerUnit": 400000, "opsPerClock": 2, "clockRatio": 0.4, "bytesPerOp": 8.0, "powerCoef": 0.008, "complexity": 0.4, "dieMaterialCost": 8, "projectCost": 20000000, "projectDays": 180, "features": ["2d", "3d"] }
+  ]
+}

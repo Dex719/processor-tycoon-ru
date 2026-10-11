@@ -1,0 +1,85 @@
+{
+  "schema": 1,
+  "records": [
+    {
+      "id": "consumer", "mode": "single", "nameKey": "gpu.seg.consumer", "opensYear": 1981, "closesYear": 0,
+      "baseSize": 3000000, "sizeByDecade": [0, 0.5, 4, 8, 10, 9, 9], "budgetByDecade": [449, 449, 249, 249, 299, 449, 449],
+      "consumptionTarget": 99, "wPerf": 100, "wUnder": 3.0, "wOver": 1.0, "wObs": 3.0, "wCons": 0,
+      "featureReqs": [], "missingFeatureFactor": 0.35,
+      "vramReq": [
+        { "year": 1981, "v": 0.0625 }, { "year": 1990, "v": 0.5 }, { "year": 1996, "v": 2 }, { "year": 2000, "v": 32 },
+        { "year": 2005, "v": 256 }, { "year": 2010, "v": 1024 }, { "year": 2015, "v": 4096 }, { "year": 2020, "v": 8192 }, { "year": 2025, "v": 12288 }
+      ],
+      "rivalDieShare": 0.5, "rivalBusTier": 1, "rivalVramFactor": 1.0
+    },
+    {
+      "id": "office2d", "mode": "eras", "nameKey": "gpu.seg.office2d", "opensYear": 1981, "closesYear": 2010,
+      "baseSize": 3000000, "sizeByDecade": [0, 0.6, 3, 1, 0, 0, 0], "budgetByDecade": [399, 399, 149, 59, 59, 59, 59],
+      "consumptionTarget": 99, "wPerf": 60, "wUnder": 3.5, "wOver": 2.0, "wObs": 1.0, "wCons": 0,
+      "featureReqs": [ { "year": 1981, "f": ["2d"] } ], "missingFeatureFactor": 0.35,
+      "vramReq": [
+        { "year": 1981, "v": 0.0625 }, { "year": 1990, "v": 0.5 }, { "year": 1996, "v": 2 }, { "year": 2000, "v": 8 },
+        { "year": 2005, "v": 32 }, { "year": 2009, "v": 64 }
+      ],
+      "rivalDieShare": 0.5, "rivalBusTier": 1, "rivalVramFactor": 1.0
+    },
+    {
+      "id": "gaming.high", "mode": "eras", "nameKey": "gpu.seg.gaming.high", "opensYear": 1996, "closesYear": 0,
+      "baseSize": 1000000, "sizeByDecade": [0, 0, 2.5, 8.8, 13.2, 13.2, 13.2], "budgetByDecade": [399, 399, 399, 499, 699, 999, 1199],
+      "consumptionTarget": 99, "wPerf": 100, "wUnder": 2.5, "wOver": 1.0, "wObs": 4.0, "wCons": 0,
+      "featureReqs": [
+        { "year": 1996, "f": ["3d"] }, { "year": 2000, "f": ["3d", "tnl"] }, { "year": 2003, "f": ["3d", "tnl", "shader"] },
+        { "year": 2008, "f": ["3d", "tnl", "shader", "unified"] }, { "year": 2020, "f": ["3d", "tnl", "shader", "unified", "rt"] }
+      ],
+      "missingFeatureFactor": 0.35,
+      "vramReq": [
+        { "year": 1996, "v": 4 }, { "year": 2000, "v": 64 }, { "year": 2004, "v": 256 }, { "year": 2005, "v": 512 }, { "year": 2010, "v": 2048 },
+        { "year": 2015, "v": 8192 }, { "year": 2020, "v": 16384 }, { "year": 2025, "v": 24576 }
+      ],
+      "rivalDieShare": 0.8, "rivalBusTier": 2, "rivalVramFactor": 1.5
+    },
+    {
+      "id": "gaming.mid", "mode": "eras", "nameKey": "gpu.seg.gaming.mid", "opensYear": 1996, "closesYear": 0,
+      "baseSize": 2000000, "sizeByDecade": [0, 0, 2.5, 11, 15.4, 15.4, 15.4], "budgetByDecade": [199, 199, 199, 249, 299, 449, 499],
+      "consumptionTarget": 99, "wPerf": 100, "wUnder": 3.0, "wOver": 1.0, "wObs": 3.0, "wCons": 0,
+      "featureReqs": [
+        { "year": 1996, "f": ["3d"] }, { "year": 2000, "f": ["3d", "tnl"] }, { "year": 2003, "f": ["3d", "tnl", "shader"] },
+        { "year": 2008, "f": ["3d", "tnl", "shader", "unified"] }, { "year": 2020, "f": ["3d", "tnl", "shader", "unified", "rt"] }
+      ],
+      "missingFeatureFactor": 0.35,
+      "vramReq": [
+        { "year": 1996, "v": 2 }, { "year": 2000, "v": 32 }, { "year": 2004, "v": 128 }, { "year": 2005, "v": 256 }, { "year": 2010, "v": 1024 },
+        { "year": 2015, "v": 4096 }, { "year": 2020, "v": 8192 }, { "year": 2025, "v": 12288 }
+      ],
+      "rivalDieShare": 0.7, "rivalBusTier": 2, "rivalVramFactor": 1.0
+    },
+    {
+      "id": "gaming.low", "mode": "eras", "nameKey": "gpu.seg.gaming.low", "opensYear": 1998, "closesYear": 0,
+      "baseSize": 3000000, "sizeByDecade": [0, 0, 2.5, 8.8, 6.6, 4.4, 4.4], "budgetByDecade": [99, 99, 99, 119, 149, 199, 199],
+      "consumptionTarget": 99, "wPerf": 30, "wUnder": 3.5, "wOver": 2.0, "wObs": 1.5, "wCons": 0,
+      "featureReqs": [ { "year": 1998, "f": ["3d"] }, { "year": 2003, "f": ["3d", "shader"] } ],
+      "missingFeatureFactor": 0.35,
+      "vramReq": [
+        { "year": 1998, "v": 2 }, { "year": 2000, "v": 16 }, { "year": 2004, "v": 64 }, { "year": 2005, "v": 128 }, { "year": 2010, "v": 512 },
+        { "year": 2015, "v": 2048 }, { "year": 2020, "v": 4096 }, { "year": 2025, "v": 6144 }
+      ],
+      "rivalDieShare": 0.6, "rivalBusTier": 1, "rivalVramFactor": 1.0
+    },
+    {
+      "id": "compute", "mode": "eras", "nameKey": "gpu.seg.compute", "opensYear": 2007, "closesYear": 0,
+      "baseSize": 200000, "sizeByDecade": [0, 0, 0, 0.5, 2, 3, 3], "budgetByDecade": [2999, 2999, 2999, 2999, 4999, 7999, 7999],
+      "consumptionTarget": 250, "wPerf": 200, "wUnder": 3.5, "wOver": 2.0, "wObs": 2.0, "wCons": 30,
+      "featureReqs": [ { "year": 2007, "f": ["compute"] } ], "missingFeatureFactor": 0.0,
+      "vramReq": [ { "year": 2007, "v": 1024 }, { "year": 2015, "v": 16384 }, { "year": 2025, "v": 49152 } ],
+      "rivalDieShare": 0.9, "rivalBusTier": 2, "rivalVramFactor": 2.0
+    },
+    {
+      "id": "ai", "mode": "eras", "nameKey": "gpu.seg.ai", "opensYear": 2016, "closesYear": 0,
+      "baseSize": 100000, "sizeByDecade": [0, 0, 0, 0, 0.5, 8, 12], "budgetByDecade": [9999, 9999, 9999, 9999, 9999, 24999, 24999],
+      "consumptionTarget": 400, "wPerf": 300, "wUnder": 3.0, "wOver": 1.5, "wObs": 3.0, "wCons": 20,
+      "featureReqs": [ { "year": 2016, "f": ["tensor"] } ], "missingFeatureFactor": 0.0,
+      "vramReq": [ { "year": 2016, "v": 8192 }, { "year": 2020, "v": 16384 }, { "year": 2025, "v": 32768 } ],
+      "rivalDieShare": 0.95, "rivalBusTier": 3, "rivalVramFactor": 2.0
+    }
+  ]
+}

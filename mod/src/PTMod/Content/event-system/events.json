@@ -1,0 +1,368 @@
+{
+  "schema": 1,
+  "records": [
+    {
+      "id": "es.star_engineer",
+      "category": "universal",
+      "title": { "key": "es.star_engineer.title" },
+      "text": { "key": "es.star_engineer.text" },
+      "cause": { "key": "es.star_engineer.cause" },
+      "trigger": { "type": "DailyChance" },
+      "conditions": { "type": "es.hasRevenueHistory" },
+      "weight": 10,
+      "cooldownDays": 730,
+      "targets": { "type": "Player" },
+      "timerDays": 14,
+      "defaultChoice": "decline",
+      "choices": [
+        {
+          "id": "hire",
+          "textKey": "es.star_engineer.hire",
+          "effects": [
+            {
+              "type": "Money",
+              "params": {
+                "direction": "Spend",
+                "origin": "Research",
+                "revenueFraction": [0.04, 0.06],
+                "min": 50000,
+                "max": 25000000
+              }
+            },
+            {
+              "type": "ModifierTimed",
+              "params": { "channel": "research.speed", "multiplier": 1.12 },
+              "durationDays": 365
+            }
+          ]
+        },
+        { "id": "decline", "textKey": "es.star_engineer.decline", "effects": [] }
+      ]
+    },
+    {
+      "id": "es.university_grant",
+      "category": "universal",
+      "title": { "key": "es.university_grant.title" },
+      "text": { "key": "es.university_grant.text" },
+      "cause": { "key": "es.university_grant.cause" },
+      "trigger": { "type": "DailyChance" },
+      "conditions": { "all": [{ "type": "es.hasRevenueHistory" }, { "type": "researchActive" }] },
+      "weight": 8,
+      "cooldownDays": 730,
+      "targets": { "type": "Player" },
+      "timerDays": 21,
+      "defaultChoice": "decline",
+      "choices": [
+        {
+          "id": "fund",
+          "textKey": "es.university_grant.fund",
+          "requires": { "type": "researchActive" },
+          "effects": [
+            {
+              "type": "Money",
+              "params": {
+                "direction": "Spend",
+                "origin": "Research",
+                "revenueFraction": [0.03, 0.05],
+                "min": 40000,
+                "max": 15000000
+              }
+            },
+            { "type": "ResearchProgress", "params": { "delta": 0.2 } }
+          ]
+        },
+        { "id": "decline", "textKey": "es.university_grant.decline", "effects": [] }
+      ]
+    },
+    {
+      "id": "es.trade_show",
+      "category": "universal",
+      "title": { "key": "es.trade_show.title" },
+      "text": { "key": "es.trade_show.text" },
+      "cause": { "key": "es.trade_show.cause" },
+      "trigger": { "type": "DailyChance" },
+      "conditions": { "all": [{ "type": "cpuOnMarket" }, { "type": "dateAtLeast", "year": 1976 }] },
+      "weight": 10,
+      "cooldownDays": 365,
+      "targets": { "type": "Player" },
+      "timerDays": 14,
+      "defaultChoice": "skip",
+      "choices": [
+        {
+          "id": "big_booth",
+          "textKey": "es.trade_show.big_booth",
+          "effects": [
+            {
+              "type": "Money",
+              "params": {
+                "direction": "Spend",
+                "origin": "Development",
+                "revenueFraction": [0.03, 0.04],
+                "min": 40000,
+                "max": 12000000
+              }
+            },
+            {
+              "type": "ModifierTimed",
+              "params": { "channel": "popularity.gain", "multiplier": 1.25 },
+              "durationDays": 120
+            }
+          ]
+        },
+        {
+          "id": "small_booth",
+          "textKey": "es.trade_show.small_booth",
+          "effects": [
+            {
+              "type": "Money",
+              "params": {
+                "direction": "Spend",
+                "origin": "Development",
+                "revenueFraction": [0.01, 0.015],
+                "min": 15000,
+                "max": 4000000
+              }
+            },
+            {
+              "type": "ModifierTimed",
+              "params": { "channel": "popularity.gain", "multiplier": 1.1 },
+              "durationDays": 90
+            }
+          ]
+        },
+        { "id": "skip", "textKey": "es.trade_show.skip", "effects": [] }
+      ]
+    },
+    {
+      "id": "es.tax_audit",
+      "category": "universal",
+      "title": { "key": "es.tax_audit.title" },
+      "text": { "key": "es.tax_audit.text" },
+      "cause": { "key": "es.tax_audit.cause" },
+      "trigger": { "type": "DailyChance" },
+      "conditions": { "type": "es.hasRevenueHistory" },
+      "weight": 6,
+      "cooldownDays": 1095,
+      "targets": { "type": "Player" },
+      "timerDays": 10,
+      "defaultChoice": "cooperate",
+      "choices": [
+        {
+          "id": "cooperate",
+          "textKey": "es.tax_audit.cooperate",
+          "effects": [
+            {
+              "type": "Money",
+              "params": {
+                "direction": "Spend",
+                "origin": "Taxes",
+                "revenueFraction": [0.01, 0.02],
+                "min": 20000,
+                "max": 8000000
+              }
+            }
+          ]
+        },
+        {
+          "id": "lawyers",
+          "textKey": "es.tax_audit.lawyers",
+          "effects": [
+            {
+              "type": "Money",
+              "params": {
+                "direction": "Spend",
+                "origin": "Fines",
+                "revenueFraction": [0.005, 0.008],
+                "min": 10000,
+                "max": 3000000
+              }
+            },
+            {
+              "type": "Money",
+              "params": {
+                "direction": "Spend",
+                "origin": "Fines",
+                "revenueFraction": [0.03, 0.05],
+                "min": 40000,
+                "max": 15000000,
+                "chance": 0.45
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "es.factory_strike",
+      "category": "universal",
+      "title": { "key": "es.factory_strike.title" },
+      "text": { "key": "es.factory_strike.text" },
+      "cause": { "key": "es.factory_strike.cause" },
+      "trigger": { "type": "DailyChance" },
+      "weight": 6,
+      "cooldownDays": 730,
+      "targets": { "type": "RandomCompany", "weighting": "FactoryCapacity", "filter": { "type": "es.hasFab" } },
+      "timerDays": 7,
+      "defaultChoice": "refuse",
+      "choices": [
+        {
+          "id": "raise_wages",
+          "textKey": "es.factory_strike.raise_wages",
+          "effects": [
+            {
+              "type": "ModifierTimed",
+              "params": { "channel": "factory.operatingCost", "multiplier": 1.05 },
+              "durationDays": 365
+            }
+          ]
+        },
+        {
+          "id": "refuse",
+          "textKey": "es.factory_strike.refuse",
+          "effects": [
+            { "type": "FactoryOutput", "params": { "multiplier": 0.6 }, "durationDays": 21 },
+            { "type": "Reputation", "params": { "delta": -3, "chance": 0.5 } }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "es.patent_troll",
+      "category": "universal",
+      "title": { "key": "es.patent_troll.title" },
+      "text": { "key": "es.patent_troll.text" },
+      "cause": { "key": "es.patent_troll.cause" },
+      "trigger": { "type": "DailyChance" },
+      "conditions": { "all": [{ "type": "cpuOnMarket" }, { "type": "dateAtLeast", "year": 1978 }] },
+      "weight": 6,
+      "cooldownDays": 1095,
+      "oncePerGame": false,
+      "targets": { "type": "Player" },
+      "timerDays": 14,
+      "defaultChoice": "settle",
+      "choices": [
+        {
+          "id": "settle",
+          "textKey": "es.patent_troll.settle",
+          "effects": [
+            {
+              "type": "Money",
+              "params": {
+                "direction": "Spend",
+                "origin": "Fines",
+                "revenueFraction": [0.02, 0.03],
+                "min": 30000,
+                "max": 10000000
+              }
+            }
+          ]
+        },
+        {
+          "id": "fight",
+          "textKey": "es.patent_troll.fight",
+          "effects": [
+            {
+              "type": "Money",
+              "params": {
+                "direction": "Spend",
+                "origin": "Fines",
+                "revenueFraction": [0.005, 0.01],
+                "min": 10000,
+                "max": 3000000
+              }
+            },
+            {
+              "type": "FireEvent",
+              "params": { "eventId": "es.patent_win", "delayDays": [60, 120], "chance": 0.6, "exclusiveGroup": "verdict" }
+            },
+            {
+              "type": "FireEvent",
+              "params": { "eventId": "es.patent_loss", "delayDays": [60, 120], "chance": 0.4, "exclusiveGroup": "verdict" }
+            }
+          ],
+          "aiWeight": 0.5
+        }
+      ]
+    },
+    {
+      "id": "es.patent_win",
+      "title": { "key": "es.patent_win.title" },
+      "text": { "key": "es.patent_win.text" },
+      "cause": { "key": "es.patent_win.cause" },
+      "trigger": { "type": "Manual" },
+      "effects": [
+        { "type": "Reputation", "params": { "delta": 3 } },
+        { "type": "SendMail", "params": { "title": "es.patent_win.mail.title", "text": "es.patent_win.mail.text" } }
+      ]
+    },
+    {
+      "id": "es.patent_loss",
+      "title": { "key": "es.patent_loss.title" },
+      "text": { "key": "es.patent_loss.text" },
+      "cause": { "key": "es.patent_loss.cause" },
+      "trigger": { "type": "Manual" },
+      "effects": [
+        {
+          "type": "Money",
+          "params": { "direction": "Spend", "origin": "Fines", "revenueFraction": [0.05, 0.08], "min": 80000, "max": 25000000 }
+        },
+        { "type": "Reputation", "params": { "delta": -2 } }
+      ]
+    },
+    {
+      "id": "es.charity_gala",
+      "category": "universal",
+      "title": { "key": "es.charity_gala.title" },
+      "text": { "key": "es.charity_gala.text" },
+      "cause": { "key": "es.charity_gala.cause" },
+      "trigger": { "type": "DailyChance" },
+      "conditions": { "type": "es.hasRevenueHistory" },
+      "weight": 5,
+      "cooldownDays": 730,
+      "targets": { "type": "Player" },
+      "timerDays": 14,
+      "defaultChoice": "decline",
+      "choices": [
+        {
+          "id": "donate",
+          "textKey": "es.charity_gala.donate",
+          "effects": [
+            {
+              "type": "Money",
+              "params": {
+                "direction": "Spend",
+                "origin": "Development",
+                "revenueFraction": [0.01, 0.02],
+                "min": 10000,
+                "max": 5000000
+              }
+            },
+            { "type": "Reputation", "params": { "delta": 4 } }
+          ]
+        },
+        { "id": "decline", "textKey": "es.charity_gala.decline", "effects": [] }
+      ]
+    },
+    {
+      "id": "es.rival_scandal",
+      "category": "universal",
+      "title": { "key": "es.rival_scandal.title" },
+      "text": { "key": "es.rival_scandal.text" },
+      "cause": { "key": "es.rival_scandal.cause" },
+      "trigger": { "type": "DailyChance" },
+      "weight": 5,
+      "cooldownDays": 365,
+      "notifyPlayer": true,
+      "targets": { "type": "RandomAI", "weighting": "MarketShare", "filter": { "type": "cpuOnMarket" } },
+      "effects": [
+        { "type": "Reputation", "params": { "delta": -6 } },
+        { "type": "Popularity", "params": { "delta": -0.03, "cpuSelector": "AllMarket" } },
+        {
+          "type": "ModifierTimed",
+          "params": { "channel": "popularity.gain", "multiplier": 0.85 },
+          "durationDays": 120
+        }
+      ]
+    }
+  ]
+}

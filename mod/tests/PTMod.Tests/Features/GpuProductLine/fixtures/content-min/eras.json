@@ -1,0 +1,6 @@
+{
+  "schema": 1,
+  "records": [
+    { "id": "e.one", "startYear": 1981, "nameKey": "gpu.test.e1", "mailKey": "gpu.test.e1.mail", "hintNodes": ["n.a1", "n.m1"] }
+  ]
+}

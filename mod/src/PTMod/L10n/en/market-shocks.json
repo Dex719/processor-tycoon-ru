@@ -1,0 +1,129 @@
+{
+  "ms.feature.name": "Market shocks",
+  "ms.feature.desc": "Fab incidents, memory and wafer price spikes, booms and recessions",
+
+  "ms.settings.intensity": "Shock intensity (×0.5 mild … ×2 chaos)",
+  "ms.settings.intensity.tooltip": "How strong the shocks are: ×0.5 \"Mild\", ×1 \"Normal\", ×1.5 \"Harsh\", ×2 \"Chaos\". Deviations of multipliers and sums of money are scaled, but the multipliers never leave the limits of the pack. Shocks already under way do not change.",
+  "ms.settings.intensity.mild": "Mild",
+  "ms.settings.intensity.normal": "Normal",
+  "ms.settings.intensity.harsh": "Harsh",
+  "ms.settings.intensity.chaos": "Chaos",
+  "ms.settings.title": "Settings: market shocks",
+  "ms.settings.now": "Now: intensity \"{0}\" (×{1}), frequency ×{2}.",
+  "ms.settings.frequency": "Shock frequency",
+  "ms.settings.frequency.tooltip": "How often random shocks fire: ×0.5 rarer, ×1 normal, ×1.5 more often. The memory price and demand cycles run regardless of the frequency.",
+
+  "ms.ui.cache_cost": "Cache cost: {0} (shock ×{1})",
+  "ms.warn.contract_fines": "Warning: contract shortfalls are fined.",
+
+  "ms.fx.ramp": "{0}: up to {1} (rise {2} d, peak {3} d, fall {4} d), until {5}",
+  "ms.fx.wave": "{0}: wave {1}, period {2} y, {3}",
+  "ms.fx.wave.up_first": "rising first",
+  "ms.fx.wave.down_first": "falling first",
+  "ms.fx.inventory": "{0} units written off ({1})",
+  "ms.fx.inventory.units": "{0} units written off",
+  "ms.fx.clamped": "(capped)",
+  "ms.fx.forecast_missed": "The forecast did not come true",
+
+  "ms.channel.production.memoryCost": "Memory price",
+  "ms.channel.production.waferCost": "Wafer price",
+  "ms.channel.factory.operatingCost": "Factory running costs",
+  "ms.channel.market.demand.highend": "Demand: High End",
+  "ms.channel.market.demand.midrange": "Demand: Mid Range",
+  "ms.channel.market.demand.lowend": "Demand: Low End",
+  "ms.channel.market.demand.industries": "Demand: Industries",
+
+  "ms.fab_fire.title": "Fire at {0}'s fab",
+  "ms.fab_fire.text": "A fire broke out at the fab of {0}: some of the lines are stopped until the repair is done. Output will drop, and the cost of the repair falls on the company. Warning: contract shortfalls are fined.",
+  "ms.fab_fire.cause": "More lines mean more risk: the chance of an incident at {0} is proportional to its share of world fab capacity.",
+  "ms.fab_fire.expedite": "Expedited repair (overtime)",
+  "ms.fab_fire.standard": "Standard repair",
+
+  "ms.cleanroom_contamination.title": "Cleanroom contamination at {0}",
+  "ms.cleanroom_contamination.text": "Dust got into the cleanrooms of the fab of {0}: part of the finished processors in the warehouse is written off as scrap, and the defect rate will rise over the next weeks.",
+  "ms.cleanroom_contamination.cause": "More lines mean more risk: the chance of an incident at {0} is proportional to its share of world fab capacity.",
+
+  "ms.grid_failure.title": "Power grid failure at {0}",
+  "ms.grid_failure.text": "A failure of the power grid has idled the fab of {0}, and restarting the equipment makes the work dearer. Warning: contract shortfalls are fined.",
+  "ms.grid_failure.cause": "More lines mean more risk: the chance of an incident at {0} is proportional to its share of world fab capacity.",
+
+  "ms.litho_breakdown.title": "Lithography tool breakdown at {0}",
+  "ms.litho_breakdown.text": "A lithography tool at the fab of {0} has broken down. You can rent equipment to get the output back sooner, or wait for the repair. Warning: contract shortfalls are fined.",
+  "ms.litho_breakdown.cause": "More lines mean more risk: the chance of an incident at {0} is proportional to its share of world fab capacity.",
+  "ms.litho_breakdown.rent": "Rent a lithography tool",
+  "ms.litho_breakdown.wait": "Wait for the repair",
+
+  "ms.earthquake.title": "Earthquake in the fab regions",
+  "ms.earthquake.text": "An earthquake has stopped fabs across the industry: output is down, repairs are needed, and memory gets dearer while suppliers rebuild their lines. Warning: contract shortfalls are fined.",
+  "ms.earthquake.cause": "A rare industry-wide accident: the fabs sit in a few seismic regions, so the blow lands on all of them at once.",
+
+  "ms.photoresist_shortage.title": "Photoresist shortage",
+  "ms.photoresist_shortage.text": "Photoresist suppliers cannot keep up with demand: fabs run in fits and starts, and materials get dearer. Warning: contract shortfalls are fined.",
+  "ms.photoresist_shortage.cause": "Only a handful of suppliers make photoresist, so a failure at one of them hits the whole industry.",
+
+  "ms.logistics_crunch.title": "Logistics crunch",
+  "ms.logistics_crunch.text": "Shipments of materials are stuck in ports and warehouses, and delivery gets dearer for everyone who sells processors.",
+  "ms.logistics_crunch.cause": "Supply chains stretch around the world: a delay in one link shows up in the unit cost of every company.",
+
+  "ms.dram_spike_warning.title": "Analysts: memory prices are about to rise",
+  "ms.dram_spike_warning.text": "Analysts warn of a coming jump in memory prices. You can stock up on memory now or wait, but a forecast does not always come true.",
+  "ms.dram_spike_warning.cause": "Memory suppliers are cutting output while stocks on the market run down.",
+  "ms.dram_spike_warning.hedge": "Stock up on memory now",
+  "ms.dram_spike_warning.wait": "Wait",
+
+  "ms.dram_spike.title": "Memory price spike",
+  "ms.dram_spike.text": "Memory has got dearer: the more cache a processor has, the more its unit cost grows. Prices will be back to normal only after several months.",
+  "ms.dram_spike.cause": "Demand for memory has outrun the output of the suppliers' plants.",
+
+  "ms.dram_glut.title": "Memory glut",
+  "ms.dram_glut.text": "Memory is getting cheaper: the market is oversupplied, and the unit cost of processors with a big cache falls.",
+  "ms.dram_glut.cause": "Suppliers have raised memory output faster than demand has grown.",
+
+  "ms.wafer_shortage.title": "Silicon wafer shortage",
+  "ms.wafer_shortage.text": "There are not enough silicon wafers and they are getting dearer: the material costs more in production for everyone who makes processors.",
+  "ms.wafer_shortage.cause": "Silicon capacity is fully booked, and there are more orders than wafers.",
+
+  "ms.energy_crisis.title": "Energy crisis",
+  "ms.energy_crisis.text": "Electricity is getting dearer, and the running costs of fabs go up for every company.",
+  "ms.energy_crisis.cause": "Fuel shortages have pushed up energy rates for industry.",
+
+  "ms.memory_cycle.title": "Memory price cycle",
+  "ms.memory_cycle.text": "Memory prices have started a wave: they rise and fall with a period of about four years. The wave begins and ends at the normal level, with no jumps.",
+  "ms.memory_cycle.cause": "Memory makers keep expanding and cutting capacity as demand goes.",
+
+  "ms.recession_warning.title": "Analysts: expect a recession",
+  "ms.recession_warning.text": "Analysts forecast a fall in demand. You can cut costs ahead of time (fabs get cheaper to run, but research slows down) or stay the course. A forecast does not always come true.",
+  "ms.recession_warning.cause": "The economy is slowing down and buyers are putting off buying computers.",
+  "ms.recession_warning.cut_costs": "Cut costs",
+  "ms.recession_warning.hold": "Stay the course",
+
+  "ms.recession.title": "Recession",
+  "ms.recession.text": "Demand for processors has fallen in every segment, most of all for the most expensive ones. Warehouses will fill up: review your prices and your production plan.",
+  "ms.recession.cause": "An economic downturn: buyers are putting off upgrading their equipment.",
+
+  "ms.pc_boom.title": "Personal computer boom",
+  "ms.pc_boom.text": "Demand for mid-range and budget processors is growing: computers are entering every home and office.",
+  "ms.pc_boom.cause": "Computers have got cheaper and the mass buyer has come to the market.",
+
+  "ms.server_boom.title": "Server boom",
+  "ms.server_boom.text": "Demand for the most powerful processors is growing: companies are building server capacity en masse.",
+  "ms.server_boom.cause": "Businesses are moving their data and services onto networks and data centers.",
+
+  "ms.embedded_boom.title": "Embedded systems boom",
+  "ms.embedded_boom.text": "Demand for industrial and embedded processors is growing: electronics are appearing in appliances, cars and machine tools.",
+  "ms.embedded_boom.cause": "Equipment makers are replacing mechanics with electronics.",
+
+  "ms.silicon_cycle.title": "A new silicon cycle",
+  "ms.silicon_cycle.text": "Demand for processors has started a wave with a period of about five years: upswing and downswing follow each other smoothly, in every segment at once.",
+  "ms.silicon_cycle.cause": "The industry lives in cycles: a glut of capacity gives way to a shortage, and back again.",
+
+  "ms.dumping_complaint.title": "Anti-dumping complaint against {0}",
+  "ms.dumping_complaint.text": "Competitors have accused {0} of selling processors below cost. You can accept the duty or spend money on lobbying, which does not guarantee success.",
+  "ms.dumping_complaint.cause": "A processor sells for less than its real unit cost, and the market share of {0} is noticeable.",
+  "ms.dumping_complaint.accept_duty": "Accept the duty",
+  "ms.dumping_complaint.lobby": "Lobby",
+
+  "ms.launch_hype.title": "Buzz around a new processor from {0}",
+  "ms.launch_hype.text": "A fresh processor from {0} is in the spotlight of the press and the buyers: interest in it is growing.",
+  "ms.launch_hype.cause": "{0} has a new processor, and the chance of a buzz is proportional to its market share."
+}

@@ -1,0 +1,5 @@
+{
+  "schema": 1,
+  "nodeByYear": [ { "year": 1971, "node": "10µm" }, { "year": 1990, "node": "800nm" }, { "year": 2000, "node": "180nm" } ],
+  "maxDieByYear": [ { "year": 1981, "v": 60 }, { "year": 1991, "v": 100 }, { "year": 2001, "v": 200 } ]
+}

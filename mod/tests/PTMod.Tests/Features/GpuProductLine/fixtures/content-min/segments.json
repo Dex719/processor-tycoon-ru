@@ -1,0 +1,21 @@
+{
+  "schema": 1,
+  "records": [
+    {
+      "id": "s.single", "mode": "single", "nameKey": "gpu.test.s1", "opensYear": 1981, "closesYear": 0,
+      "baseSize": 3000000, "sizeByDecade": [0, 0.5, 4, 8, 10, 9, 9], "budgetByDecade": [449, 449, 249, 249, 299, 449, 449],
+      "consumptionTarget": 99, "wPerf": 100, "wUnder": 3.0, "wOver": 1.0, "wObs": 3.0, "wCons": 0,
+      "featureReqs": [], "missingFeatureFactor": 0.35,
+      "vramReq": [ { "year": 1981, "v": 0.0625 }, { "year": 1996, "v": 2 }, { "year": 2010, "v": 1024 } ],
+      "rivalDieShare": 0.5, "rivalBusTier": 1, "rivalVramFactor": 1.0
+    },
+    {
+      "id": "s.eras", "mode": "eras", "nameKey": "gpu.test.s2", "opensYear": 1996, "closesYear": 2030,
+      "baseSize": 1000000, "sizeByDecade": [0, 0, 1, 4, 6, 6, 6], "budgetByDecade": [399, 399, 399, 499, 699, 999, 1199],
+      "consumptionTarget": 99, "wPerf": 100, "wUnder": 2.5, "wOver": 1.0, "wObs": 4.0, "wCons": 0,
+      "featureReqs": [ { "year": 1996, "f": ["3d"] }, { "year": 2000, "f": ["3d", "tnl"] } ], "missingFeatureFactor": 0.35,
+      "vramReq": [ { "year": 1996, "v": 4 }, { "year": 2000, "v": 64 } ],
+      "rivalDieShare": 0.8, "rivalBusTier": 2, "rivalVramFactor": 1.5
+    }
+  ]
+}

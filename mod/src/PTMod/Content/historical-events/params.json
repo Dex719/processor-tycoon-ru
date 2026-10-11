@@ -1,0 +1,14 @@
+{
+  "schema": 1,
+  "majorSpacingDays": 45,
+  "shareCacheMonths": 36,
+  "aiChooserPriority": 10,
+  "settlementDefaults": { "legalCostPct": 0.004, "months": 12, "pWin": 0.7, "settlementPct": 0.03 },
+  "disputeDefaults": { "legalCostPct": 0.002, "arbitrationMonths": 48, "pWinArbitration": 0.6,
+                       "licenseFeePct": 0.0125, "licenseMonths": 36, "researchCostMultiplier": 1.3,
+                       "pWinInfringement": 0.55, "settlePct": 0.03, "redesignMultiplier": 1.2, "redesignMonths": 24,
+                       "plaintiffSettlementPct": 0.03 },
+  "priceWarDefaults": { "floorMargin": 0.05, "marketingCostPct": 0.01, "marketingPopularityGain": 1.10, "marketingDays": 180 },
+  "acquisitionAntitrust": { "softShare": 0.40, "slope": 2.5, "caseSurcharge": 1.25, "maxMultiplier": 3.0, "shareMonths": 36 },
+  "aiWeightOverrides": {}
+}

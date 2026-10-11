@@ -1,0 +1,15 @@
+{
+  "schema": 1,
+  "nodeByYear": [
+    { "year": 1971, "node": "10µm" }, { "year": 1975, "node": "6µm" }, { "year": 1979, "node": "3µm" }, { "year": 1983, "node": "1.5µm" },
+    { "year": 1986, "node": "1µm" }, { "year": 1989, "node": "800nm" }, { "year": 1991, "node": "600nm" }, { "year": 1995, "node": "350nm" },
+    { "year": 1997, "node": "250nm" }, { "year": 1999, "node": "180nm" }, { "year": 2001, "node": "130nm" }, { "year": 2004, "node": "90nm" },
+    { "year": 2006, "node": "65nm" }, { "year": 2008, "node": "45nm" }, { "year": 2010, "node": "32nm" }, { "year": 2012, "node": "28nm" },
+    { "year": 2016, "node": "14nm" }, { "year": 2018, "node": "12nm" }, { "year": 2020, "node": "7nm" }, { "year": 2022, "node": "5nm" },
+    { "year": 2024, "node": "3nm" }, { "year": 2027, "node": "2nm" }, { "year": 2029, "node": "1.4nm" }, { "year": 2031, "node": "1nm" }
+  ],
+  "maxDieByYear": [
+    { "year": 1981, "v": 60 }, { "year": 1990, "v": 100 }, { "year": 1995, "v": 120 }, { "year": 2000, "v": 200 },
+    { "year": 2005, "v": 350 }, { "year": 2010, "v": 550 }, { "year": 2015, "v": 650 }, { "year": 2020, "v": 800 }, { "year": 2030, "v": 850 }
+  ]
+}

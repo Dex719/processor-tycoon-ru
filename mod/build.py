@@ -7,6 +7,8 @@
   python mod/build.py --tests --coverage-types        + проверка: каждый публичный тип Core/Logic указан в [Covers]
   python mod/build.py --src <папка> --out <имя.dll>   сборка спайка (любая папка с *.cs) -> mod/build/<имя.dll>
 
+Тесты собирают Core/Logic, Core/Compat, Features/<Фича>/Logic и чистые данные API фич (Features/<Фича>/Api/Model, Api/Dto, Api/Contracts):
+в них нет Unity и игры. Остальное в Api/ (статические фасады) в тесты не входит.
 Папка игры берётся из --game-dir или переменной PT_GAME_DIR; из неё читаются только DLL для ссылок
 (Managed/*.dll и _original_en/Assembly-CSharp.dll), в выход и в репозиторий они не копируются.
 Компилятор: Roslyn csc.exe из Visual Studio 2022 Build Tools (vswhere, известные пути, --csc, PT_CSC).
@@ -24,11 +26,18 @@ import sys
 import time
 import zipfile
 
+# PTMOD_LOW_PRIORITY=1 — компилятор и тесты с пониженным приоритетом (чтобы параллельные сборки не давали лагов в играх). Только Windows.
+LOW_PRIORITY = getattr(subprocess, 'BELOW_NORMAL_PRIORITY_CLASS', 0) if os.environ.get('PTMOD_LOW_PRIORITY') == '1' else 0
+
 HERE = os.path.dirname(os.path.abspath(__file__))
 
 # Фичи, которых нет в релизной сборке (решение D27): папка Features/<Pascal>, папка Content/<slug>,
 # файл L10n/<язык>/<slug>.json. Добавлять сюда служебные фичи, нужные только для проверки ядра.
 RELEASE_EXCLUDED = [('FrameworkSample', 'framework-sample')]
+
+# Pure parts of a feature's public API (data types without Unity, Harmony or the game). The tests build compiles them together with
+# Features/<Pascal>/Logic/**, so the logic and the tests see the real types and need no copies of them.
+PURE_API_FOLDERS = ('Model', 'Dto', 'Contracts')
 
 TESTS_ASSEMBLY = 'PTMod.Tests'
 TESTS_MAIN = 'PTMod.Tests.Program'
@@ -347,7 +356,8 @@ def run_csc(csc, args, rsp_path):
     with open(rsp_path, 'w', encoding='utf-8', newline='\n') as f:
         f.write('\n'.join(_quote(a) for a in args) + '\n')
     # -noconfig (не подключать стандартный csc.rsp) csc принимает только в командной строке, не в response-файле.
-    proc = subprocess.run([csc, '-noconfig', '@' + rsp_path], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    proc = subprocess.run([csc, '-noconfig', '@' + rsp_path], stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
+                          creationflags=LOW_PRIORITY)
     return proc.returncode, proc.stdout.decode('utf-8', 'replace')
 
 
@@ -426,17 +436,26 @@ def build_spike(layout, game, csc, src_dir, out, release):
     return dll
 
 
+def pure_api_folders(features_dir, pascal_name):
+    """Features/<Pascal>/Api/{Model,Dto,Contracts} that exist: the data types of the public API, free of Unity and the game."""
+    base = os.path.join(features_dir, pascal_name, 'Api')
+    return [os.path.join(base, n) for n in PURE_API_FOLDERS if os.path.isdir(os.path.join(base, n))]
+
+
 def build_tests(layout, csc, release):
     """Консольный exe под .NET Framework 4.8: Core/Logic/**, Core/Compat/** и tests/PTMod.Tests/**. Игра не нужна."""
     if not os.path.isdir(layout.tests):
         raise BuildError('Нет папки тестов %s.' % layout.tests)
     files = []
     folders = [os.path.join(layout.src, 'Core', 'Logic'), os.path.join(layout.src, 'Core', 'Compat'), layout.tests]
-    # pure logic of each feature (Features/<Pascal>/Logic/**) has no Unity or game references, so the tests build it too
+    # pure logic of each feature (Features/<Pascal>/Logic/**) and the data types of its API (Api/Model, Api/Dto, Api/Contracts) have no Unity or game references, so the tests build them too
     features = os.path.join(layout.src, 'Features')
     if os.path.isdir(features):
-        folders += [os.path.join(features, name, 'Logic') for name in sorted(os.listdir(features))
-                    if not (release and is_release_excluded('features/%s/' % name))]
+        for name in sorted(os.listdir(features)):
+            if release and is_release_excluded('features/%s/' % name):
+                continue
+            folders.append(os.path.join(features, name, 'Logic'))
+            folders += pure_api_folders(features, name)
     for folder in folders:
         files += [os.path.join(folder, *f.split('/')) for f in _walk(folder, '.cs')]
     exe = os.path.join(layout.build, TESTS_ASSEMBLY + '.exe')
@@ -453,7 +472,9 @@ def build_tests(layout, csc, release):
     return exe
 
 
-def run_tests(layout, exe, tests, coverage, filters, verbose):
+def run_tests(layout, exe, tests, coverage, filters, verbose, dll_dir=None):
+    """dll_dir: the folder with the PTMod.dll that the BuiltDll_* architecture tests inspect (default: the folder of the exe).
+    A single-feature build (build_feature.py) passes mod/build, the folder of the full build: its own DLL holds the resources of one feature only."""
     cmd = [exe]
     if tests:
         cmd.append('--tests')
@@ -463,10 +484,10 @@ def run_tests(layout, exe, tests, coverage, filters, verbose):
         cmd += ['--filter', text]
     if verbose:
         cmd.append('--verbose')
-    env = dict(os.environ, PTMOD_MOD_DIR=layout.mod, PTMOD_SRC_DIR=layout.src, PTMOD_BUILD_DIR=layout.build)
+    env = dict(os.environ, PTMOD_MOD_DIR=layout.mod, PTMOD_SRC_DIR=layout.src, PTMOD_BUILD_DIR=dll_dir or layout.build)
     sys.stdout.flush()
     try:
-        return subprocess.run(cmd, env=env, cwd=layout.build, timeout=TESTS_TIMEOUT).returncode
+        return subprocess.run(cmd, env=env, cwd=layout.build, timeout=TESTS_TIMEOUT, creationflags=LOW_PRIORITY).returncode
     except subprocess.TimeoutExpired:
         raise BuildError('Тесты не завершились за %d с и остановлены.' % TESTS_TIMEOUT, 1)
 

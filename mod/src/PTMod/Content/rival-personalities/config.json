@@ -1,0 +1,32 @@
+{
+  "schema": 1,
+  "difficultyMultipliers": [0.4, 0.7, 1.0, 1.2, 1.4, 1.6],
+  "chanceCap": 0.9,
+  "graceDays": 180,
+  "maxConcurrentHostile": 2,
+  "maxHostilePerYear": 4,
+  "telegraphDays": [14, 45],
+  "mailWaitDays": 30,
+  "attitude": { "thresholds": [-60, -20, 20, 60], "monthlyDrift": 0.10, "historySize": 20,
+                "hostileGate": -20, "negotiationDivisor": 5, "discountDivisor": 10, "discountMaxPoints": 10,
+                "revealAttitude": 20 },
+  "triggerDeltas": { "StrongLaunch": -8, "ShareGain": -5, "PriceUndercut": -4, "OemLoss": -6, "TechLead": -3,
+                     "BusinessSigned": 15, "BusinessBrokenByPlayer": -25, "BusinessActiveMonthly": 2 },
+  "triggerThresholds": { "strongLaunchIpsRatio": 1.15, "shareGainPp": 3.0,
+                         "undercutPriceRatio": 0.85, "undercutIpsRatio": 0.90, "undercutCooldownDays": 90,
+                         "minApprovalForBoost": 1.05,
+                         "techLeadTypes": ["Lithography", "Frequency", "Multicore"] },
+  "reactions": {
+    "PriceCut":      { "depth": 0.08, "floorMargin": 0.08 },
+    "CounterLaunch": { "approvalBoost": 1.35, "fundingBoost": 1.25 },
+    "Poach":         { "rivalResearchSpeed": 1.10, "rivalBoostDays": 120,
+                       "minCost": 250000, "researchMonths": 2, "underfundedChanceMult": 1.5 },
+    "Partnership":   { "minAttitude": 40, "monthlyChance": 0.10, "repeatMonths": 6 }
+  },
+  "priceCut": { "externalMaxDays": 400 },
+  "flawCaution": { "factor": 0.85, "months": 24, "minSeverity": "Major" },
+  "intelFog": { "shareStepPp": 5, "ipsSignificantDigits": 2 },
+  "eventChooser": { "styleWeight": 1.5, "priority": 100 },
+  "acquisition": { "hostilePriceDivisor": 200, "hostileDealAttitude": -10 },
+  "launchPriceFloorMargin": 0.05
+}

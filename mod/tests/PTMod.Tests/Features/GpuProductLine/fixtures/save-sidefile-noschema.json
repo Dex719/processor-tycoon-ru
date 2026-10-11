@@ -1,0 +1,14 @@
+{
+  "schema": 1,
+  "modVersion": "0.4.0",
+  "saveName": "Test_1995_3_1",
+  "features": {
+    "gpu-product-line": {
+      "divisionFounded": true,
+      "foundedOn": { "y": 1995, "m": 3, "d": 1 },
+      "nextId": 5,
+      "research": { "completed": ["arch.2d"], "currentId": "", "currentProgress": 0, "queue": [], "funding": 0.5 }
+    },
+    "some-other-feature": { "_schema": 2, "value": 9 }
+  }
+}

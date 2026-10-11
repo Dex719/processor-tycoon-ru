@@ -1,0 +1,123 @@
+{
+  "schema": 1,
+  "records": [
+    {
+      "id": "hegemon",
+      "name": "rival.archetype.hegemon.name",
+      "description": "rival.archetype.hegemon.desc",
+      "behaviour": { "approvalBias": 1.05, "researchFundingMult": 1.10, "launchPriceMult": 1.05,
+                     "designFocusOverride": null, "powerFocusOverride": null, "negotiationDiscount": false },
+      "attitude": { "baseline": -10, "sensitivity": 1.2 },
+      "cooldownDays": 180,
+      "reactions": {
+        "StrongLaunch":  [ { "type": "CounterLaunch", "base": 0.30 }, { "type": "OemPush", "base": 0.20 } ],
+        "PriceUndercut": [ { "type": "PriceCut", "base": 0.15 } ],
+        "ShareGain":     [ { "type": "OemPush", "base": 0.30 }, { "type": "Smear", "base": 0.10 } ],
+        "OemLoss":       [ { "type": "OemPush", "base": 0.35 } ],
+        "TechLead":      [ { "type": "Poach", "base": 0.15 } ]
+      },
+      "reactionParams": { "PriceCut": { "depth": 0.08 } },
+      "eventStyle": "spend",
+      "flawResponseBias": [0.9, 1.2, 1.0, 1.2]
+    },
+    {
+      "id": "price_warrior",
+      "name": "rival.archetype.price_warrior.name",
+      "description": "rival.archetype.price_warrior.desc",
+      "behaviour": { "approvalBias": 1.00, "researchFundingMult": 0.95, "launchPriceMult": 0.92,
+                     "designFocusOverride": "LowUnitCost", "powerFocusOverride": null, "negotiationDiscount": false },
+      "attitude": { "baseline": -15, "sensitivity": 1.3 },
+      "cooldownDays": 150,
+      "reactions": {
+        "StrongLaunch":  [ { "type": "PriceCut", "base": 0.40, "anyAttitude": true }, { "type": "CounterLaunch", "base": 0.10 } ],
+        "PriceUndercut": [ { "type": "PriceCut", "base": 0.50, "anyAttitude": true } ],
+        "ShareGain":     [ { "type": "PriceCut", "base": 0.35, "anyAttitude": true } ],
+        "OemLoss":       [ { "type": "OemPush", "base": 0.10 } ]
+      },
+      "reactionParams": { "PriceCut": { "depth": 0.15 } },
+      "eventStyle": "save",
+      "flawResponseBias": [0.8, 1.0, 1.3, 1.1]
+    },
+    {
+      "id": "fast_follower",
+      "name": "rival.archetype.fast_follower.name",
+      "description": "rival.archetype.fast_follower.desc",
+      "behaviour": { "approvalBias": 1.12, "researchFundingMult": 1.00, "launchPriceMult": 0.96,
+                     "designFocusOverride": null, "powerFocusOverride": null, "negotiationDiscount": false },
+      "attitude": { "baseline": 0, "sensitivity": 1.0 },
+      "cooldownDays": 150,
+      "reactions": {
+        "StrongLaunch":  [ { "type": "CounterLaunch", "base": 0.45 } ],
+        "PriceUndercut": [ { "type": "PriceCut", "base": 0.15 } ],
+        "TechLead":      [ { "type": "Poach", "base": 0.10 } ]
+      },
+      "reactionParams": { "PriceCut": { "depth": 0.08 } },
+      "eventStyle": "neutral",
+      "flawResponseBias": [1.0, 1.0, 1.2, 1.0]
+    },
+    {
+      "id": "engineer",
+      "name": "rival.archetype.engineer.name",
+      "description": "rival.archetype.engineer.desc",
+      "behaviour": { "approvalBias": 0.92, "researchFundingMult": 1.20, "launchPriceMult": 1.08,
+                     "designFocusOverride": "HighPerformance", "powerFocusOverride": null, "negotiationDiscount": false },
+      "attitude": { "baseline": 0, "sensitivity": 0.8 },
+      "cooldownDays": 240,
+      "reactions": {
+        "StrongLaunch":  [ { "type": "CounterLaunch", "base": 0.25 } ],
+        "ShareGain":     [ { "type": "CounterLaunch", "base": 0.15 } ],
+        "TechLead":      [ { "type": "Poach", "base": 0.25 } ]
+      },
+      "reactionParams": { "PriceCut": { "depth": 0.08 } },
+      "eventStyle": "spend",
+      "flawResponseBias": [1.0, 1.4, 0.9, 0.7]
+    },
+    {
+      "id": "conservative",
+      "name": "rival.archetype.conservative.name",
+      "description": "rival.archetype.conservative.desc",
+      "behaviour": { "approvalBias": 0.90, "researchFundingMult": 0.90, "launchPriceMult": 1.03,
+                     "designFocusOverride": null, "powerFocusOverride": null, "negotiationDiscount": false },
+      "attitude": { "baseline": 10, "sensitivity": 0.6 },
+      "cooldownDays": 300,
+      "reactions": {
+        "StrongLaunch":  [ { "type": "CounterLaunch", "base": 0.10 } ],
+        "PriceUndercut": [ { "type": "PriceCut", "base": 0.10 } ],
+        "OemLoss":       [ { "type": "OemPush", "base": 0.10 } ]
+      },
+      "reactionParams": { "PriceCut": { "depth": 0.08 } },
+      "eventStyle": "save",
+      "flawResponseBias": [1.5, 1.0, 0.9, 0.6]
+    },
+    {
+      "id": "niche_specialist",
+      "name": "rival.archetype.niche_specialist.name",
+      "description": "rival.archetype.niche_specialist.desc",
+      "behaviour": { "approvalBias": 1.00, "researchFundingMult": 0.95, "launchPriceMult": 1.00,
+                     "designFocusOverride": null, "powerFocusOverride": "LowConsumption", "negotiationDiscount": false },
+      "attitude": { "baseline": 5, "sensitivity": 0.8 },
+      "cooldownDays": 200,
+      "reactions": {
+        "StrongLaunch":  [ { "type": "CounterLaunch", "base": 0.15 } ],
+        "PriceUndercut": [ { "type": "PriceCut", "base": 0.30, "anyAttitude": true } ],
+        "ShareGain":     [ { "type": "PriceCut", "base": 0.25, "anyAttitude": true } ]
+      },
+      "reactionParams": { "PriceCut": { "depth": 0.10 } },
+      "eventStyle": "save",
+      "flawResponseBias": [1.0, 1.0, 1.2, 1.0]
+    },
+    {
+      "id": "foundry_partner",
+      "name": "rival.archetype.foundry_partner.name",
+      "description": "rival.archetype.foundry_partner.desc",
+      "behaviour": { "approvalBias": 1.00, "researchFundingMult": 1.00, "launchPriceMult": 1.00,
+                     "designFocusOverride": null, "powerFocusOverride": null, "negotiationDiscount": true },
+      "attitude": { "baseline": 20, "sensitivity": 0.5 },
+      "cooldownDays": 365,
+      "reactions": {},
+      "reactionParams": {},
+      "eventStyle": "neutral",
+      "flawResponseBias": [1.0, 1.0, 1.0, 1.0]
+    }
+  ]
+}

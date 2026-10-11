@@ -1,0 +1,15 @@
+{
+  "schema": 1,
+  "categories": [
+    { "id": "universal", "dailyChance": 0.011, "minGapDays": 45, "maxActive": 2 }
+  ],
+  "channelLimits": [
+    { "channel": "*", "min": 0.25, "max": 4.0 },
+    { "channel": "production.output", "min": 0.1, "max": 3.0 },
+    { "channel": "market.demand.*", "min": 0.4, "max": 2.5 },
+    { "channel": "popularity.gain", "min": 0.7, "max": 1.6 }
+  ],
+  "maxPendingChoices": 2,
+  "reminderDaysBefore": 3,
+  "logLimit": 400
+}

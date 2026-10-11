@@ -1,0 +1,2172 @@
+{
+  "schema": 1,
+  "records": [
+
+    {
+      "_note": "TSK-009. Antitrust fine (EU 2009 / Intel): the common effect announces the fine, the choices are pay, pay into a reserve, appeal. caseId = Args[4]. All numbers of the case are here.",
+      "id": "hist.decide.antitrust.fine",
+      "category": "history",
+      "title": { "key": "hist.2009.eufine.title" }, "text": { "key": "hist.decide.antitrust.fine.text" }, "cause": { "key": "hist.cause" },
+      "trigger": { "type": "Manual" }, "targets": { "type": "Specific", "companyKey": "player" },
+      "important": true, "notifyPlayer": true,
+      "timerDays": 30, "defaultChoice": "appeal",
+      "effects": [
+        { "type": "AntitrustCase", "params": {
+            "action": "open", "mode": "fine", "finePct": 0.04,
+            "remedyChannel": "contract.reward", "remedyMultiplier": 0.95, "remedyDays": 730,
+            "appealMonths": 60, "pAnnul": 0.35, "pReduce": 0.35, "reduceTo": 0.35,
+            "interestPerYear": 0.04, "guaranteeFeePerYear": 0.01, "dominanceLostShare": 0.40,
+            "reimpose": true, "reimposeDelayMonths": 18, "reimposeP": 0.5, "reimposeShare": 0.355,
+            "secondAppealMonths": 15, "secondPReduce": 0.6, "secondReduceTo": 0.63 } }
+      ],
+      "choices": [
+        { "id": "pay",       "textKey": "hist.choice.pay",       "aiWeight": 0.3, "effects": [ { "type": "AntitrustCase", "params": { "action": "pay" } } ] },
+        { "id": "provision", "textKey": "hist.choice.provision", "aiWeight": 0.3, "effects": [ { "type": "AntitrustCase", "params": { "action": "provision" } } ] },
+        { "id": "appeal",    "textKey": "hist.choice.appeal",    "aiWeight": 0.4, "effects": [ { "type": "AntitrustCase", "params": { "action": "appeal" } } ] }
+      ]
+    },
+
+    {
+      "_note": "TSK-009. Consent decree (FTC 1998 / Intel): settle (remedy, no fine) or fight (legal costs, then 50 % closed / 50 % remedy and a fine of 1 % of revenue).",
+      "id": "hist.decide.antitrust.consent",
+      "category": "history",
+      "title": { "key": "hist.1998.ftc.title" }, "text": { "key": "hist.decide.antitrust.consent.text" }, "cause": { "key": "hist.cause" },
+      "trigger": { "type": "Manual" }, "targets": { "type": "Specific", "companyKey": "player" },
+      "important": true, "notifyPlayer": true,
+      "timerDays": 30, "defaultChoice": "settle",
+      "effects": [
+        { "type": "AntitrustCase", "params": {
+            "action": "open", "mode": "consent",
+            "remedyChannel": "contract.reward", "remedyMultiplier": 0.95, "remedyDays": 730,
+            "legalCostPct": 0.003, "legalMonths": 9, "winP": 0.5, "lossFinePct": 0.01 } }
+      ],
+      "choices": [
+        { "id": "settle", "textKey": "hist.choice.settle", "aiWeight": 0.5, "effects": [ { "type": "AntitrustCase", "params": { "action": "settle" } } ] },
+        { "id": "fight",  "textKey": "hist.choice.fight",  "aiWeight": 0.5, "effects": [ { "type": "AntitrustCase", "params": { "action": "fight" } } ] }
+      ]
+    },
+
+    {
+      "_note": "TSK-009. The new, smaller fine after an annulment; fired by CaseService itself (Args[4] = caseId). The numbers are those of the case.",
+      "id": "hist.decide.antitrust.reimpose",
+      "category": "history",
+      "title": { "key": "hist.decide.antitrust.reimpose.title" }, "text": { "key": "hist.decide.antitrust.reimpose.text" }, "cause": { "key": "hist.cause" },
+      "trigger": { "type": "Manual" }, "targets": { "type": "Specific", "companyKey": "player" },
+      "important": true, "notifyPlayer": true,
+      "timerDays": 30, "defaultChoice": "appeal",
+      "choices": [
+        { "id": "pay",    "textKey": "hist.choice.pay",    "aiWeight": 0.5, "effects": [ { "type": "AntitrustCase", "params": { "action": "reimposePay" } } ] },
+        { "id": "appeal", "textKey": "hist.choice.appeal", "aiWeight": 0.5, "effects": [ { "type": "AntitrustCase", "params": { "action": "reimposeAppeal" } } ] }
+      ]
+    },
+
+    {
+      "_note": "TSK-010. A victim's suit (AMD v Intel 2009). Fired for the plaintiff (Args[3] = the defendant, Args[4] = the case). The suit needs 10 % of the market over 36 months. Numbers: settlementDefaults of params.json.",
+      "id": "hist.decide.settlement",
+      "category": "history",
+      "title": { "key": "hist.2009.settlement.title" }, "text": { "key": "hist.decide.settlement.text" }, "cause": { "key": "hist.cause" },
+      "trigger": { "type": "Manual" }, "targets": { "type": "Specific", "companyKey": "player" },
+      "important": true, "notifyPlayer": true,
+      "timerDays": 30, "defaultChoice": "decline",
+      "choices": [
+        { "id": "sue", "textKey": "hist.choice.sue", "aiWeight": 0.7,
+          "requires": { "type": "hist.ShareAtLeast", "value": 0.10, "months": 36 },
+          "effects": [ { "type": "AntitrustSettlement", "params": { "action": "sue" } } ] },
+        { "id": "decline", "textKey": "hist.choice.decline", "aiWeight": 0.3, "effects": [ { "type": "AntitrustSettlement", "params": { "action": "decline" } } ] }
+      ]
+    },
+
+    {
+      "_note": "TSK-011. The export rule comes into force (stage 0 of hist.2022.exportcontrol). Global: the effect works on the market. ruleId = Args[4].",
+      "id": "hist.2022.export.rule",
+      "category": "history",
+      "title": { "key": "hist.2022.exportcontrol.title" }, "text": { "key": "hist.2022.export.rule.text" }, "cause": { "key": "hist.cause" },
+      "trigger": { "type": "Manual" }, "targets": { "type": "Player" }, "oncePerGame": true,
+      "effects": [
+        { "type": "ExportControl", "params": {
+            "action": "open", "percentile": 0.90, "blockedShare": 0.15, "indexing": 0.8,
+            "segments": [ "highend", "industries" ], "durationDays": 3650 } }
+      ]
+    },
+
+    {
+      "_note": "TSK-011. The second stage (2023-10-17): a new percentile and a larger share, the same rule.",
+      "id": "hist.2023.export.update",
+      "category": "history",
+      "title": { "key": "hist.2023.export.update.title" }, "text": { "key": "hist.2023.export.update.text" }, "cause": { "key": "hist.cause" },
+      "trigger": { "type": "Manual" }, "targets": { "type": "Player" }, "oncePerGame": true,
+      "effects": [
+        { "type": "ExportControl", "params": {
+            "action": "update", "percentile": 0.75, "blockedShare": 0.20, "indexing": 0.8,
+            "segments": [ "highend", "industries" ], "durationDays": 3650 } }
+      ]
+    },
+
+    {
+      "_note": "TSK-011. The answer of a company with a CPU above the threshold (onlyIf of the calendar). A licence pays licenseCostPct of the revenue and works with licenseSuccess; lobbying halves the blocked share on success.",
+      "id": "hist.decide.export",
+      "category": "history",
+      "title": { "key": "hist.2022.exportcontrol.title" }, "text": { "key": "hist.decide.export.text" }, "cause": { "key": "hist.cause" },
+      "trigger": { "type": "Manual" }, "targets": { "type": "Specific", "companyKey": "player" },
+      "important": true, "notifyPlayer": true,
+      "timerDays": 30, "defaultChoice": "comply",
+      "choices": [
+        { "id": "comply",  "textKey": "hist.choice.comply",  "aiWeight": 0.4, "effects": [ { "type": "ExportControl", "params": { "action": "comply" } } ] },
+        { "id": "license", "textKey": "hist.choice.license", "aiWeight": 0.3,
+          "effects": [ { "type": "ExportControl", "params": { "action": "license", "licenseCostPct": 0.02, "licenseSuccess": 0.6, "licenseMonths": 18 } } ] },
+        { "id": "lobby",   "textKey": "hist.choice.lobby",   "aiWeight": 0.3,
+          "effects": [ { "type": "ExportControl", "params": { "action": "lobby", "lobbyCostPct": 0.01, "lobbySuccess": 0.5, "lobbyFactor": 0.5, "lobbyMonths": 24 } } ] }
+      ]
+    },
+
+    {
+      "_note": "TSK-011. The same answers at the second stage.",
+      "id": "hist.decide.export.update",
+      "category": "history",
+      "title": { "key": "hist.2023.export.update.title" }, "text": { "key": "hist.decide.export.update.text" }, "cause": { "key": "hist.cause" },
+      "trigger": { "type": "Manual" }, "targets": { "type": "Specific", "companyKey": "player" },
+      "important": true, "notifyPlayer": true,
+      "timerDays": 30, "defaultChoice": "comply",
+      "choices": [
+        { "id": "comply",  "textKey": "hist.choice.comply",  "aiWeight": 0.4, "effects": [ { "type": "ExportControl", "params": { "action": "comply" } } ] },
+        { "id": "license", "textKey": "hist.choice.license", "aiWeight": 0.3,
+          "effects": [ { "type": "ExportControl", "params": { "action": "license", "licenseCostPct": 0.02, "licenseSuccess": 0.6, "licenseMonths": 18 } } ] },
+        { "id": "lobby",   "textKey": "hist.choice.lobby",   "aiWeight": 0.3,
+          "effects": [ { "type": "ExportControl", "params": { "action": "lobby", "lobbyCostPct": 0.01, "lobbySuccess": 0.5, "lobbyFactor": 0.5, "lobbyMonths": 24 } } ] }
+      ]
+    },
+
+    {
+      "_note": "TSK-012. The aggressor of a price war. The war of the entry is in the extra arguments of the fire: [warId, \"segments joined by |;cut;followCut;durationDays\"] (Args[4], Args[5]); what they leave out comes from priceWarDefaults of params.json and the code.",
+      "id": "hist.decide.pricewar.aggressor",
+      "category": "history",
+      "title": { "key": "hist.decide.pricewar.aggressor.title" }, "text": { "key": "hist.decide.pricewar.aggressor.text" }, "cause": { "key": "hist.cause" },
+      "trigger": { "type": "Manual" }, "targets": { "type": "Specific", "companyKey": "player" },
+      "important": true, "notifyPlayer": true,
+      "timerDays": 30, "defaultChoice": "decline",
+      "choices": [
+        { "id": "start",   "textKey": "hist.choice.start",   "aiWeight": 0.7, "effects": [ { "type": "PriceWar", "params": { "action": "start" } } ] },
+        { "id": "decline", "textKey": "hist.choice.noStart", "aiWeight": 0.3, "effects": [ { "type": "PriceWar", "params": { "action": "decline" } } ] }
+      ]
+    },
+
+    {
+      "_note": "TSK-012. The player who is not the aggressor: follow, hold, or answer with marketing (marketingCostPct of the revenue, popularity.gain x1.10 for 180 days).",
+      "id": "hist.decide.pricewar.follower",
+      "category": "history",
+      "title": { "key": "hist.decide.pricewar.follower.title" }, "text": { "key": "hist.decide.pricewar.follower.text" }, "cause": { "key": "hist.cause" },
+      "trigger": { "type": "Manual" }, "targets": { "type": "Specific", "companyKey": "player" },
+      "important": true, "notifyPlayer": true,
+      "timerDays": 30, "defaultChoice": "hold",
+      "choices": [
+        { "id": "join",      "textKey": "hist.choice.join",      "aiWeight": 0.4, "effects": [ { "type": "PriceWar", "params": { "action": "join" } } ] },
+        { "id": "hold",      "textKey": "hist.choice.hold",      "aiWeight": 0.3, "effects": [ { "type": "PriceWar", "params": { "action": "hold" } } ] },
+        { "id": "marketing", "textKey": "hist.choice.marketing", "aiWeight": 0.3, "effects": [ { "type": "PriceWar", "params": { "action": "marketing" } } ] }
+      ]
+    },
+
+    {
+      "_note": "TSK-013. The plaintiff of a patent dispute (the player; an AI plaintiff goes straight to the defendant's event). Args[3] = the defendant, Args[4] = disputeId, Args[5] = the kind of dispute (licenseWithdrawal or infringement).",
+      "id": "hist.decide.patent.plaintiff",
+      "category": "history",
+      "title": { "key": "hist.decide.patent.plaintiff.title" }, "text": { "key": "hist.decide.patent.plaintiff.text" }, "cause": { "key": "hist.cause" },
+      "trigger": { "type": "Manual" }, "targets": { "type": "Specific", "companyKey": "player" },
+      "important": true, "notifyPlayer": true,
+      "timerDays": 30, "defaultChoice": "decline",
+      "choices": [
+        { "id": "sue",     "textKey": "hist.choice.sue",     "aiWeight": 0.6, "effects": [ { "type": "PatentDispute", "params": { "action": "sue" } } ] },
+        { "id": "decline", "textKey": "hist.choice.decline", "aiWeight": 0.4, "effects": [ { "type": "PatentDispute", "params": { "action": "decline" } } ] }
+      ]
+    },
+
+    {
+      "_note": "TSK-013. The defendant of a licence withdrawal (AMD v Intel 1987): the common effect opens the dispute (Args[3] = the plaintiff); the numbers are disputeDefaults of params.json.",
+      "id": "hist.decide.patent.withdrawal",
+      "category": "history",
+      "title": { "key": "hist.decide.patent.withdrawal.title" }, "text": { "key": "hist.decide.patent.withdrawal.text" }, "cause": { "key": "hist.cause" },
+      "trigger": { "type": "Manual" }, "targets": { "type": "Specific", "companyKey": "player" },
+      "important": true, "notifyPlayer": true,
+      "timerDays": 30, "defaultChoice": "license",
+      "effects": [
+        { "type": "PatentDispute", "params": { "action": "open", "mode": "licenseWithdrawal" } }
+      ],
+      "choices": [
+        { "id": "arbitrate",   "textKey": "hist.choice.arbitrate",   "aiWeight": 0.4, "effects": [ { "type": "PatentDispute", "params": { "action": "arbitrate", "mode": "licenseWithdrawal" } } ] },
+        { "id": "license",     "textKey": "hist.choice.takeLicense", "aiWeight": 0.4, "effects": [ { "type": "PatentDispute", "params": { "action": "license", "mode": "licenseWithdrawal" } } ] },
+        { "id": "independent", "textKey": "hist.choice.independent", "aiWeight": 0.2, "effects": [ { "type": "PatentDispute", "params": { "action": "independent", "mode": "licenseWithdrawal" } } ] }
+      ]
+    },
+
+    {
+      "_note": "TSK-013. The defendant accused of copying a design (Intel v Cyrix 1992).",
+      "id": "hist.decide.patent.infringement",
+      "category": "history",
+      "title": { "key": "hist.decide.patent.infringement.title" }, "text": { "key": "hist.decide.patent.infringement.text" }, "cause": { "key": "hist.cause" },
+      "trigger": { "type": "Manual" }, "targets": { "type": "Specific", "companyKey": "player" },
+      "important": true, "notifyPlayer": true,
+      "timerDays": 30, "defaultChoice": "settle",
+      "effects": [
+        { "type": "PatentDispute", "params": { "action": "open", "mode": "infringement" } }
+      ],
+      "choices": [
+        { "id": "fight",    "textKey": "hist.choice.fight",    "aiWeight": 0.4, "effects": [ { "type": "PatentDispute", "params": { "action": "fight", "mode": "infringement" } } ] },
+        { "id": "settle",   "textKey": "hist.choice.settle",   "aiWeight": 0.4, "effects": [ { "type": "PatentDispute", "params": { "action": "settle", "mode": "infringement" } } ] },
+        { "id": "redesign", "textKey": "hist.choice.redesign", "aiWeight": 0.2, "effects": [ { "type": "PatentDispute", "params": { "action": "redesign", "mode": "infringement" } } ] }
+      ]
+    },
+
+    {
+      "_note": "TSK-017. Record 1: IN ×1.10 for 730 days.",
+      "id": "hist.1971.microprocessor",
+      "category": "history",
+      "title": {
+        "key": "hist.1971.microprocessor.title"
+      },
+      "text": {
+        "key": "hist.1971.microprocessor.text"
+      },
+      "cause": { "key": "hist.cause" },
+      "trigger": {
+        "type": "Manual"
+      },
+      "targets": {
+        "type": "Player"
+      },
+      "oncePerGame": true,
+      "effects": [
+        {
+          "type": "MarketDemand",
+          "params": {
+            "segment": "industries",
+            "multiplier": 1.1,
+            "scalable": true
+          },
+          "durationDays": 730
+        }
+      ]
+    },
+    {
+      "_note": "TSK-017. Record 2: demand of all ×0.85 and bank.interest ×1.25 for 365 days.",
+      "id": "hist.1973.oilembargo",
+      "category": "history",
+      "title": {
+        "key": "hist.1973.oilembargo.title"
+      },
+      "text": {
+        "key": "hist.1973.oilembargo.text"
+      },
+      "cause": { "key": "hist.cause" },
+      "trigger": {
+        "type": "Manual"
+      },
+      "targets": {
+        "type": "Player"
+      },
+      "oncePerGame": true,
+      "effects": [
+        {
+          "type": "MarketDemand",
+          "params": {
+            "segment": "all",
+            "multiplier": 0.85,
+            "scalable": true
+          },
+          "durationDays": 365
+        },
+        {
+          "type": "ModifierTimed",
+          "params": {
+            "channel": "bank.interest",
+            "scope": "Global",
+            "multiplier": 1.25,
+            "scalable": true
+          },
+          "durationDays": 365
+        }
+      ]
+    },
+    {
+      "_note": "TSK-017. Record 3: LE ×1.15 for 540 days.",
+      "id": "hist.1975.altair",
+      "category": "history",
+      "title": {
+        "key": "hist.1975.altair.title"
+      },
+      "text": {
+        "key": "hist.1975.altair.text"
+      },
+      "cause": { "key": "hist.cause" },
+      "trigger": {
+        "type": "Manual"
+      },
+      "targets": {
+        "type": "Player"
+      },
+      "oncePerGame": true,
+      "effects": [
+        {
+          "type": "MarketDemand",
+          "params": {
+            "segment": "lowend",
+            "multiplier": 1.15,
+            "scalable": true
+          },
+          "durationDays": 540
+        }
+      ]
+    },
+    {
+      "_note": "TSK-017. Record 4: LE ×1.20, MR ×1.10 for 730 days.",
+      "id": "hist.1977.trinity",
+      "category": "history",
+      "title": {
+        "key": "hist.1977.trinity.title"
+      },
+      "text": {
+        "key": "hist.1977.trinity.text"
+      },
+      "cause": { "key": "hist.cause" },
+      "trigger": {
+        "type": "Manual"
+      },
+      "targets": {
+        "type": "Player"
+      },
+      "oncePerGame": true,
+      "effects": [
+        {
+          "type": "MarketDemand",
+          "params": {
+            "segment": "lowend",
+            "multiplier": 1.2,
+            "scalable": true
+          },
+          "durationDays": 730
+        },
+        {
+          "type": "MarketDemand",
+          "params": {
+            "segment": "midrange",
+            "multiplier": 1.1,
+            "scalable": true
+          },
+          "durationDays": 730
+        }
+      ]
+    },
+    {
+      "_note": "TSK-017. Record 5: bank.interest ×1.50 (730), demand of all ×0.90 (540).",
+      "id": "hist.1980.volcker",
+      "category": "history",
+      "title": {
+        "key": "hist.1980.volcker.title"
+      },
+      "text": {
+        "key": "hist.1980.volcker.text"
+      },
+      "cause": { "key": "hist.cause" },
+      "trigger": {
+        "type": "Manual"
+      },
+      "targets": {
+        "type": "Player"
+      },
+      "oncePerGame": true,
+      "effects": [
+        {
+          "type": "ModifierTimed",
+          "params": {
+            "channel": "bank.interest",
+            "scope": "Global",
+            "multiplier": 1.5,
+            "scalable": true
+          },
+          "durationDays": 730
+        },
+        {
+          "type": "MarketDemand",
+          "params": {
+            "segment": "all",
+            "multiplier": 0.9,
+            "scalable": true
+          },
+          "durationDays": 540
+        }
+      ]
+    },
+    {
+      "_note": "TSK-017. Record 6: global part (MR ×1.25, HE ×1.15 on 1095; contract.reward ×1.10 on 730). The second-source choice is hist.decide.secondsource.",
+      "id": "hist.1981.ibmpc",
+      "category": "history",
+      "title": {
+        "key": "hist.1981.ibmpc.title"
+      },
+      "text": {
+        "key": "hist.1981.ibmpc.text"
+      },
+      "cause": { "key": "hist.cause" },
+      "trigger": {
+        "type": "Manual"
+      },
+      "targets": {
+        "type": "Player"
+      },
+      "oncePerGame": true,
+      "effects": [
+        {
+          "type": "MarketDemand",
+          "params": {
+            "segment": "midrange",
+            "multiplier": 1.25,
+            "scalable": true
+          },
+          "durationDays": 1095
+        },
+        {
+          "type": "MarketDemand",
+          "params": {
+            "segment": "highend",
+            "multiplier": 1.15,
+            "scalable": true
+          },
+          "durationDays": 1095
+        },
+        {
+          "type": "ModifierTimed",
+          "params": {
+            "channel": "contract.reward",
+            "scope": "Global",
+            "multiplier": 1.1,
+            "scalable": true
+          },
+          "durationDays": 730
+        }
+      ]
+    },
+    {
+      "_note": "TSK-017. Record 6, challenger: ×1.15 on 1095 days; fired after 31 days unless the leader refused (flag declined).",
+      "id": "hist.1981.ibmpc.second",
+      "category": "history",
+      "title": {
+        "key": "hist.1981.ibmpc.title"
+      },
+      "text": {
+        "key": "hist.1981.ibmpc.second.text"
+      },
+      "cause": { "key": "hist.cause" },
+      "trigger": {
+        "type": "Manual"
+      },
+      "targets": {
+        "type": "Player"
+      },
+      "effects": [
+        {
+          "type": "ModifierTimed",
+          "params": {
+            "channel": "contract.signChance",
+            "multiplier": 1.15,
+            "scalable": true
+          },
+          "durationDays": 1095
+        }
+      ]
+    },
+    {
+      "_note": "TSK-017. Record 6, leader: agree (signChance ×1.25 for 1095 days) or refuse (×0.85 for 730 days, flag declined).",
+      "id": "hist.decide.secondsource",
+      "category": "history",
+      "title": {
+        "key": "hist.1981.ibmpc.title"
+      },
+      "text": {
+        "key": "hist.decide.secondsource.text"
+      },
+      "cause": { "key": "hist.cause" },
+      "trigger": {
+        "type": "Manual"
+      },
+      "targets": {
+        "type": "Specific",
+        "companyKey": "player"
+      },
+      "important": true,
+      "notifyPlayer": true,
+      "timerDays": 30,
+      "defaultChoice": "agree",
+      "choices": [
+        {
+          "id": "agree",
+          "textKey": "hist.choice.agree",
+          "aiWeight": 0.6,
+          "effects": [
+            {
+              "type": "ModifierTimed",
+              "params": {
+                "channel": "contract.signChance",
+                "multiplier": 1.25,
+                "scalable": true
+              },
+              "durationDays": 1095
+            }
+          ]
+        },
+        {
+          "id": "refuse",
+          "textKey": "hist.choice.refuse",
+          "aiWeight": 0.4,
+          "effects": [
+            {
+              "type": "HistFlag",
+              "params": {
+                "entry": "hist.1981.ibmpc",
+                "flag": "declined"
+              }
+            },
+            {
+              "type": "ModifierTimed",
+              "params": {
+                "channel": "contract.signChance",
+                "multiplier": 0.85,
+                "scalable": true
+              },
+              "durationDays": 730
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "_note": "TSK-017. Record 7: production.unitCost ×0.95 (365); the price war events come from the stage.",
+      "id": "hist.1985.dramexit",
+      "category": "history",
+      "title": {
+        "key": "hist.1985.dramexit.title"
+      },
+      "text": {
+        "key": "hist.1985.dramexit.text"
+      },
+      "cause": { "key": "hist.cause" },
+      "trigger": {
+        "type": "Manual"
+      },
+      "targets": {
+        "type": "Player"
+      },
+      "oncePerGame": true,
+      "effects": [
+        {
+          "type": "ModifierTimed",
+          "params": {
+            "channel": "production.unitCost",
+            "scope": "Global",
+            "multiplier": 0.95,
+            "scalable": true
+          },
+          "durationDays": 365
+        }
+      ]
+    },
+    {
+      "_note": "TSK-017. Record 8: production.unitCost ×1.08 (730).",
+      "id": "hist.1986.usjapan",
+      "category": "history",
+      "title": {
+        "key": "hist.1986.usjapan.title"
+      },
+      "text": {
+        "key": "hist.1986.usjapan.text"
+      },
+      "cause": { "key": "hist.cause" },
+      "trigger": {
+        "type": "Manual"
+      },
+      "targets": {
+        "type": "Player"
+      },
+      "oncePerGame": true,
+      "effects": [
+        {
+          "type": "ModifierTimed",
+          "params": {
+            "channel": "production.unitCost",
+            "scope": "Global",
+            "multiplier": 1.08,
+            "scalable": true
+          },
+          "durationDays": 730
+        }
+      ]
+    },
+    {
+      "_note": "TSK-017. Record 9: Toshiba (target): signChance ×0.70 (1095), rating ×0.90 (365), reputation -10.",
+      "id": "hist.1987.koshiba",
+      "category": "history",
+      "title": {
+        "key": "hist.1987.koshiba.title"
+      },
+      "text": {
+        "key": "hist.1987.koshiba.text"
+      },
+      "cause": { "key": "hist.cause" },
+      "trigger": {
+        "type": "Manual"
+      },
+      "targets": {
+        "type": "Player"
+      },
+      "effects": [
+        {
+          "type": "ModifierTimed",
+          "params": {
+            "channel": "contract.signChance",
+            "multiplier": 0.7,
+            "scalable": true
+          },
+          "durationDays": 1095
+        },
+        {
+          "type": "ModifierTimed",
+          "params": {
+            "channel": "market.rating.cpu",
+            "multiplier": 0.9,
+            "scalable": true
+          },
+          "durationDays": 365
+        },
+        {
+          "type": "Reputation",
+          "params": {
+            "delta": -10
+          }
+        }
+      ]
+    },
+    {
+      "_note": "TSK-017. Record 10: bank.creditLimit ×0.80 (180), demand of all ×0.95 (180).",
+      "id": "hist.1987.blackmonday",
+      "category": "history",
+      "title": {
+        "key": "hist.1987.blackmonday.title"
+      },
+      "text": {
+        "key": "hist.1987.blackmonday.text"
+      },
+      "cause": { "key": "hist.cause" },
+      "trigger": {
+        "type": "Manual"
+      },
+      "targets": {
+        "type": "Player"
+      },
+      "oncePerGame": true,
+      "effects": [
+        {
+          "type": "ModifierTimed",
+          "params": {
+            "channel": "bank.creditLimit",
+            "scope": "Global",
+            "multiplier": 0.8,
+            "scalable": true
+          },
+          "durationDays": 180
+        },
+        {
+          "type": "MarketDemand",
+          "params": {
+            "segment": "all",
+            "multiplier": 0.95,
+            "scalable": true
+          },
+          "durationDays": 180
+        }
+      ]
+    },
+    {
+      "_note": "TSK-017. Record 12 (DRAM): production.unitCost ×1.12 and contract.reward ×1.05 for 365 days (AC-10.6: not production.memoryCost).",
+      "id": "hist.1988.dramshortage",
+      "category": "history",
+      "title": {
+        "key": "hist.1988.dramshortage.title"
+      },
+      "text": {
+        "key": "hist.1988.dramshortage.text"
+      },
+      "cause": { "key": "hist.cause" },
+      "trigger": {
+        "type": "Manual"
+      },
+      "targets": {
+        "type": "Player"
+      },
+      "oncePerGame": true,
+      "effects": [
+        {
+          "type": "ModifierTimed",
+          "params": {
+            "channel": "production.unitCost",
+            "scope": "Global",
+            "multiplier": 1.12,
+            "scalable": true
+          },
+          "durationDays": 365
+        },
+        {
+          "type": "ModifierTimed",
+          "params": {
+            "channel": "contract.reward",
+            "scope": "Global",
+            "multiplier": 1.05,
+            "scalable": true
+          },
+          "durationDays": 365
+        }
+      ]
+    },
+    {
+      "_note": "TSK-018. Record 13, challenger: popularity.gain ×1.20 for 730 days if the leader did not launch the programme.",
+      "id": "hist.1991.brandprogram.rival",
+      "category": "history",
+      "title": {
+        "key": "hist.1991.brandprogram.title"
+      },
+      "text": {
+        "key": "hist.1991.brandprogram.rival.text"
+      },
+      "cause": { "key": "hist.cause" },
+      "trigger": {
+        "type": "Manual"
+      },
+      "targets": {
+        "type": "Player"
+      },
+      "effects": [
+        {
+          "type": "ModifierTimed",
+          "params": {
+            "channel": "popularity.gain",
+            "multiplier": 1.2,
+            "scalable": true
+          },
+          "durationDays": 730
+        }
+      ]
+    },
+    {
+      "_note": "TSK-018. Record 13, leader: launch (2 % of quarterly revenue, popularity ×1.20 for 730 days, flag launched) or skip. The cost uses the Development origin: the game has no marketing origin.",
+      "id": "hist.decide.brand.leader",
+      "category": "history",
+      "title": {
+        "key": "hist.1991.brandprogram.title"
+      },
+      "text": {
+        "key": "hist.decide.brand.leader.text"
+      },
+      "cause": { "key": "hist.cause" },
+      "trigger": {
+        "type": "Manual"
+      },
+      "targets": {
+        "type": "Specific",
+        "companyKey": "player"
+      },
+      "important": true,
+      "notifyPlayer": true,
+      "timerDays": 30,
+      "defaultChoice": "skipLaunch",
+      "choices": [
+        {
+          "id": "launch",
+          "textKey": "hist.choice.launch",
+          "aiWeight": 0.5,
+          "effects": [
+            {
+              "type": "HistFlag",
+              "params": {
+                "entry": "hist.1991.brandprogram",
+                "flag": "launched"
+              }
+            },
+            {
+              "type": "Money",
+              "params": {
+                "direction": "Spend",
+                "origin": "Development",
+                "revenueFraction": [
+                  0.02,
+                  0.02
+                ],
+                "min": 0,
+                "max": 1000000000
+              }
+            },
+            {
+              "type": "ModifierTimed",
+              "params": {
+                "channel": "popularity.gain",
+                "multiplier": 1.2,
+                "scalable": true
+              },
+              "durationDays": 730
+            }
+          ]
+        },
+        {
+          "id": "skipLaunch",
+          "textKey": "hist.choice.skipLaunch",
+          "aiWeight": 0.5,
+          "effects": []
+        }
+      ]
+    },
+    {
+      "_note": "TSK-018. Record 13, a player who is not the leader: cooperative marketing (1.5 % of quarterly revenue, popularity ×1.10 for 180 days).",
+      "id": "hist.decide.brand.coop",
+      "category": "history",
+      "title": {
+        "key": "hist.1991.brandprogram.title"
+      },
+      "text": {
+        "key": "hist.decide.brand.coop.text"
+      },
+      "cause": { "key": "hist.cause" },
+      "trigger": {
+        "type": "Manual"
+      },
+      "targets": {
+        "type": "Specific",
+        "companyKey": "player"
+      },
+      "important": true,
+      "notifyPlayer": true,
+      "timerDays": 30,
+      "defaultChoice": "noCoop",
+      "choices": [
+        {
+          "id": "coop",
+          "textKey": "hist.choice.coop",
+          "aiWeight": 0.5,
+          "effects": [
+            {
+              "type": "Money",
+              "params": {
+                "direction": "Spend",
+                "origin": "Development",
+                "revenueFraction": [
+                  0.015,
+                  0.015
+                ],
+                "min": 0,
+                "max": 1000000000
+              }
+            },
+            {
+              "type": "ModifierTimed",
+              "params": {
+                "channel": "popularity.gain",
+                "multiplier": 1.1,
+                "scalable": true
+              },
+              "durationDays": 180
+            }
+          ]
+        },
+        {
+          "id": "noCoop",
+          "textKey": "hist.choice.noCoop",
+          "aiWeight": 0.5,
+          "effects": []
+        }
+      ]
+    },
+    {
+      "_note": "TSK-018. Record 15: ForceDesignFlaw arith, Major, External, topSellingHighEnd24m; fallback event if design-flaw-recalls is not active.",
+      "id": "hist.1994.fdiv",
+      "category": "history",
+      "title": {
+        "key": "hist.1994.fdiv.title"
+      },
+      "text": {
+        "key": "hist.1994.fdiv.text"
+      },
+      "cause": { "key": "hist.cause" },
+      "trigger": {
+        "type": "Manual"
+      },
+      "targets": {
+        "type": "Player"
+      },
+      "effects": [
+        {
+          "type": "ForceDesignFlaw",
+          "params": {
+            "typeId": "arith",
+            "pick": "topSellingHighEnd24m",
+            "severityLeader": "Major",
+            "discovery": "External",
+            "maxPerCompany": 1,
+            "fallbackEventId": "hist.1994.fdiv.fallback"
+          }
+        }
+      ]
+    },
+    {
+      "_note": "TSK-018. Record 15 fallback: reputation -5, rating ×0.95 (180) for the leader only.",
+      "id": "hist.1994.fdiv.fallback",
+      "category": "history",
+      "title": {
+        "key": "hist.1994.fdiv.title"
+      },
+      "text": {
+        "key": "hist.1994.fdiv.fallback.text"
+      },
+      "cause": { "key": "hist.cause" },
+      "trigger": {
+        "type": "Manual"
+      },
+      "targets": {
+        "type": "Player"
+      },
+      "effects": [
+        {
+          "type": "Reputation",
+          "params": {
+            "delta": -5
+          }
+        },
+        {
+          "type": "ModifierTimed",
+          "params": {
+            "channel": "market.rating.cpu",
+            "multiplier": 0.95,
+            "scalable": true
+          },
+          "durationDays": 180
+        }
+      ]
+    },
+    {
+      "_note": "TSK-018. Record 16: MR ×1.25, LE ×1.15 for 730 days (the example of design.md).",
+      "id": "hist.1995.win95",
+      "category": "history",
+      "title": {
+        "key": "hist.1995.win95.title"
+      },
+      "text": {
+        "key": "hist.1995.win95.text"
+      },
+      "cause": { "key": "hist.cause" },
+      "trigger": {
+        "type": "Manual"
+      },
+      "targets": {
+        "type": "Player"
+      },
+      "oncePerGame": true,
+      "effects": [
+        {
+          "type": "MarketDemand",
+          "params": {
+            "segment": "midrange",
+            "multiplier": 1.25,
+            "scalable": true
+          },
+          "durationDays": 730
+        },
+        {
+          "type": "MarketDemand",
+          "params": {
+            "segment": "lowend",
+            "multiplier": 1.15,
+            "scalable": true
+          },
+          "durationDays": 730
+        }
+      ]
+    },
+    {
+      "_note": "TSK-018. Record 17: demand of all ×0.90 (540), production.unitCost ×0.95 (365).",
+      "id": "hist.1997.asiancrisis",
+      "category": "history",
+      "title": {
+        "key": "hist.1997.asiancrisis.title"
+      },
+      "text": {
+        "key": "hist.1997.asiancrisis.text"
+      },
+      "cause": { "key": "hist.cause" },
+      "trigger": {
+        "type": "Manual"
+      },
+      "targets": {
+        "type": "Player"
+      },
+      "oncePerGame": true,
+      "effects": [
+        {
+          "type": "MarketDemand",
+          "params": {
+            "segment": "all",
+            "multiplier": 0.9,
+            "scalable": true
+          },
+          "durationDays": 540
+        },
+        {
+          "type": "ModifierTimed",
+          "params": {
+            "channel": "production.unitCost",
+            "scope": "Global",
+            "multiplier": 0.95,
+            "scalable": true
+          },
+          "durationDays": 365
+        }
+      ]
+    },
+    {
+      "_note": "TSK-018. Record 18: LE ×1.15 for 540 days; the price war events come from the stage.",
+      "id": "hist.1998.sub1000",
+      "category": "history",
+      "title": {
+        "key": "hist.1998.sub1000.title"
+      },
+      "text": {
+        "key": "hist.1998.sub1000.text"
+      },
+      "cause": { "key": "hist.cause" },
+      "trigger": {
+        "type": "Manual"
+      },
+      "targets": {
+        "type": "Player"
+      },
+      "oncePerGame": true,
+      "effects": [
+        {
+          "type": "MarketDemand",
+          "params": {
+            "segment": "lowend",
+            "multiplier": 1.15,
+            "scalable": true
+          },
+          "durationDays": 540
+        }
+      ]
+    },
+    {
+      "_note": "TSK-018. Record 20: output of the target ×0.50 for 30 days (common effect); overtime (1 % of quarterly revenue) sets the flag recovered and cancels stage 2.",
+      "id": "hist.1999.jiji.hit",
+      "category": "history",
+      "title": {
+        "key": "hist.1999.jiji.title"
+      },
+      "text": {
+        "key": "hist.1999.jiji.hit.text"
+      },
+      "cause": { "key": "hist.cause" },
+      "trigger": {
+        "type": "Manual"
+      },
+      "targets": {
+        "type": "Specific",
+        "companyKey": "player"
+      },
+      "important": true,
+      "notifyPlayer": true,
+      "timerDays": 7,
+      "defaultChoice": "wait",
+      "effects": [
+        {
+          "type": "FactoryOutput",
+          "params": {
+            "multiplier": 0.5,
+            "scalable": true
+          },
+          "durationDays": 30
+        }
+      ],
+      "choices": [
+        {
+          "id": "overtime",
+          "textKey": "hist.choice.overtime",
+          "aiWeight": 0.6,
+          "effects": [
+            {
+              "type": "Money",
+              "params": {
+                "direction": "Spend",
+                "origin": "Factories",
+                "revenueFraction": [
+                  0.01,
+                  0.01
+                ],
+                "min": 0,
+                "max": 1000000000
+              }
+            },
+            {
+              "type": "HistFlag",
+              "params": {
+                "entry": "hist.1999.jiji",
+                "flag": "recovered"
+              }
+            }
+          ]
+        },
+        {
+          "id": "wait",
+          "textKey": "hist.choice.wait",
+          "aiWeight": 0.4,
+          "effects": []
+        }
+      ]
+    },
+    {
+      "_note": "TSK-018. Record 20: production.unitCost ×1.05 for 90 days, for everyone.",
+      "id": "hist.1999.jiji.market",
+      "category": "history",
+      "title": {
+        "key": "hist.1999.jiji.title"
+      },
+      "text": {
+        "key": "hist.1999.jiji.market.text"
+      },
+      "cause": { "key": "hist.cause" },
+      "trigger": {
+        "type": "Manual"
+      },
+      "targets": {
+        "type": "Player"
+      },
+      "oncePerGame": true,
+      "effects": [
+        {
+          "type": "ModifierTimed",
+          "params": {
+            "channel": "production.unitCost",
+            "scope": "Global",
+            "multiplier": 1.05,
+            "scalable": true
+          },
+          "durationDays": 90
+        }
+      ]
+    },
+    {
+      "_note": "TSK-018. Record 20, stage 2: output of the target ×0.85 for 60 days (skipped when the flag recovered is set).",
+      "id": "hist.1999.jiji.recovery",
+      "category": "history",
+      "title": {
+        "key": "hist.1999.jiji.title"
+      },
+      "text": {
+        "key": "hist.1999.jiji.recovery.text"
+      },
+      "cause": { "key": "hist.cause" },
+      "trigger": {
+        "type": "Manual"
+      },
+      "targets": {
+        "type": "Player"
+      },
+      "effects": [
+        {
+          "type": "FactoryOutput",
+          "params": {
+            "multiplier": 0.85,
+            "scalable": true
+          },
+          "durationDays": 60
+        }
+      ]
+    },
+    {
+      "_note": "TSK-018. Record 21: HE ×0.80, MR ×0.90 (540); bank.creditLimit ×0.85 (365).",
+      "id": "hist.2000.dotcom",
+      "category": "history",
+      "title": {
+        "key": "hist.2000.dotcom.title"
+      },
+      "text": {
+        "key": "hist.2000.dotcom.text"
+      },
+      "cause": { "key": "hist.cause" },
+      "trigger": {
+        "type": "Manual"
+      },
+      "targets": {
+        "type": "Player"
+      },
+      "oncePerGame": true,
+      "effects": [
+        {
+          "type": "MarketDemand",
+          "params": {
+            "segment": "highend",
+            "multiplier": 0.8,
+            "scalable": true
+          },
+          "durationDays": 540
+        },
+        {
+          "type": "MarketDemand",
+          "params": {
+            "segment": "midrange",
+            "multiplier": 0.9,
+            "scalable": true
+          },
+          "durationDays": 540
+        },
+        {
+          "type": "ModifierTimed",
+          "params": {
+            "channel": "bank.creditLimit",
+            "scope": "Global",
+            "multiplier": 0.85,
+            "scalable": true
+          },
+          "durationDays": 365
+        }
+      ]
+    },
+    {
+      "_note": "TSK-018. Record 22: frequency race, top 3, bonus ×1.10 on HE+MR+LE for 1460 days.",
+      "id": "hist.2000.ghzrace",
+      "category": "history",
+      "title": {
+        "key": "hist.2000.ghzrace.title"
+      },
+      "text": {
+        "key": "hist.2000.ghzrace.text"
+      },
+      "cause": { "key": "hist.cause" },
+      "trigger": {
+        "type": "Manual"
+      },
+      "targets": {
+        "type": "Player"
+      },
+      "oncePerGame": true,
+      "effects": [
+        {
+          "type": "AttributeRace",
+          "params": {
+            "raceId": "ghz2000",
+            "attribute": "frequency",
+            "topN": 3,
+            "bonus": 1.1,
+            "segments": [
+              "highend",
+              "midrange",
+              "lowend"
+            ],
+            "durationDays": 1460
+          }
+        }
+      ]
+    },
+    {
+      "_note": "TSK-018. Record 23: AntitrustCase in warning mode for the target; beneficiary = the challenger (Args[3]).",
+      "id": "hist.2005.jftc",
+      "category": "history",
+      "title": {
+        "key": "hist.2005.jftc.title"
+      },
+      "text": {
+        "key": "hist.2005.jftc.text"
+      },
+      "cause": { "key": "hist.cause" },
+      "trigger": {
+        "type": "Manual"
+      },
+      "targets": {
+        "type": "Player"
+      },
+      "effects": [
+        {
+          "type": "AntitrustCase",
+          "params": {
+            "action": "open",
+            "mode": "warning",
+            "remedyChannel": "contract.reward",
+            "remedyMultiplier": 0.97,
+            "remedyDays": 730,
+            "beneficiaryChannel": "contract.signChance",
+            "beneficiaryMultiplier": 1.1,
+            "beneficiaryDays": 730
+          }
+        }
+      ]
+    },
+    {
+      "_note": "TSK-018. Record 24: signChance ×1.25 and contract.reward ×1.05 for 1095 days, for the best perf-per-watt company.",
+      "id": "hist.2005.archswitch",
+      "category": "history",
+      "title": {
+        "key": "hist.2005.archswitch.title"
+      },
+      "text": {
+        "key": "hist.2005.archswitch.text"
+      },
+      "cause": { "key": "hist.cause" },
+      "trigger": {
+        "type": "Manual"
+      },
+      "targets": {
+        "type": "Player"
+      },
+      "effects": [
+        {
+          "type": "ModifierTimed",
+          "params": {
+            "channel": "contract.signChance",
+            "multiplier": 1.25,
+            "scalable": true
+          },
+          "durationDays": 1095
+        },
+        {
+          "type": "ModifierTimed",
+          "params": {
+            "channel": "contract.reward",
+            "multiplier": 1.05,
+            "scalable": true
+          },
+          "durationDays": 1095
+        }
+      ]
+    },
+    {
+      "_note": "TSK-018. Record 26: LE ×1.30, IN ×1.05 for 730 days.",
+      "id": "hist.2008.netbook",
+      "category": "history",
+      "title": {
+        "key": "hist.2008.netbook.title"
+      },
+      "text": {
+        "key": "hist.2008.netbook.text"
+      },
+      "cause": { "key": "hist.cause" },
+      "trigger": {
+        "type": "Manual"
+      },
+      "targets": {
+        "type": "Player"
+      },
+      "oncePerGame": true,
+      "effects": [
+        {
+          "type": "MarketDemand",
+          "params": {
+            "segment": "lowend",
+            "multiplier": 1.3,
+            "scalable": true
+          },
+          "durationDays": 730
+        },
+        {
+          "type": "MarketDemand",
+          "params": {
+            "segment": "industries",
+            "multiplier": 1.05,
+            "scalable": true
+          },
+          "durationDays": 730
+        }
+      ]
+    },
+    {
+      "_note": "TSK-018. Record 27: demand of all ×0.80 (365), bank.creditLimit ×0.70 (540), bank.interest ×1.20 (365).",
+      "id": "hist.2008.lehman",
+      "category": "history",
+      "title": {
+        "key": "hist.2008.lehman.title"
+      },
+      "text": {
+        "key": "hist.2008.lehman.text"
+      },
+      "cause": { "key": "hist.cause" },
+      "trigger": {
+        "type": "Manual"
+      },
+      "targets": {
+        "type": "Player"
+      },
+      "oncePerGame": true,
+      "effects": [
+        {
+          "type": "MarketDemand",
+          "params": {
+            "segment": "all",
+            "multiplier": 0.8,
+            "scalable": true
+          },
+          "durationDays": 365
+        },
+        {
+          "type": "ModifierTimed",
+          "params": {
+            "channel": "bank.creditLimit",
+            "scope": "Global",
+            "multiplier": 0.7,
+            "scalable": true
+          },
+          "durationDays": 540
+        },
+        {
+          "type": "ModifierTimed",
+          "params": {
+            "channel": "bank.interest",
+            "scope": "Global",
+            "multiplier": 1.2,
+            "scalable": true
+          },
+          "durationDays": 365
+        }
+      ]
+    },
+    {
+      "_note": "TSK-019. Record 30: production.unitCost ×1.10 for 180 days, for everyone.",
+      "id": "hist.2011.tohoku",
+      "category": "history",
+      "title": {
+        "key": "hist.2011.tohoku.title"
+      },
+      "text": {
+        "key": "hist.2011.tohoku.text"
+      },
+      "cause": { "key": "hist.cause" },
+      "trigger": {
+        "type": "Manual"
+      },
+      "targets": {
+        "type": "Player"
+      },
+      "oncePerGame": true,
+      "effects": [
+        {
+          "type": "ModifierTimed",
+          "params": {
+            "channel": "production.unitCost",
+            "scope": "Global",
+            "multiplier": 1.1,
+            "scalable": true
+          },
+          "durationDays": 180
+        }
+      ]
+    },
+    {
+      "_note": "TSK-019. Record 30, target: relocate production (1 % of quarterly revenue, output ×0.80 for 90 days) or wait (output ×0.60 for 90 days).",
+      "id": "hist.2011.tohoku.hit",
+      "category": "history",
+      "title": {
+        "key": "hist.2011.tohoku.title"
+      },
+      "text": {
+        "key": "hist.2011.tohoku.hit.text"
+      },
+      "cause": { "key": "hist.cause" },
+      "trigger": {
+        "type": "Manual"
+      },
+      "targets": {
+        "type": "Specific",
+        "companyKey": "player"
+      },
+      "important": true,
+      "notifyPlayer": true,
+      "timerDays": 7,
+      "defaultChoice": "wait",
+      "choices": [
+        {
+          "id": "relocate",
+          "textKey": "hist.choice.relocate",
+          "aiWeight": 0.4,
+          "effects": [
+            {
+              "type": "Money",
+              "params": {
+                "direction": "Spend",
+                "origin": "Construction",
+                "revenueFraction": [
+                  0.01,
+                  0.01
+                ],
+                "min": 0,
+                "max": 1000000000
+              }
+            },
+            {
+              "type": "FactoryOutput",
+              "params": {
+                "multiplier": 0.8,
+                "scalable": true
+              },
+              "durationDays": 90
+            }
+          ]
+        },
+        {
+          "id": "wait",
+          "textKey": "hist.choice.wait",
+          "aiWeight": 0.6,
+          "effects": [
+            {
+              "type": "FactoryOutput",
+              "params": {
+                "multiplier": 0.6,
+                "scalable": true
+              },
+              "durationDays": 90
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "_note": "TSK-019. Record 31: MR ×0.85, LE ×0.85 (1460); IN ×1.15 (1460).",
+      "id": "hist.2012.postpc",
+      "category": "history",
+      "title": {
+        "key": "hist.2012.postpc.title"
+      },
+      "text": {
+        "key": "hist.2012.postpc.text"
+      },
+      "cause": { "key": "hist.cause" },
+      "trigger": {
+        "type": "Manual"
+      },
+      "targets": {
+        "type": "Player"
+      },
+      "oncePerGame": true,
+      "effects": [
+        {
+          "type": "MarketDemand",
+          "params": {
+            "segment": "midrange",
+            "multiplier": 0.85,
+            "scalable": true
+          },
+          "durationDays": 1460
+        },
+        {
+          "type": "MarketDemand",
+          "params": {
+            "segment": "lowend",
+            "multiplier": 0.85,
+            "scalable": true
+          },
+          "durationDays": 1460
+        },
+        {
+          "type": "MarketDemand",
+          "params": {
+            "segment": "industries",
+            "multiplier": 1.15,
+            "scalable": true
+          },
+          "durationDays": 1460
+        }
+      ]
+    },
+    {
+      "_note": "TSK-019. Record 32: core-count race, top 3, bonus ×1.10 on HE+MR for 1095 days.",
+      "id": "hist.2017.corewar",
+      "category": "history",
+      "title": {
+        "key": "hist.2017.corewar.title"
+      },
+      "text": {
+        "key": "hist.2017.corewar.text"
+      },
+      "cause": { "key": "hist.cause" },
+      "trigger": {
+        "type": "Manual"
+      },
+      "targets": {
+        "type": "Player"
+      },
+      "oncePerGame": true,
+      "effects": [
+        {
+          "type": "AttributeRace",
+          "params": {
+            "raceId": "core2017",
+            "attribute": "coreCount",
+            "topN": 3,
+            "bonus": 1.1,
+            "segments": [
+              "highend",
+              "midrange"
+            ],
+            "durationDays": 1095
+          }
+        }
+      ]
+    },
+    {
+      "_note": "TSK-019. Record 33: ForceDesignFlaw security, the leader HE gets Major, others Minor; fallback event when design-flaw-recalls is not active.",
+      "id": "hist.2018.meltdown",
+      "category": "history",
+      "title": {
+        "key": "hist.2018.meltdown.title"
+      },
+      "text": {
+        "key": "hist.2018.meltdown.text"
+      },
+      "cause": { "key": "hist.cause" },
+      "trigger": {
+        "type": "Manual"
+      },
+      "targets": {
+        "type": "Player"
+      },
+      "effects": [
+        {
+          "type": "ForceDesignFlaw",
+          "params": {
+            "typeId": "security",
+            "pick": "perCompanyAboveAvgIps60m",
+            "severityLeader": "Major",
+            "severityOthers": "Minor",
+            "discovery": "External",
+            "maxPerCompany": 1,
+            "fallbackEventId": "hist.2018.meltdown.fallback"
+          }
+        }
+      ]
+    },
+    {
+      "_note": "TSK-019. Record 33 fallback: rating ×0.95 for 365 days per company. DEVIATION: the design says the top 3; a standard effect cannot pick the top 3 (see mod/requests/historical-events.md).",
+      "id": "hist.2018.meltdown.fallback",
+      "category": "history",
+      "title": {
+        "key": "hist.2018.meltdown.title"
+      },
+      "text": {
+        "key": "hist.2018.meltdown.fallback.text"
+      },
+      "cause": { "key": "hist.cause" },
+      "trigger": {
+        "type": "Manual"
+      },
+      "targets": {
+        "type": "Player"
+      },
+      "effects": [
+        {
+          "type": "ModifierTimed",
+          "params": {
+            "channel": "market.rating.cpu",
+            "multiplier": 0.95,
+            "scalable": true
+          },
+          "durationDays": 365
+        }
+      ]
+    },
+    {
+      "_note": "TSK-019. Record 34: production.unitCost ×1.05 for 730 days.",
+      "id": "hist.2018.tradewar",
+      "category": "history",
+      "title": {
+        "key": "hist.2018.tradewar.title"
+      },
+      "text": {
+        "key": "hist.2018.tradewar.text"
+      },
+      "cause": { "key": "hist.cause" },
+      "trigger": {
+        "type": "Manual"
+      },
+      "targets": {
+        "type": "Player"
+      },
+      "oncePerGame": true,
+      "effects": [
+        {
+          "type": "ModifierTimed",
+          "params": {
+            "channel": "production.unitCost",
+            "scope": "Global",
+            "multiplier": 1.05,
+            "scalable": true
+          },
+          "durationDays": 730
+        }
+      ]
+    },
+    {
+      "_note": "TSK-019. Record 35, stage 1: demand of all ×0.85 for 90 days (disaster category, off by default).",
+      "id": "hist.2020.covid",
+      "category": "history",
+      "title": {
+        "key": "hist.2020.covid.title"
+      },
+      "text": {
+        "key": "hist.2020.covid.text"
+      },
+      "cause": { "key": "hist.cause" },
+      "trigger": {
+        "type": "Manual"
+      },
+      "targets": {
+        "type": "Player"
+      },
+      "oncePerGame": true,
+      "effects": [
+        {
+          "type": "MarketDemand",
+          "params": {
+            "segment": "all",
+            "multiplier": 0.85,
+            "scalable": true
+          },
+          "durationDays": 90
+        }
+      ]
+    },
+    {
+      "_note": "TSK-019. Record 35, stage 2 (+90 days): MR ×1.30, LE ×1.30 for 540 days.",
+      "id": "hist.2020.covid.rebound",
+      "category": "history",
+      "title": {
+        "key": "hist.2020.covid.title"
+      },
+      "text": {
+        "key": "hist.2020.covid.rebound.text"
+      },
+      "cause": { "key": "hist.cause" },
+      "trigger": {
+        "type": "Manual"
+      },
+      "targets": {
+        "type": "Player"
+      },
+      "oncePerGame": true,
+      "effects": [
+        {
+          "type": "MarketDemand",
+          "params": {
+            "segment": "midrange",
+            "multiplier": 1.3,
+            "scalable": true
+          },
+          "durationDays": 540
+        },
+        {
+          "type": "MarketDemand",
+          "params": {
+            "segment": "lowend",
+            "multiplier": 1.3,
+            "scalable": true
+          },
+          "durationDays": 540
+        }
+      ]
+    },
+    {
+      "_note": "TSK-019. Record 36: production.unitCost ×1.15 and contract.reward ×1.15 for 730 days.",
+      "id": "hist.2020.shortage",
+      "category": "history",
+      "title": {
+        "key": "hist.2020.shortage.title"
+      },
+      "text": {
+        "key": "hist.2020.shortage.text"
+      },
+      "cause": { "key": "hist.cause" },
+      "trigger": {
+        "type": "Manual"
+      },
+      "targets": {
+        "type": "Player"
+      },
+      "oncePerGame": true,
+      "effects": [
+        {
+          "type": "ModifierTimed",
+          "params": {
+            "channel": "production.unitCost",
+            "scope": "Global",
+            "multiplier": 1.15,
+            "scalable": true
+          },
+          "durationDays": 730
+        },
+        {
+          "type": "ModifierTimed",
+          "params": {
+            "channel": "contract.reward",
+            "scope": "Global",
+            "multiplier": 1.15,
+            "scalable": true
+          },
+          "durationDays": 730
+        }
+      ]
+    },
+    {
+      "_note": "TSK-019. Record 36: output of fabless companies ×0.90 for 540 days.",
+      "id": "hist.2020.shortage.fabless",
+      "category": "history",
+      "title": {
+        "key": "hist.2020.shortage.title"
+      },
+      "text": {
+        "key": "hist.2020.shortage.fabless.text"
+      },
+      "cause": { "key": "hist.cause" },
+      "trigger": {
+        "type": "Manual"
+      },
+      "targets": {
+        "type": "Player"
+      },
+      "effects": [
+        {
+          "type": "FactoryOutput",
+          "params": {
+            "multiplier": 0.9,
+            "scalable": true
+          },
+          "durationDays": 540
+        }
+      ]
+    },
+    {
+      "_note": "TSK-019. Record 36, a player without own fabs: priority to OEM (contract.reward ×1.10, 365 days) or to retail (popularity.gain ×1.10, 365 days).",
+      "id": "hist.decide.shortage.priority",
+      "category": "history",
+      "title": {
+        "key": "hist.2020.shortage.title"
+      },
+      "text": {
+        "key": "hist.decide.shortage.priority.text"
+      },
+      "cause": { "key": "hist.cause" },
+      "trigger": {
+        "type": "Manual"
+      },
+      "targets": {
+        "type": "Specific",
+        "companyKey": "player"
+      },
+      "important": true,
+      "notifyPlayer": true,
+      "timerDays": 30,
+      "defaultChoice": "oem",
+      "choices": [
+        {
+          "id": "oem",
+          "textKey": "hist.choice.oem",
+          "aiWeight": 0.5,
+          "effects": [
+            {
+              "type": "ModifierTimed",
+              "params": {
+                "channel": "contract.reward",
+                "multiplier": 1.1,
+                "scalable": true
+              },
+              "durationDays": 365
+            }
+          ]
+        },
+        {
+          "id": "retail",
+          "textKey": "hist.choice.retail",
+          "aiWeight": 0.5,
+          "effects": [
+            {
+              "type": "ModifierTimed",
+              "params": {
+                "channel": "popularity.gain",
+                "multiplier": 1.1,
+                "scalable": true
+              },
+              "durationDays": 365
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "_note": "TSK-019. Record 37: signChance ×0.85 for 1095 days for every company with a CPU.",
+      "id": "hist.2020.insourcing",
+      "category": "history",
+      "title": {
+        "key": "hist.2020.insourcing.title"
+      },
+      "text": {
+        "key": "hist.2020.insourcing.text"
+      },
+      "cause": { "key": "hist.cause" },
+      "trigger": {
+        "type": "Manual"
+      },
+      "targets": {
+        "type": "Player"
+      },
+      "effects": [
+        {
+          "type": "ModifierTimed",
+          "params": {
+            "channel": "contract.signChance",
+            "multiplier": 0.85,
+            "scalable": true
+          },
+          "durationDays": 1095
+        }
+      ]
+    },
+    {
+      "_note": "TSK-019. Record 37, companies with an OEM contract: discount (signChance ×1.0882 for 730 days, so the total is ×0.925; contract.reward ×0.92) or accept. APPROXIMATION of the design's 'instead of ×0.85'.",
+      "id": "hist.decide.insourcing",
+      "category": "history",
+      "title": {
+        "key": "hist.2020.insourcing.title"
+      },
+      "text": {
+        "key": "hist.decide.insourcing.text"
+      },
+      "cause": { "key": "hist.cause" },
+      "trigger": {
+        "type": "Manual"
+      },
+      "targets": {
+        "type": "Specific",
+        "companyKey": "player"
+      },
+      "important": true,
+      "notifyPlayer": true,
+      "timerDays": 30,
+      "defaultChoice": "accept",
+      "choices": [
+        {
+          "id": "discount",
+          "textKey": "hist.choice.discount",
+          "aiWeight": 0.5,
+          "effects": [
+            {
+              "type": "ModifierTimed",
+              "params": {
+                "channel": "contract.signChance",
+                "multiplier": 1.0882,
+                "scalable": true
+              },
+              "durationDays": 730
+            },
+            {
+              "type": "ModifierTimed",
+              "params": {
+                "channel": "contract.reward",
+                "multiplier": 0.92,
+                "scalable": true
+              },
+              "durationDays": 730
+            }
+          ]
+        },
+        {
+          "id": "accept",
+          "textKey": "hist.choice.accept",
+          "aiWeight": 0.5,
+          "effects": []
+        }
+      ]
+    },
+    {
+      "_note": "TSK-019. Record 38: taxes ×0.75 for 1825 days for manufacturers with fabs.",
+      "id": "hist.2022.chipsact",
+      "category": "history",
+      "title": {
+        "key": "hist.2022.chipsact.title"
+      },
+      "text": {
+        "key": "hist.2022.chipsact.text"
+      },
+      "cause": { "key": "hist.cause" },
+      "trigger": {
+        "type": "Manual"
+      },
+      "targets": {
+        "type": "Player"
+      },
+      "effects": [
+        {
+          "type": "ModifierTimed",
+          "params": {
+            "channel": "taxes",
+            "multiplier": 0.75,
+            "scalable": true
+          },
+          "durationDays": 1825
+        }
+      ]
+    },
+    {
+      "_note": "TSK-019. Record 40: HE ×1.20, IN ×1.20 for 1095 days.",
+      "id": "hist.2023.aiboom",
+      "category": "history",
+      "title": {
+        "key": "hist.2023.aiboom.title"
+      },
+      "text": {
+        "key": "hist.2023.aiboom.text"
+      },
+      "cause": { "key": "hist.cause" },
+      "trigger": {
+        "type": "Manual"
+      },
+      "targets": {
+        "type": "Player"
+      },
+      "oncePerGame": true,
+      "effects": [
+        {
+          "type": "MarketDemand",
+          "params": {
+            "segment": "highend",
+            "multiplier": 1.2,
+            "scalable": true
+          },
+          "durationDays": 1095
+        },
+        {
+          "type": "MarketDemand",
+          "params": {
+            "segment": "industries",
+            "multiplier": 1.2,
+            "scalable": true
+          },
+          "durationDays": 1095
+        }
+      ]
+    },
+    {
+      "_note": "TSK-019. Record 41: gpu.demand ×1.35 for 365 days, global (AC-10.2). Needs gpu-product-line.",
+      "id": "hist.2017.cryptoboom",
+      "category": "history",
+      "title": {
+        "key": "hist.2017.cryptoboom.title"
+      },
+      "text": {
+        "key": "hist.2017.cryptoboom.text"
+      },
+      "cause": { "key": "hist.cause" },
+      "trigger": {
+        "type": "Manual"
+      },
+      "targets": {
+        "type": "Player"
+      },
+      "oncePerGame": true,
+      "effects": [
+        {
+          "type": "ModifierTimed",
+          "params": {
+            "channel": "gpu.demand",
+            "scope": "Global",
+            "multiplier": 1.35,
+            "scalable": true
+          },
+          "durationDays": 365
+        }
+      ]
+    },
+    {
+      "_note": "TSK-019. Record 42: gpu.demand ×1.45 for 365 days, global. Needs gpu-product-line.",
+      "id": "hist.2021.cryptoboom",
+      "category": "history",
+      "title": {
+        "key": "hist.2021.cryptoboom.title"
+      },
+      "text": {
+        "key": "hist.2021.cryptoboom.text"
+      },
+      "cause": { "key": "hist.cause" },
+      "trigger": {
+        "type": "Manual"
+      },
+      "targets": {
+        "type": "Player"
+      },
+      "oncePerGame": true,
+      "effects": [
+        {
+          "type": "ModifierTimed",
+          "params": {
+            "channel": "gpu.demand",
+            "scope": "Global",
+            "multiplier": 1.45,
+            "scalable": true
+          },
+          "durationDays": 365
+        }
+      ]
+    },
+    {
+      "_note": "TSK-019. News that a planned entry did not happen in this timeline (dispatcher fallback, FR-2 item 4).",
+      "id": "hist.fizzle",
+      "category": "history",
+      "title": {
+        "key": "hist.fizzle.title"
+      },
+      "text": {
+        "key": "hist.fizzle.text"
+      },
+      "cause": {
+        "key": "hist.fizzle.cause"
+      },
+      "trigger": {
+        "type": "Manual"
+      },
+      "targets": {
+        "type": "Player"
+      },
+      "effects": []
+    },
+    {
+      "_note": "TSK-019. Summary of the events already in force at the start of the game (FR-4 item 4).",
+      "id": "hist.catchup.summary",
+      "category": "history",
+      "title": {
+        "key": "hist.catchup.title"
+      },
+      "text": {
+        "key": "hist.catchup.summary.text"
+      },
+      "cause": {
+        "key": "hist.catchup.summary.cause"
+      },
+      "trigger": {
+        "type": "Manual"
+      },
+      "targets": {
+        "type": "Player"
+      },
+      "effects": []
+    },
+    {
+      "_note": "TSK-023 (FR-16). Reference letter about the game's own spin-off of the foundries (CompanyEventHandler.TriggerSolarFoundriesSpinOff). No effects: the game does its part. Args: [id, name of the parent, name of the foundry]; the source line and the cause come from HistArgs (BuiltInNews).",
+      "id": "hist.news.solarfoundries",
+      "category": "history",
+      "title": { "key": "hist.news.solarfoundries.title" }, "text": { "key": "hist.news.solarfoundries.text" }, "cause": { "key": "hist.cause" },
+      "trigger": { "type": "Manual" }, "targets": { "type": "Player" },
+      "effects": []
+    },
+    {
+      "_note": "TSK-023 (FR-16). Reference letter about the end of the x86 licences (LicenseHelper.OnX86LicenseRevoked). No effects.",
+      "id": "hist.news.x86license",
+      "category": "history",
+      "title": { "key": "hist.news.x86license.title" }, "text": { "key": "hist.news.x86license.text" }, "cause": { "key": "hist.cause" },
+      "trigger": { "type": "Manual" }, "targets": { "type": "Player" },
+      "effects": []
+    }
+  ]
+}

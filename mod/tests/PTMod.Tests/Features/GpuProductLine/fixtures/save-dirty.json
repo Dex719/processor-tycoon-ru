@@ -1,0 +1,45 @@
+{
+  "divisionFounded": true,
+  "foundedOn": { "y": 1995, "m": 13, "d": 1 },
+  "marketModeApplied": "weird",
+  "nextId": 3,
+  "research": {
+    "completed": ["arch.2d", "arch.2d", "arch.nope", "", "vram.dram"],
+    "currentId": "arch.nope", "currentProgress": 0.5, "queue": ["vram.vram", "vram.vram", "arch.2d", "cool.fan", "x.unknown"], "funding": 5
+  },
+  "designs": [
+    { "id": "d-1", "name": "<b>Old</b> card\u0001 <color=#f00", "archId": "arch.unknown", "memId": "vram.sgram", "coolerId": "cool.fan",
+      "node": "350nm", "die": -80, "clockMHz": 100, "busWidth": -5, "vramMB": 4,
+      "stats": { "effectivePerf": 225.9, "powerW": -1, "failureRate": 0.085 } },
+    { "id": "d-2", "name": "Good", "archId": "arch.3d", "memId": "vram.sgram", "coolerId": "cool.fan", "node": "350nm", "die": 80, "clockMHz": 100, "busWidth": 128, "vramMB": 4 },
+    { "id": "d-2", "name": "Duplicate", "archId": "arch.3d", "memId": "vram.sgram", "coolerId": "cool.fan" },
+    { "name": "No id" }
+  ],
+  "projects": [
+    { "id": "p-1", "designId": "d-1", "progress": 0.3, "totalCost": 1000, "days": 100, "inflationAtStart": 2.0 },
+    { "id": "p-2", "designId": "d-2", "progress": 7, "totalCost": -4, "days": -3, "inflationAtStart": 0 },
+    { "id": "p-3", "designId": "d-404", "progress": 0.1 }
+  ],
+  "products": [
+    { "id": "g-1", "designId": "d-1", "owner": "player", "name": "Old card", "status": "selling", "price": -3, "stock": -5, "lines": -1, "unitsPerDay": -2,
+      "companyKey": "42", "released": { "y": 1997, "m": 2, "d": 30 },
+      "stats": { "effectivePerf": 225.9, "powerW": 6.19, "failureRate": 0.085, "dieMaterial": 8, "perGoodExtras": 37.7 },
+      "segIds": ["consumer", "", "consumer", "other"], "pop": [1.7, 0.5, 0.4],
+      "ledger": { "startMonthIndex": -4, "sold": [10, -20, 30], "produced": [1], "failed": [], "income": [5, -6], "cost": [7] } },
+    { "id": "g-2", "designId": "", "owner": "vendor", "vendorId": "ati", "companyKey": "ai:12", "name": "Radeon 1", "status": "selling", "price": 100, "stock": 50 },
+    { "id": "g-3", "owner": "somebody", "name": "Strange" },
+    { "id": "g-4", "owner": "background", "name": "Background", "status": "gone", "companyKey": "ai:", "price": 10, "segIds": ["consumer"], "pop": [] },
+    { "id": "g-1", "owner": "player", "name": "Repeated id", "status": "ready" }
+  ],
+  "vendors": [
+    { "id": "ati", "state": "weird", "companyKey": "player ", "launchCount": -2, "lastLaunch": [ { "seg": "consumer", "date": { "y": 1998, "m": 2, "d": 1 } }, { "seg": "consumer", "date": { "y": 1999, "m": 2, "d": 1 } }, { "seg": "", "date": { "y": 1998, "m": 2, "d": 1 } }, { "seg": "compute", "date": { "y": 1998, "m": 14, "d": 1 } } ] }
+  ],
+  "market": { "seeded": true, "openSegIds": ["consumer", "consumer", "compute"], "potentialSales": [310, -1], "playerShareDaily": [0.5, 3, -1], "playerSoldMonthly": [5, -9] },
+  "synergy": { "entries": [ { "companyKey": "player", "sCpu": 4, "sGpu": -1 }, { "companyKey": "7", "sCpu": 0.1 }, { "companyKey": "player", "sCpu": 0.2 } ] },
+  "news": { "lastLeaderMail": [ { "seg": "consumer", "date": { "y": 1998, "m": 3, "d": 1 } }, { "seg": "compute" } ] },
+  "consoleOrders": [
+    { "id": "k.unknown", "status": "active", "productId": "g-1", "unitsPerDay": 10 },
+    { "id": "sony.2", "status": "offered", "productId": "g-404", "deliveredWindow": [1, -2] },
+    { "id": "sony.2", "status": "offered" }
+  ]
+}

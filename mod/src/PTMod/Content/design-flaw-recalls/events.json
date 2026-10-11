@@ -1,0 +1,97 @@
+{
+  "schema": 1,
+  "records": [
+
+    {
+      "id": "dfr.decide.public",
+      "category": "design-flaw",
+      "title": { "key": "dfr.event.public.title" }, "text": { "key": "dfr.event.public.body" }, "cause": { "key": "dfr.event.public.cause" },
+      "trigger": { "type": "Manual" },
+      "targets": { "type": "Specific", "companyKey": "player" },
+      "important": true,
+      "timerDays": 30, "defaultChoice": "patch",
+      "choices": [
+        { "id": "recall",   "textKey": "dfr.choice.recall",   "effects": [ { "type": "FlawRecall",        "params": {} } ] },
+        { "id": "stepping", "textKey": "dfr.choice.stepping", "effects": [ { "type": "FlawStepping",      "params": {} } ] },
+        { "id": "patch",    "textKey": "dfr.choice.patch",    "effects": [ { "type": "FlawSoftwarePatch", "params": {} } ] },
+        { "id": "ignore",   "textKey": "dfr.choice.ignore",   "effects": [ { "type": "FlawIgnore",        "params": {} } ] }
+      ]
+    },
+
+    {
+      "id": "dfr.decide.public.nopatch",
+      "category": "design-flaw",
+      "title": { "key": "dfr.event.public.title" }, "text": { "key": "dfr.event.public.body" }, "cause": { "key": "dfr.event.public.nopatch.cause" },
+      "trigger": { "type": "Manual" },
+      "targets": { "type": "Specific", "companyKey": "player" },
+      "important": true,
+      "timerDays": 30, "defaultChoice": "ignore",
+      "choices": [
+        { "id": "recall",   "textKey": "dfr.choice.recall",   "effects": [ { "type": "FlawRecall",   "params": {} } ] },
+        { "id": "stepping", "textKey": "dfr.choice.stepping", "effects": [ { "type": "FlawStepping", "params": {} } ] },
+        { "id": "ignore",   "textKey": "dfr.choice.ignore",   "effects": [ { "type": "FlawIgnore",   "params": {} } ] }
+      ]
+    },
+
+    {
+      "id": "dfr.decide.internal",
+      "category": "design-flaw",
+      "title": { "key": "dfr.event.internal.title" }, "text": { "key": "dfr.event.internal.body" }, "cause": { "key": "dfr.event.internal.cause" },
+      "trigger": { "type": "Manual" },
+      "targets": { "type": "Specific", "companyKey": "player" },
+      "important": true,
+      "timerDays": 30, "defaultChoice": "patch",
+      "choices": [
+        { "id": "recall",   "textKey": "dfr.choice.recall",   "effects": [ { "type": "FlawRecall",        "params": {} } ] },
+        { "id": "stepping", "textKey": "dfr.choice.stepping", "effects": [ { "type": "FlawStepping",      "params": {} } ] },
+        { "id": "patch",    "textKey": "dfr.choice.patch",    "effects": [ { "type": "FlawSoftwarePatch", "params": {} } ] },
+        { "id": "ignore",   "textKey": "dfr.choice.ignore",   "effects": [ { "type": "FlawIgnore",        "params": {} } ] }
+      ]
+    },
+
+    {
+      "id": "dfr.decide.internal.nopatch",
+      "category": "design-flaw",
+      "title": { "key": "dfr.event.internal.title" }, "text": { "key": "dfr.event.internal.body" }, "cause": { "key": "dfr.event.internal.nopatch.cause" },
+      "trigger": { "type": "Manual" },
+      "targets": { "type": "Specific", "companyKey": "player" },
+      "important": true,
+      "timerDays": 30, "defaultChoice": "ignore",
+      "choices": [
+        { "id": "recall",   "textKey": "dfr.choice.recall",   "effects": [ { "type": "FlawRecall",   "params": {} } ] },
+        { "id": "stepping", "textKey": "dfr.choice.stepping", "effects": [ { "type": "FlawStepping", "params": {} } ] },
+        { "id": "ignore",   "textKey": "dfr.choice.ignore",   "effects": [ { "type": "FlawIgnore",   "params": {} } ] }
+      ]
+    },
+
+    {
+      "id": "dfr.decide.leaked",
+      "category": "design-flaw",
+      "title": { "key": "dfr.event.leaked.title" }, "text": { "key": "dfr.event.leaked.body" }, "cause": { "key": "dfr.event.leaked.cause" },
+      "trigger": { "type": "Manual" },
+      "targets": { "type": "Specific", "companyKey": "player" },
+      "important": true,
+      "timerDays": 30, "defaultChoice": "patch",
+      "choices": [
+        { "id": "recall",   "textKey": "dfr.choice.recall",   "effects": [ { "type": "FlawRecall",        "params": {} } ] },
+        { "id": "stepping", "textKey": "dfr.choice.stepping", "effects": [ { "type": "FlawStepping",      "params": {} } ] },
+        { "id": "patch",    "textKey": "dfr.choice.patch",    "effects": [ { "type": "FlawSoftwarePatch", "params": {} } ] }
+      ]
+    },
+
+    {
+      "id": "dfr.decide.leaked.nopatch",
+      "category": "design-flaw",
+      "title": { "key": "dfr.event.leaked.title" }, "text": { "key": "dfr.event.leaked.body" }, "cause": { "key": "dfr.event.leaked.nopatch.cause" },
+      "trigger": { "type": "Manual" },
+      "targets": { "type": "Specific", "companyKey": "player" },
+      "important": true,
+      "timerDays": 30, "defaultChoice": "stepping",
+      "choices": [
+        { "id": "recall",   "textKey": "dfr.choice.recall",   "effects": [ { "type": "FlawRecall",   "params": {} } ] },
+        { "id": "stepping", "textKey": "dfr.choice.stepping", "effects": [ { "type": "FlawStepping", "params": {} } ] }
+      ]
+    }
+
+  ]
+}

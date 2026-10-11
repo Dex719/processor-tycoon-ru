@@ -1,0 +1,47 @@
+{
+  "schema": 1,
+  "records": [
+    {
+      "id": "matrox", "name": { "ru": "Matrox", "en": "Matrox" }, "series": "Millennium", "bindTo": "",
+      "entryYear": 1983, "exitYear": 2005, "mergeInto": "", "mergeYear": 0,
+      "techLag": 1.5, "priceFactor": 0.95, "capacityShare": 0.21, "designIntervalMonths": 24, "strength": 0.6,
+      "segments": ["consumer", "office2d", "gaming.low"], "color": "#2E7D6B"
+    },
+    {
+      "id": "ati", "name": { "ru": "ATI", "en": "ATI" }, "series": "Radeon", "bindTo": "",
+      "entryYear": 1985, "exitYear": 0, "mergeInto": "amd.gpu", "mergeYear": 2006,
+      "techLag": 0.75, "priceFactor": 0.9, "capacityShare": 0.3, "designIntervalMonths": 15, "strength": 0.8,
+      "segments": ["consumer", "office2d", "gaming.high", "gaming.mid", "gaming.low"], "color": "#C62828"
+    },
+    {
+      "id": "s3", "name": { "ru": "S3", "en": "S3" }, "series": "Savage", "bindTo": "",
+      "entryYear": 1989, "exitYear": 2003, "mergeInto": "", "mergeYear": 0,
+      "techLag": 1.5, "priceFactor": 0.8, "capacityShare": 0.24, "designIntervalMonths": 18, "strength": 0.5,
+      "segments": ["consumer", "office2d", "gaming.low"], "color": "#6A1B9A"
+    },
+    {
+      "id": "nvidia", "name": { "ru": "NVIDIA", "en": "NVIDIA" }, "series": "GeForce", "bindTo": "",
+      "entryYear": 1995, "exitYear": 0, "mergeInto": "", "mergeYear": 0,
+      "techLag": 0.5, "priceFactor": 1.05, "capacityShare": 0.36, "designIntervalMonths": 12, "strength": 1.0,
+      "segments": ["consumer", "gaming.high", "gaming.mid", "gaming.low", "compute", "ai"], "color": "#76B900"
+    },
+    {
+      "id": "3dfx", "name": { "ru": "3dfx", "en": "3dfx" }, "series": "Voodoo", "bindTo": "",
+      "entryYear": 1996, "exitYear": 0, "mergeInto": "nvidia", "mergeYear": 2001,
+      "techLag": 0.25, "priceFactor": 1.1, "capacityShare": 0.3, "designIntervalMonths": 12, "strength": 0.9,
+      "segments": ["consumer", "gaming.high", "gaming.mid"], "color": "#F9A825"
+    },
+    {
+      "id": "amd.gpu", "name": { "ru": "AMD", "en": "AMD" }, "series": "Radeon", "bindTo": "ai:1", "fallbackVirtual": true,
+      "entryYear": 2006, "exitYear": 0, "mergeInto": "", "mergeYear": 0,
+      "techLag": 0.75, "priceFactor": 0.9, "capacityShare": 0.3, "designIntervalMonths": 15, "strength": 0.8,
+      "segments": ["consumer", "gaming.high", "gaming.mid", "gaming.low", "compute", "ai"], "color": "#D32F2F"
+    },
+    {
+      "id": "intel.gpu", "name": { "ru": "Intel", "en": "Intel" }, "series": "Arc", "bindTo": "ai:0", "fallbackVirtual": false,
+      "entryYear": 2022, "exitYear": 0, "mergeInto": "", "mergeYear": 0,
+      "techLag": 1.5, "priceFactor": 0.85, "capacityShare": 0.18, "designIntervalMonths": 18, "strength": 0.5,
+      "segments": ["consumer", "gaming.mid", "gaming.low", "compute"], "color": "#1565C0"
+    }
+  ]
+}

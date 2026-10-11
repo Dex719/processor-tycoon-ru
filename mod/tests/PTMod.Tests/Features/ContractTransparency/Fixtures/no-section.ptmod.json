@@ -1,0 +1,38 @@
+{
+  "schema": 1,
+  "modVersion": "0.1.0",
+  "gameVersion": "0.2.3",
+  "saveName": "1985_3_1",
+  "gameDate": "1985-03-01",
+  "writtenUtc": "2026-10-10T18:42:07Z",
+  "features": {
+    "mod-framework": {
+      "_schema": 1,
+      "startDate": "1980-01-01",
+      "flags": {
+        "first-year-onboarding": {
+          "tutorialSeen": 1
+        }
+      }
+    },
+    "event-system": {
+      "_schema": 2,
+      "v": 5
+    },
+    "gpu-product-line": {
+      "_schema": 3,
+      "lines": [
+        "a",
+        {
+          "b": [
+            1,
+            2,
+            3
+          ]
+        }
+      ],
+      "ratio": 0.5,
+      "big": 9007199254740993
+    }
+  }
+}

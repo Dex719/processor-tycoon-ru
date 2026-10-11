@@ -1,0 +1,9 @@
+{
+  "schema": 1,
+  "records": [
+    { "id": "v.base", "name": { "ru": "База", "en": "Base" }, "series": "Alpha", "bindTo": "", "entryYear": 1983, "exitYear": 0, "mergeInto": "", "mergeYear": 0,
+      "techLag": 1.5, "priceFactor": 0.95, "capacityShare": 0.35, "designIntervalMonths": 24, "strength": 0.6, "segments": ["s.single"], "color": "#2E7D6B" },
+    { "id": "v.bound", "name": { "ru": "Привязанный", "en": "Bound" }, "series": "Beta", "bindTo": "ai:1", "fallbackVirtual": true, "entryYear": 1990, "exitYear": 0, "mergeInto": "v.base", "mergeYear": 2000,
+      "techLag": 0.75, "priceFactor": 0.9, "capacityShare": 0.5, "designIntervalMonths": 15, "strength": 0.8, "segments": ["s.single", "s.eras"], "color": "#D32F2F" }
+  ]
+}

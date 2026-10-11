@@ -1,0 +1,46 @@
+{
+  "schema": 1,
+  "modVersion": "9.0.0",
+  "gameVersion": "0.2.3",
+  "saveName": "1990_6_1",
+  "gameDate": "1990-06-01",
+  "writtenUtc": "2027-03-01T10:00:00Z",
+  "features": {
+    "mod-framework": {
+      "_schema": 1,
+      "startDate": "1980-01-01"
+    },
+    "contract-transparency": {
+      "_schema": 99,
+      "journal": {
+        "pages": [
+          {
+            "when": 19900601,
+            "what": "offer",
+            "cpu": { "id": 41, "name": "Alpha 286" },
+            "numbers": [ 40, 0.2105 ]
+          }
+        ],
+        "format": "binary-ish",
+        "next": null
+      },
+      "offersSent": "seven",
+      "tendersWon": [ 1 ]
+    },
+    "gpu-product-line": {
+      "_schema": 3,
+      "lines": [
+        "a",
+        {
+          "b": [
+            1,
+            2,
+            3
+          ]
+        }
+      ],
+      "ratio": 0.5,
+      "big": 9007199254740993
+    }
+  }
+}

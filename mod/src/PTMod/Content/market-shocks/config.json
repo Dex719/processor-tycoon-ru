@@ -1,0 +1,19 @@
+{
+  "schema": 1,
+  "categories": [
+    { "id": "ms.supply",   "dailyChance": 0.0045, "minGapDays": 60,  "maxActive": 2 },
+    { "id": "ms.industry", "dailyChance": 0.0035, "minGapDays": 365, "maxActive": 1 },
+    { "id": "ms.price",    "dailyChance": 0.006,  "minGapDays": 240, "maxActive": 1 },
+    { "id": "ms.demand",   "dailyChance": 0.003,  "minGapDays": 540, "maxActive": 1 },
+    { "id": "ms.trade",    "dailyChance": 0.004,  "minGapDays": 90,  "maxActive": 2 },
+    { "id": "ms.cycle",    "dailyChance": 0.0,    "minGapDays": 0,   "maxActive": 2 }
+  ],
+  "channelLimits": [
+    { "channel": "production.memoryCost",  "min": 0.5, "max": 2.0 },
+    { "channel": "production.waferCost",   "min": 0.6, "max": 2.0 },
+    { "channel": "market.demand.*",        "min": 0.6, "max": 1.6 },
+    { "channel": "production.output",      "min": 0.4, "max": 1.5 },
+    { "channel": "production.unitCost",    "min": 0.7, "max": 1.6 },
+    { "channel": "factory.operatingCost",  "min": 0.7, "max": 1.8 }
+  ]
+}

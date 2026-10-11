@@ -1,0 +1,11 @@
+{
+  "schema": 1,
+  "records": [
+    { "id": "n.a1", "branch": "architecture", "unlocks": "a.one", "year": 1981, "baseDays": 120, "monthlyCost": 2000000, "requiresNodes": [], "requiresGameTechs": [] },
+    { "id": "n.a2", "branch": "architecture", "unlocks": "a.two", "year": 1995, "baseDays": 200, "monthlyCost": 20000000, "requiresNodes": ["n.a1", "n.m2"], "requiresGameTechs": [] },
+    { "id": "n.m1", "branch": "memory", "unlocks": "m.one", "year": 1981, "baseDays": 60, "monthlyCost": 1000000, "requiresNodes": [], "requiresGameTechs": [] },
+    { "id": "n.m2", "branch": "memory", "unlocks": "m.two", "year": 1994, "baseDays": 150, "monthlyCost": 10000000, "requiresNodes": ["n.m1"], "requiresGameTechs": ["SDR"] },
+    { "id": "n.c1", "branch": "cooling", "unlocks": "c.one", "year": 1981, "baseDays": 30, "monthlyCost": 500000, "requiresNodes": [], "requiresGameTechs": [] },
+    { "id": "n.c2", "branch": "cooling", "unlocks": "c.two", "year": 1995, "baseDays": 60, "monthlyCost": 2000000, "requiresNodes": ["n.c1"], "requiresGameTechs": [] }
+  ]
+}

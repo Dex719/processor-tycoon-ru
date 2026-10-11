@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "modVersion": "0.1.0",
+  "gameVersion": "0.2.3",
+  "saveName": "pg-fixture-no-section",
+  "gameDate": "1996-06-01",
+  "writtenUtc": "2026-10-10T12:00:00Z",
+  "features": {
+    "mod-framework": {
+      "_schema": 1,
+      "startDate": "1990-01-01",
+      "random": { "worldSeed": 123456789, "streams": {} },
+      "flags": { "market-shocks": { "warned": 1 } },
+      "newGameOptions": {},
+      "modifiers": [],
+      "reputation": {},
+      "mail": { "nextId": 1, "mails": [], "queue": [] }
+    },
+    "market-shocks": {
+      "_schema": 1,
+      "lastShock": "1995-03-01",
+      "queued": [ { "id": "ms.supply.fab-fire", "due": "1996-09-01" } ]
+    },
+    "some-future-feature": {
+      "_schema": 3,
+      "payload": [ 1, 2, 3 ],
+      "note": "a section of a feature this build does not know"
+    }
+  }
+}

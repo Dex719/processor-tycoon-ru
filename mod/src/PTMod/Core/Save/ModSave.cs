@@ -74,6 +74,7 @@ namespace PTMod.Core
         private static readonly HashSet<string> Handed = new HashSet<string>(StringComparer.Ordinal);   // registered sections whose participant holds its data now
         private static readonly HashSet<string> Unmanaged = new HashSet<string>(StringComparer.Ordinal); // sections of code that is no feature: nothing switches them off
         private static readonly List<PendingNotice> PendingNotices = new List<PendingNotice>();
+        private static readonly HashSet<string> NewerSections = new HashSet<string>(StringComparer.Ordinal);   // sections of the save in play that a newer mod wrote
 
         private static SideFileModel _model;
         private static SideFileIo _io;
@@ -85,6 +86,7 @@ namespace PTMod.Core
         private static DateTime? _startDate;
         private static bool _newGameWarned;
         private static bool _gameBroken;
+        private static bool _fileIsNewer;   // the whole side file of the save in play was written by a newer mod
         private static bool _retrying;
         private static int _retryFrames;
         private static Action<string, object[]> _notice;
@@ -122,6 +124,19 @@ namespace PTMod.Core
         public static SideFileStatus Status
         {
             get { return _status; }
+        }
+
+        /// <summary>
+        /// The section of this feature in the side file of the save in play was written by a newer mod than this one (its <c>_schema</c> is above
+        /// the feature's <c>SchemaVersion</c>), or the whole file was. The core did not read it: the feature got <c>ResetToDefaults</c> and the stored
+        /// section is kept unchanged and written back with every save (D20). Until now the feature could not tell this from "there is no section";
+        /// a feature that must not play on empty data for such a save (it would create records the file never gets) asks this in
+        /// <see cref="AfterRead"/> or later. False for a new game, in the menu, and for a feature without a participant; a feature that is off when
+        /// the file is read is judged when it is switched on (the core hands its section over then). Valid until the side file is read again.
+        /// </summary>
+        public static bool IsSectionNewer(string featureId)
+        {
+            return featureId != null && (_fileIsNewer || NewerSections.Contains(featureId)) && Registered.Contains(featureId);
         }
 
         /// <summary>
@@ -237,6 +252,7 @@ namespace PTMod.Core
 
                 _status = SideFileStatus.NewGame;
                 _newGameWarned = false;
+                RecordNewer(report, true);
                 MarkHanded();
                 LogWarnings(report.Warnings);
                 ModLog.Info(CoreId, "save: new game, " + model.ParticipantCount + " participant(s) reset");
@@ -265,6 +281,7 @@ namespace PTMod.Core
                 }
 
                 _status = SideFileStatus.None;
+                RecordNewer(report, true);
                 MarkHanded();
                 LogWarnings(report.Warnings);
                 ModLog.Debug(CoreId, "save: the state of the last game is cleared");
@@ -432,6 +449,7 @@ namespace PTMod.Core
 
             _status = report.Status;
             _sideFilePath = report.Path;
+            RecordNewer(report, true);
             MarkHanded();
             Describe(report, name, model);
             ModHooks.Raise("ModSave.AfterRead", AfterRead);
@@ -595,6 +613,7 @@ namespace PTMod.Core
             {
                 Handed.Add(sectionId);
                 SideFileReadReport report = EnsureModel().RestoreParticipant(sectionId);
+                RecordNewer(report, false);
                 LogWarnings(report.Warnings);
                 ModLog.Debug(CoreId, "save: the section '" + sectionId + "' was handed to its participant");
             }
@@ -604,11 +623,43 @@ namespace PTMod.Core
             }
         }
 
+        /// <summary>Remembers which sections of the save in play are newer than the mod (<see cref="IsSectionNewer"/>); <paramref name="fresh"/> starts the list over (a new read).</summary>
+        private static void RecordNewer(SideFileReadReport report, bool fresh)
+        {
+            if (fresh)
+            {
+                NewerSections.Clear();
+                _fileIsNewer = false;
+            }
+            if (report == null) return;
+            if (report.FileIsNewer) _fileIsNewer = true;
+            foreach (string id in report.NewerSections) NewerSections.Add(id);
+        }
+
+        /// <summary>Keeps the state of a participant whose feature was switched off (see <see cref="OnFeatureStateChanged"/>). Never throws.</summary>
+        private static void Capture(string sectionId)
+        {
+            try
+            {
+                SideFileBuildReport report = EnsureModel().CaptureParticipant(sectionId);
+                LogWarnings(report.Warnings);
+                ModLog.Debug(CoreId, "save: the state of the section '" + sectionId + "' is kept for the time its feature is off");
+            }
+            catch (Exception ex)
+            {
+                ModLog.Error(CoreId, "save: cannot keep the state of the section '" + sectionId + "'", ex);
+            }
+        }
+
         private static void OnFeatureStateChanged(string featureId, FeatureState state)
         {
             if (state != FeatureState.Enabled)
             {
-                Handed.Remove(featureId);   // a feature that stops keeps nothing: its last written state waits in the model
+                // A feature that stops keeps nothing: its section waits in the model. It had its data and has stopped now (switched off, made
+                // Unavailable by a dependency, Faulted) and its OnDisabled has returned: take its state now, so that a save written while it is off,
+                // and a later switch-on, carry what it held at that moment and not an older copy or nothing (a section that was read and never
+                // written since the load is not in the model otherwise).
+                if (Handed.Remove(featureId)) Capture(featureId);
                 return;
             }
 

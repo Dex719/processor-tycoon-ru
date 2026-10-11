@@ -1,0 +1,38 @@
+{
+  "schema": 1,
+  "modVersion": "0.1.0",
+  "gameVersion": "0.2.3",
+  "saveName": "1986_1_1",
+  "gameDate": "1986-01-01",
+  "writtenUtc": "2026-10-10T18:42:07Z",
+  "features": {
+    "mod-framework": {
+      "_schema": 1,
+      "startDate": "1980-01-01"
+    },
+    "contract-transparency": {
+      "_schema": 1,
+      "offersSent": -5,
+      "tendersWon": "many",
+      "unknownField": [ 1, 2, 3 ],
+      "log": [
+        { "date": "1985-12-31", "type": "OfferSent", "source": "Manual", "cpuName": "ok", "data": { "units": "100" } },
+        { "date": "1985-13-45", "type": "OfferSent" },
+        { "date": "1985-12-31", "type": "Teleport" },
+        { "date": "1985-12-31", "type": "AutoRejected", "cpuId": -7, "data": null, "reasonKey": null },
+        7,
+        null,
+        { "date": 19851231, "type": "OfferSent" }
+      ],
+      "tenders": [
+        { "date": "1985-06-01", "outcome": "Maybe" },
+        { "date": "1985-06-01", "outcome": "Lost", "playerGameChance": 400, "playerActual": 7.5, "offers": [ null, { "company": "A", "cpu": "B", "ips": -3, "chance": -9, "actual": 2 } ], "pruned": null },
+        "not an object"
+      ]
+    },
+    "event-system": {
+      "_schema": 2,
+      "v": 5
+    }
+  }
+}

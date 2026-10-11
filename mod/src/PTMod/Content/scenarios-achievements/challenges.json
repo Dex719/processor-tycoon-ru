@@ -1,0 +1,91 @@
+{
+  "schema": 1,
+  "records": [
+    {
+      "id": "tight-credit",
+      "titleKey": "chl.tight-credit.title",
+      "descKey": "chl.tight-credit.desc",
+      "scoreBonus": 0.15,
+      "requiresPerCompanyCredit": true,
+      "modifiers": [
+        { "channel": "bank.creditLimit", "multiplier": 0.5, "appliesTo": "player" }
+      ],
+      "fail": []
+    },
+    {
+      "id": "expensive-research",
+      "titleKey": "chl.expensive-research.title",
+      "descKey": "chl.expensive-research.desc",
+      "scoreBonus": 0.15,
+      "modifiers": [
+        { "channel": "research.cost", "multiplier": 1.5, "appliesTo": "player" }
+      ],
+      "fail": []
+    },
+    {
+      "id": "fickle-market",
+      "titleKey": "chl.fickle-market.title",
+      "descKey": "chl.fickle-market.desc",
+      "scoreBonus": 0.10,
+      "modifiers": [
+        { "channel": "popularity.gain", "multiplier": 0.7, "appliesTo": "player" }
+      ],
+      "fail": []
+    },
+    {
+      "id": "taxman",
+      "titleKey": "chl.taxman.title",
+      "descKey": "chl.taxman.desc",
+      "scoreBonus": 0.10,
+      "modifiers": [
+        { "channel": "taxes", "multiplier": 1.5, "appliesTo": "player" }
+      ],
+      "fail": []
+    },
+    {
+      "id": "strong-rivals",
+      "titleKey": "chl.strong-rivals.title",
+      "descKey": "chl.strong-rivals.desc",
+      "scoreBonus": 0.20,
+      "modifiers": [
+        { "channel": "research.speed", "multiplier": 1.2, "appliesTo": "ai" }
+      ],
+      "fail": []
+    },
+    {
+      "id": "no-oem",
+      "titleKey": "chl.no-oem.title",
+      "descKey": "chl.no-oem.desc",
+      "scoreBonus": 0.20,
+      "requiresCompanyType": ["idm", "fabless"],
+      "modifiers": [],
+      "fail": [
+        { "id": "oem", "textKey": "chl.no-oem.fail",
+          "check": { "kind": "metric", "metric": "oem.active.count", "op": ">=", "value": 1 } }
+      ]
+    },
+    {
+      "id": "fabless-purist",
+      "titleKey": "chl.fabless-purist.title",
+      "descKey": "chl.fabless-purist.desc",
+      "scoreBonus": 0.20,
+      "requiresCompanyType": ["fabless"],
+      "modifiers": [],
+      "fail": [
+        { "id": "fab", "textKey": "chl.fabless-purist.fail",
+          "check": { "kind": "metric", "metric": "factory.lines", "op": ">", "value": 0 } }
+      ]
+    },
+    {
+      "id": "no-debt",
+      "titleKey": "chl.no-debt.title",
+      "descKey": "chl.no-debt.desc",
+      "scoreBonus": 0.25,
+      "modifiers": [],
+      "fail": [
+        { "id": "debt", "textKey": "chl.no-debt.fail",
+          "check": { "kind": "metric", "metric": "money.negativeStreakDays", "op": ">=", "value": 31 } }
+      ]
+    }
+  ]
+}

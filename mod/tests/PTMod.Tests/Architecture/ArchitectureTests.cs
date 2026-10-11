@@ -10,6 +10,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using PTMod.Core;
 using PTMod.Core.Logic.Content;
+using PTMod.Core.Logic.Features;
 using PTMod.Core.Logic.Json;
 using PTMod.Core.Logic.L10n;
 
@@ -596,6 +597,79 @@ namespace PTMod.Tests.Architecture
             List<string> extra = actualJson.Where(n => !expectedSet.Contains(n)).OrderBy(n => n, StringComparer.Ordinal).ToList();
             Assert.True(missing.Count == 0, "files of Content/ and L10n/ that PTMod.dll does not embed: " + string.Join(", ", missing));
             Assert.True(extra.Count == 0, "resources of PTMod.dll without a file in Content/ or L10n/: " + string.Join(", ", extra));
+        }
+
+        [Test]
+        public void BuiltDll_RegistersEveryFeatureOfTheTree_OnceAndOnlyThem()
+        {
+            // The final integration check (the owner of the build asks "is every feature in the DLL?"): each folder of Features/ has exactly one [ModFeature]
+            // class in its namespace, no [ModFeature] class lives elsewhere, and the DLL embeds the strings (both languages) and the content of every feature.
+            Assembly assembly;
+            string reason;
+            if (!BuiltDll.TryGet(out assembly, out reason))
+            {
+                Note.Skip("BuiltDll_RegistersEveryFeatureOfTheTree_OnceAndOnlyThem", reason);
+                return;
+            }
+
+            string src = SourceScan.SrcDirOrFail();
+            string featuresDir = Path.Combine(src, "Features");
+            Assert.True(Directory.Exists(featuresDir), "no folder " + featuresDir);
+            bool release = IsReleaseBuild(assembly);
+
+            Type[] types;
+            try
+            {
+                types = assembly.GetTypes();
+            }
+            catch (ReflectionTypeLoadException ex)
+            {
+                types = ex.Types.Where(type => type != null).ToArray();   // the classes of the engine and of the game cannot be loaded for inspection; the features can
+            }
+
+            var featuresByNamespace = new Dictionary<string, List<string>>(StringComparer.Ordinal);
+            foreach (Type type in types)
+            {
+                bool marked = CustomAttributeData.GetCustomAttributes(type).Any(a => a.AttributeType.FullName == "PTMod.Core.ModFeatureAttribute");
+                if (!marked) continue;
+
+                List<string> list;
+                if (!featuresByNamespace.TryGetValue(type.Namespace ?? string.Empty, out list)) featuresByNamespace[type.Namespace ?? string.Empty] = list = new List<string>();
+                list.Add(type.FullName);
+            }
+
+            var resources = new HashSet<string>(assembly.GetManifestResourceNames(), StringComparer.Ordinal);
+            var problems = new List<string>();
+            int features = 0;
+            foreach (string directory in Directory.GetDirectories(featuresDir))
+            {
+                string pascal = Path.GetFileName(directory);
+                if (release && pascal == "FrameworkSample") continue;   // left out of a release build (decision D27)
+
+                features++;
+                string slug = FeatureGraph.PascalToSlug(pascal);
+                List<string> classes;
+                if (!featuresByNamespace.TryGetValue("PTMod.Features." + pascal, out classes)) problems.Add(pascal + ": no [ModFeature] class in the namespace PTMod.Features." + pascal);
+                else if (classes.Count != 1) problems.Add(pascal + ": " + classes.Count + " [ModFeature] classes (" + string.Join(", ", classes) + "), the core registers one per feature");
+
+                foreach (string language in new[] { "ru", "en" })
+                {
+                    if (!resources.Contains("l10n/" + language + "/" + slug + ".json")) problems.Add(slug + ": the " + language + " strings (l10n/" + language + "/" + slug + ".json) are not embedded");
+                }
+
+                if (Directory.Exists(Path.Combine(src, "Content", slug)) && !resources.Any(n => n.StartsWith("content/" + slug + "/", StringComparison.Ordinal)))
+                    problems.Add(slug + ": its content (content/" + slug + "/...) is not embedded");
+            }
+
+            foreach (string ns in featuresByNamespace.Keys)
+            {
+                string pascal = ns.StartsWith("PTMod.Features.", StringComparison.Ordinal) ? ns.Substring("PTMod.Features.".Length) : null;
+                if (pascal == null || pascal.Contains(".") || !Directory.Exists(Path.Combine(featuresDir, pascal)))
+                    problems.Add("a [ModFeature] class outside Features/<Name>/: " + string.Join(", ", featuresByNamespace[ns]));
+            }
+
+            Assert.True(features >= 15, "too few feature folders found (" + features + "): is the source folder right? " + featuresDir);
+            Assert.True(problems.Count == 0, "features of the tree against PTMod.dll:\n  " + string.Join("\n  ", problems));
         }
 
         [Test]

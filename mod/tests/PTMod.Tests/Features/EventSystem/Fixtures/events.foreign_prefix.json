@@ -1,0 +1,54 @@
+{
+  "schema": 1,
+  "records": [
+    {
+      "id": "dfr.x",
+      "category": "ms.supply",
+      "title": {
+        "key": "ms.x.title"
+      },
+      "text": {
+        "key": "ms.x.text"
+      },
+      "trigger": {
+        "type": "DailyChance"
+      },
+      "effects": [
+        {
+          "type": "Reputation",
+          "params": {
+            "delta": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "ms.earthquake",
+      "category": "ms.supply",
+      "title": {
+        "key": "ms.earthquake.title"
+      },
+      "text": {
+        "key": "ms.earthquake.text"
+      },
+      "trigger": {
+        "type": "DailyChance"
+      },
+      "weight": 4,
+      "targets": {
+        "type": "AllCompanies"
+      },
+      "effects": [
+        {
+          "type": "ModifierTimed",
+          "params": {
+            "channel": "market.demand.lowend",
+            "multiplier": 0.9,
+            "scope": "Global"
+          },
+          "durationDays": 90
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,7 @@
+{
+  "schema": 1,
+  "records": [
+    { "id": "m.one", "nameKey": "gpu.test.m1", "year": 1981, "dataRateMTs": 4, "costPerMB": 400, "costDecayPerYear": 0.75, "costFloor": 0.2, "maxVramMB": 0.25, "busWidths": [8, 16], "projectCost": 1000000, "projectDays": 60 },
+    { "id": "m.two", "nameKey": "gpu.test.m2", "year": 1994, "dataRateMTs": 100, "costPerMB": 4, "costDecayPerYear": 0.7, "costFloor": 0.2, "maxVramMB": 16, "busWidths": [32, 64, 128], "projectCost": 10000000, "projectDays": 150 }
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "modVersion": "0.1.0",
+  "gameVersion": "0.2.3",
+  "saveName": "1976_4_1",
+  "gameDate": "1976-04-01",
+  "writtenUtc": "2026-10-10T12:00:00Z",
+  "features": {
+    "bankruptcy-recovery": {
+      "_schema": 1,
+      "creditLine": { "state": "open", "opensOn": "1975-01-01", "closesOn": "1978-01-01",
+                      "drawn": 2660000.0, "autoDraw": true, "closedReason": "" },
+      "loans": [
+        { "id": "bridge-1", "kind": "Bridge", "principal": 8400000.0, "outstanding": 6527277.0,
+          "annualRate": 0.30, "monthsTotal": 12, "monthsLeft": 9, "payment": 818892.0,
+          "openedOn": "1976-03-01" }
+      ],
+      "bailoutsUsed": 0,
+      "investorShare": { "active": false, "amount": 0.0, "share": 0.0, "monthsLeft": 0, "paid": 0.0, "cap": 0.0 },
+      "episode": { "preWarningSent": true, "defaultMailSent": true, "recoveryStreak": 0, "bailoutDeclined": false },
+      "lastBridgeClosedOn": "",
+      "nextLoanSeq": 2,
+      "journal": [
+        { "date": "1976-03-01", "op": "bridge.open", "amount": 8400000.0, "details": "12m @ 30%" },
+        { "date": "1976-03-01", "op": "bridge.fee", "amount": -420000.0, "details": "" },
+        { "date": "1976-04-01", "op": "loan.payment", "amount": -818892.0, "details": "bridge-1" }
+      ]
+    },
+    "rival-acquisitions": {
+      "_schema": 3,
+      "deals": [ { "id": "deal-1", "target": "acme", "price": 12500000.0, "closedOn": "1976-02-01" } ],
+      "note": "a section of another feature: it must come out of a save exactly as it went in"
+    }
+  }
+}

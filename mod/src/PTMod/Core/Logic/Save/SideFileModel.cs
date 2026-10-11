@@ -366,6 +366,25 @@ namespace PTMod.Core.Logic.Save
             return report;
         }
 
+        /// <summary>
+        /// The feature of a participant is being switched off in the middle of a session: takes the participant's state now and keeps it as the
+        /// section to write back. Without it a participant that was read from the file and switched off before the first save would leave the
+        /// file with nothing (<see cref="Build"/> does not ask an inactive participant), and a feature switched on again would get an older copy
+        /// than the state it was switched off with. Does nothing for a section that is kept as it was read (newer, unreadable) or whose participant
+        /// never got its data in this session. A participant that throws keeps the section it had. The report carries the warnings; its
+        /// <see cref="SideFileBuildReport.Document"/> stays null. Never throws.
+        /// </summary>
+        public SideFileBuildReport CaptureParticipant(string sectionId)
+        {
+            var report = new SideFileBuildReport();
+            ISideFileParticipant participant;
+            if (sectionId == null || !_byId.TryGetValue(sectionId, out participant)) return report;
+            if (_locked.Contains(sectionId) || !_initialized.Contains(sectionId)) return report;
+
+            WriteSection(participant, report, _retained[sectionId]);
+            return report;
+        }
+
         // ---- writing ----
 
         /// <summary>
@@ -533,12 +552,20 @@ namespace PTMod.Core.Logic.Save
         private JsonNode BuildSection(ISideFileParticipant participant, SideFileBuildReport report)
         {
             string id = participant.SectionId;
-            string path = "features." + id;
             JsonNode retained = _retained[id];
 
             if (_locked.Contains(id)) return retained;                       // newer or unreadable: as read
             if (!IsActive(id)) return retained;                              // switched off: its last state stays in the file
             if (retained != null && !_initialized.Contains(id)) return retained;   // never given its data this session: do not overwrite it with defaults
+
+            return WriteSection(participant, report, retained);
+        }
+
+        /// <summary>Asks the participant for its data and keeps the result as the latest state. The previous section is kept when it throws, none when it has no data.</summary>
+        private JsonNode WriteSection(ISideFileParticipant participant, SideFileBuildReport report, JsonNode retained)
+        {
+            string id = participant.SectionId;
+            string path = "features." + id;
 
             JsonObject data;
             try

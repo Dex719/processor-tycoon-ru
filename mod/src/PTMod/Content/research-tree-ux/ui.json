@@ -1,0 +1,49 @@
+{
+  "schema": 1,
+  "tabs": [
+    { "id": "all",         "titleKey": "rtux.tab.all",         "types": [0, 1, 2, 3, 4, 5, 6], "order": 0 },
+    { "id": "package",     "titleKey": "rtux.tab.package",     "types": [0], "order": 10 },
+    { "id": "lithography", "titleKey": "rtux.tab.lithography", "types": [1], "order": 20 },
+    { "id": "memory",      "titleKey": "rtux.tab.memory",      "types": [2], "order": 30 },
+    { "id": "frequency",   "titleKey": "rtux.tab.frequency",   "types": [3], "order": 40 },
+    { "id": "cache",       "titleKey": "rtux.tab.cache",       "types": [4], "order": 50 },
+    { "id": "wafer",       "titleKey": "rtux.tab.wafer",       "types": [5], "order": 60 },
+    { "id": "multicore",   "titleKey": "rtux.tab.multicore",   "types": [6], "order": 70 }
+  ],
+  "timeRescale": { "penaltyPerYear": 3.5, "bonusPerYear": 0.15, "bonusCap": 0.75 },
+  "tooltipFundings": [0.5, 2.0, 5.0],
+  "hoverSeenSeconds": 0.5,
+  "notifications": { "idleLabDays": 7, "idleCooldownDays": 30, "newTechPerMonth": 1 },
+  "sidebar": { "widthMin": 1.0, "widthMax": 1.6 },
+  "compare": {
+    "deltaHighlightPercent": 2.5,
+    "rows": [
+      { "id": "company",       "better": "none",   "order": 1 },
+      { "id": "manufacturer",  "better": "none",   "order": 2 },
+      { "id": "package",       "better": "none",   "order": 3 },
+      { "id": "lithography",   "better": "none",   "order": 4 },
+      { "id": "ips",           "better": "higher", "order": 10 },
+      { "id": "ipc",           "better": "higher", "order": 20 },
+      { "id": "frequency",     "better": "higher", "order": 30 },
+      { "id": "cores",         "better": "higher", "order": 40 },
+      { "id": "smt",           "better": "none",   "order": 45 },
+      { "id": "power",         "better": "lower",  "order": 50 },
+      { "id": "temperature",   "better": "lower",  "order": 60 },
+      { "id": "yield",         "better": "higher", "order": 70 },
+      { "id": "unitCost",      "better": "lower",  "order": 80 },
+      { "id": "price",         "better": "none",   "order": 90 },
+      { "id": "margin",        "better": "higher", "order": 100 },
+      { "id": "ipsPerWatt",    "better": "higher", "order": 110 },
+      { "id": "ipsPerDollar",  "better": "higher", "order": 120 },
+      { "id": "popularity",    "better": "higher", "order": 130 },
+      { "id": "soldLastMonth", "better": "higher", "order": 140 },
+      { "id": "dieSize",       "better": "none",   "order": 150 },
+      { "id": "transistors",   "better": "none",   "order": 160 },
+      { "id": "memory",        "better": "none",   "order": 165 },
+      { "id": "l1",            "better": "higher", "order": 170 },
+      { "id": "l2",            "better": "higher", "order": 180 },
+      { "id": "l3",            "better": "higher", "order": 190 },
+      { "id": "year",          "better": "none",   "order": 200 }
+    ]
+  }
+}

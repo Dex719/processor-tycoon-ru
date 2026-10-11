@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "records": [
+    { "id": "arch.2d",      "branch": "architecture", "unlocks": "arch.2d",      "year": 1981, "baseDays": 120, "monthlyCost": 2000000,   "requiresNodes": [], "requiresGameTechs": [] },
+    { "id": "arch.gui",     "branch": "architecture", "unlocks": "arch.gui",     "year": 1987, "baseDays": 150, "monthlyCost": 4000000,   "requiresNodes": ["arch.2d"], "requiresGameTechs": [] },
+    { "id": "arch.3d",      "branch": "architecture", "unlocks": "arch.3d",      "year": 1995, "baseDays": 200, "monthlyCost": 20000000,  "requiresNodes": ["arch.gui", "vram.sgram"], "requiresGameTechs": [] },
+    { "id": "arch.tnl",     "branch": "architecture", "unlocks": "arch.tnl",     "year": 1999, "baseDays": 220, "monthlyCost": 40000000,  "requiresNodes": ["arch.3d"], "requiresGameTechs": ["250nm"] },
+    { "id": "arch.shader",  "branch": "architecture", "unlocks": "arch.shader",  "year": 2002, "baseDays": 240, "monthlyCost": 60000000,  "requiresNodes": ["arch.tnl"], "requiresGameTechs": ["130nm"] },
+    { "id": "arch.unified", "branch": "architecture", "unlocks": "arch.unified", "year": 2006, "baseDays": 260, "monthlyCost": 120000000, "requiresNodes": ["arch.shader"], "requiresGameTechs": ["90nm"] },
+    { "id": "arch.gpgpu",   "branch": "architecture", "unlocks": "arch.gpgpu",   "year": 2009, "baseDays": 260, "monthlyCost": 200000000, "requiresNodes": ["arch.unified"], "requiresGameTechs": ["45nm"] },
+    { "id": "arch.rt",      "branch": "architecture", "unlocks": "arch.rt",      "year": 2018, "baseDays": 280, "monthlyCost": 400000000, "requiresNodes": ["arch.gpgpu"], "requiresGameTechs": ["14nm"] },
+    { "id": "arch.tensor",  "branch": "architecture", "unlocks": "arch.tensor",  "year": 2020, "baseDays": 320, "monthlyCost": 600000000, "requiresNodes": ["arch.rt"], "requiresGameTechs": ["7nm"] },
+
+    { "id": "vram.dram",    "branch": "memory",       "unlocks": "vram.dram",    "year": 1981, "baseDays": 60,  "monthlyCost": 1000000,   "requiresNodes": [], "requiresGameTechs": [] },
+    { "id": "vram.vram",    "branch": "memory",       "unlocks": "vram.vram",    "year": 1986, "baseDays": 90,  "monthlyCost": 3000000,   "requiresNodes": ["vram.dram"], "requiresGameTechs": [] },
+    { "id": "vram.sgram",   "branch": "memory",       "unlocks": "vram.sgram",   "year": 1994, "baseDays": 150, "monthlyCost": 10000000,  "requiresNodes": ["vram.vram"], "requiresGameTechs": ["SDR"] },
+    { "id": "vram.ddr",     "branch": "memory",       "unlocks": "vram.ddr",     "year": 1999, "baseDays": 180, "monthlyCost": 20000000,  "requiresNodes": ["vram.sgram"], "requiresGameTechs": ["DDR"] },
+    { "id": "vram.gddr3",   "branch": "memory",       "unlocks": "vram.gddr3",   "year": 2004, "baseDays": 200, "monthlyCost": 40000000,  "requiresNodes": ["vram.ddr"], "requiresGameTechs": ["DDR2"] },
+    { "id": "vram.gddr5",   "branch": "memory",       "unlocks": "vram.gddr5",   "year": 2008, "baseDays": 220, "monthlyCost": 80000000,  "requiresNodes": ["vram.gddr3"], "requiresGameTechs": ["DDR3"] },
+    { "id": "vram.hbm",     "branch": "memory",       "unlocks": "vram.hbm",     "year": 2015, "baseDays": 260, "monthlyCost": 200000000, "requiresNodes": ["vram.gddr5"], "requiresGameTechs": ["14nm"] },
+    { "id": "vram.gddr6",   "branch": "memory",       "unlocks": "vram.gddr6",   "year": 2018, "baseDays": 240, "monthlyCost": 150000000, "requiresNodes": ["vram.gddr5"], "requiresGameTechs": ["DDR4"] },
+    { "id": "vram.gddr7",   "branch": "memory",       "unlocks": "vram.gddr7",   "year": 2024, "baseDays": 260, "monthlyCost": 250000000, "requiresNodes": ["vram.gddr6"], "requiresGameTechs": ["DDR5"] },
+
+    { "id": "cool.passive", "branch": "cooling",      "unlocks": "cool.passive", "year": 1981, "baseDays": 30,  "monthlyCost": 500000,    "requiresNodes": [], "requiresGameTechs": [] },
+    { "id": "cool.fan",     "branch": "cooling",      "unlocks": "cool.fan",     "year": 1995, "baseDays": 60,  "monthlyCost": 2000000,   "requiresNodes": ["cool.passive"], "requiresGameTechs": [] },
+    { "id": "cool.dual",    "branch": "cooling",      "unlocks": "cool.dual",    "year": 2004, "baseDays": 120, "monthlyCost": 10000000,  "requiresNodes": ["cool.fan"], "requiresGameTechs": [] },
+    { "id": "cool.vapor",   "branch": "cooling",      "unlocks": "cool.vapor",   "year": 2016, "baseDays": 180, "monthlyCost": 40000000,  "requiresNodes": ["cool.dual"], "requiresGameTechs": [] }
+  ]
+}

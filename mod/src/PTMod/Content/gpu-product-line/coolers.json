@@ -1,0 +1,9 @@
+{
+  "schema": 1,
+  "records": [
+    { "id": "cool.passive", "nameKey": "gpu.cool.passive", "year": 1981, "thermalResistance": 2.0,  "cost": 2 },
+    { "id": "cool.fan",     "nameKey": "gpu.cool.fan",     "year": 1995, "thermalResistance": 0.5,  "cost": 8 },
+    { "id": "cool.dual",    "nameKey": "gpu.cool.dual",    "year": 2004, "thermalResistance": 0.2,  "cost": 25 },
+    { "id": "cool.vapor",   "nameKey": "gpu.cool.vapor",   "year": 2016, "thermalResistance": 0.11, "cost": 45 }
+  ]
+}

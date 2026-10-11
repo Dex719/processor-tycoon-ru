@@ -1,0 +1,14 @@
+{
+  "schema": 1,
+  "records": [
+    { "id": "arch.2d",      "nameKey": "gpu.arch.2d",      "year": 1981, "transistorsPerUnit": 450000,   "opsPerClock": 1, "clockRatio": 0.50, "bytesPerOp": 2.0,  "powerCoef": 0.020, "complexity": 0.30, "dieMaterialCost": 8,  "projectCost": 4000000,   "projectDays": 120, "features": ["2d"] },
+    { "id": "arch.gui",     "nameKey": "gpu.arch.gui",     "year": 1987, "transistorsPerUnit": 750000,   "opsPerClock": 2, "clockRatio": 0.50, "bytesPerOp": 2.0,  "powerCoef": 0.020, "complexity": 0.35, "dieMaterialCost": 8,  "projectCost": 8000000,   "projectDays": 150, "features": ["2d", "gui"] },
+    { "id": "arch.3d",      "nameKey": "gpu.arch.3d",      "year": 1995, "transistorsPerUnit": 400000,  "opsPerClock": 1, "clockRatio": 0.40, "bytesPerOp": 8.0,  "powerCoef": 0.008, "complexity": 0.40, "dieMaterialCost": 8,  "projectCost": 20000000,  "projectDays": 180, "features": ["2d", "gui", "3d"] },
+    { "id": "arch.tnl",     "nameKey": "gpu.arch.tnl",     "year": 1999, "transistorsPerUnit": 1200000, "opsPerClock": 4, "clockRatio": 0.20, "bytesPerOp": 2.0,  "powerCoef": 0.010, "complexity": 0.45, "dieMaterialCost": 10, "projectCost": 40000000,  "projectDays": 200, "features": ["2d", "gui", "3d", "tnl"] },
+    { "id": "arch.shader",  "nameKey": "gpu.arch.shader",  "year": 2002, "transistorsPerUnit": 3000000, "opsPerClock": 8, "clockRatio": 0.15, "bytesPerOp": 0.25, "powerCoef": 0.012, "complexity": 0.50, "dieMaterialCost": 10, "projectCost": 80000000,  "projectDays": 220, "features": ["2d", "gui", "3d", "tnl", "shader"] },
+    { "id": "arch.unified", "nameKey": "gpu.arch.unified", "year": 2006, "transistorsPerUnit": 2400000, "opsPerClock": 2, "clockRatio": 0.35, "bytesPerOp": 0.25, "powerCoef": 0.008, "complexity": 0.50, "dieMaterialCost": 12, "projectCost": 150000000, "projectDays": 240, "features": ["2d", "gui", "3d", "tnl", "shader", "unified"] },
+    { "id": "arch.gpgpu",   "nameKey": "gpu.arch.gpgpu",   "year": 2009, "transistorsPerUnit": 1400000, "opsPerClock": 2, "clockRatio": 0.40, "bytesPerOp": 0.12, "powerCoef": 0.013, "complexity": 0.55, "dieMaterialCost": 15, "projectCost": 250000000, "projectDays": 240, "features": ["2d", "gui", "3d", "tnl", "shader", "unified", "compute"] },
+    { "id": "arch.rt",      "nameKey": "gpu.arch.rt",      "year": 2018, "transistorsPerUnit": 1600000, "opsPerClock": 2, "clockRatio": 0.40, "bytesPerOp": 0.02, "powerCoef": 0.013, "complexity": 0.60, "dieMaterialCost": 20, "projectCost": 500000000, "projectDays": 260, "features": ["2d", "gui", "3d", "tnl", "shader", "unified", "compute", "rt"] },
+    { "id": "arch.tensor",  "nameKey": "gpu.arch.tensor",  "year": 2020, "transistorsPerUnit": 1500000, "opsPerClock": 4, "clockRatio": 0.45, "bytesPerOp": 0.004, "powerCoef": 0.016, "complexity": 0.60, "dieMaterialCost": 25, "projectCost": 800000000, "projectDays": 300, "features": ["2d", "gui", "3d", "tnl", "shader", "unified", "compute", "rt", "tensor"] }
+  ]
+}

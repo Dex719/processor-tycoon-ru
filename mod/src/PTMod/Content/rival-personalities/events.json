@@ -1,0 +1,77 @@
+{
+  "schema": 1,
+  "records": [
+    {
+      "id": "rival.priceCut",
+      "category": "rival",
+      "title": { "key": "rival.event.priceCut.title" },
+      "text": { "key": "rival.event.priceCut.text" },
+      "cause": { "key": "rival.event.priceCut.cause" },
+      "trigger": { "type": "Manual" },
+      "targets": { "type": "RandomAI" },
+      "notifyPlayer": true,
+      "effects": [ { "type": "RivalPriceCut", "params": {}, "durationDays": 180 } ]
+    },
+    {
+      "id": "rival.counterLaunch",
+      "category": "rival",
+      "title": { "key": "rival.event.counterLaunch.title" },
+      "text": { "key": "rival.event.counterLaunch.text" },
+      "cause": { "key": "rival.event.counterLaunch.cause" },
+      "trigger": { "type": "Manual" },
+      "targets": { "type": "RandomAI" },
+      "notifyPlayer": true,
+      "effects": [ { "type": "RivalCounterLaunch", "params": {}, "durationDays": 150 } ]
+    },
+    {
+      "id": "rival.oemPush",
+      "category": "rival",
+      "title": { "key": "rival.event.oemPush.title" },
+      "text": { "key": "rival.event.oemPush.text" },
+      "cause": { "key": "rival.event.oemPush.cause" },
+      "trigger": { "type": "Manual" },
+      "targets": { "type": "RandomAI" },
+      "notifyPlayer": true,
+      "effects": [
+        { "type": "ModifierTimed", "params": { "channel": "contract.signChance", "multiplier": 1.5, "scope": "Target" }, "durationDays": 365 }
+      ]
+    },
+    {
+      "id": "rival.poach",
+      "category": "rival",
+      "important": true,
+      "title": { "key": "rival.poach.title" },
+      "text": { "key": "rival.poach.body" },
+      "cause": { "key": "rival.poach.cause" },
+      "trigger": { "type": "Manual" },
+      "targets": { "type": "Player" },
+      "timerDays": 10,
+      "defaultChoice": "letGo",
+      "choices": [
+        {
+          "id": "counterOffer",
+          "textKey": "rival.poach.choice.counter",
+          "effects": [ { "type": "RivalPoachCounterOffer", "params": {} } ]
+        },
+        {
+          "id": "letGo",
+          "textKey": "rival.poach.choice.letGo",
+          "effects": [
+            { "type": "ModifierTimed", "params": { "channel": "research.speed", "multiplier": 0.85, "scope": "Target" }, "durationDays": 120 },
+            { "type": "RivalResearchBoost", "params": {} }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "rival.smear",
+      "category": "rival",
+      "title": { "key": "rival.event.smear.title" },
+      "text": { "key": "rival.event.smear.text" },
+      "cause": { "key": "rival.event.smear.cause" },
+      "trigger": { "type": "Manual" },
+      "targets": { "type": "Player" },
+      "effects": [ { "type": "Reputation", "params": { "delta": -3 } } ]
+    }
+  ]
+}

@@ -1,0 +1,75 @@
+{
+  "schema": 1,
+  "modVersion": "0.1.0",
+  "gameVersion": "0.2.3",
+  "saveName": "1987_6_1",
+  "gameDate": "1987-06-01",
+  "writtenUtc": "2026-10-10T18:42:07Z",
+  "features": {
+    "mod-framework": {
+      "_schema": 1,
+      "startDate": "1985-03-01",
+      "flags": { "first-year-onboarding": { "welcomeSent": 1 } }
+    },
+    "rival-acquisitions": {
+      "_schema": 1,
+      "deals": [
+        { "id": 1, "type": "Hostile", "targetUniqueId": 3, "targetSaveId": 412, "targetName": "Texas Instruments",
+          "date": "1985-03-01", "price": 696888000.0, "assumedCash": 30000000.0, "share": 0.0,
+          "keptLines": true, "lines": [ { "waferId": 46, "lines": 40 } ],
+          "techCount": 3, "cpuSaveIds": [ 1201, 1207 ], "retiredCpuSaveIds": [],
+          "providerContracts": 0, "clientContracts": 1, "partial": false, "notes": "" },
+        { "id": 2, "type": "BankruptAssets", "targetUniqueId": 7, "targetSaveId": 355, "targetName": "Zilog",
+          "date": "1986-09-15", "price": 141800000.0, "assumedCash": 0.0, "share": 0.0,
+          "keptLines": false, "lines": [ { "waferId": 45, "lines": 12 }, { "waferId": 46, "lines": 4 } ],
+          "techCount": 0, "cpuSaveIds": [ 980, 991 ], "retiredCpuSaveIds": [ 1015 ],
+          "providerContracts": 0, "clientContracts": 0, "partial": false, "notes": "" },
+        { "id": 3, "type": "Distressed", "targetUniqueId": 5, "targetSaveId": 333, "targetName": "Motorola",
+          "date": "1986-11-02", "price": 304200000.0, "assumedCash": -60000000.0, "share": 0.0,
+          "keptLines": true, "lines": [ { "waferId": 46, "lines": 25 } ],
+          "techCount": 2, "cpuSaveIds": [ 1100 ], "retiredCpuSaveIds": [],
+          "providerContracts": 2, "clientContracts": 0, "partial": true,
+          "notes": "step 6: lines: the target has 24 lines on 100 mm, 25 were planned; step 9: GPU lineup was not transferred" },
+        { "id": 4, "type": "Stake", "targetUniqueId": 10, "targetSaveId": 388, "targetName": "Cyrix",
+          "date": "1986-01-01", "price": 116150000.0, "assumedCash": 0.0, "share": 0.25,
+          "keptLines": false, "lines": [], "techCount": 0, "cpuSaveIds": [], "retiredCpuSaveIds": [],
+          "providerContracts": 0, "clientContracts": 0, "partial": false, "notes": "" },
+        { "id": 5, "type": "RescueOrder", "targetUniqueId": 10, "targetSaveId": 388, "targetName": "Cyrix",
+          "date": "1987-02-01", "price": 94500000.0, "assumedCash": 0.0, "share": 0.1,
+          "keptLines": false, "lines": [], "techCount": 0, "cpuSaveIds": [], "retiredCpuSaveIds": [],
+          "providerContracts": 0, "clientContracts": 0, "partial": false, "notes": "" }
+      ],
+      "stakes": [
+        { "targetUniqueId": 10, "targetSaveId": 388, "share": 0.35, "invested": 210650000.0,
+          "dividendsPaid": 3000000.0, "lastDividend": 1000000.0, "since": "1986-01-01" },
+        { "targetUniqueId": 12, "targetSaveId": 301, "share": 0.1, "invested": 20000000.0,
+          "dividendsPaid": 0.0, "lastDividend": 0.0, "since": "1984-06-01" }
+      ],
+      "auctions": [
+        { "targetUniqueId": 6, "targetSaveId": 350, "bankruptOn": "1987-05-03", "until": "1988-05-02",
+          "snapshotCpuSaveIds": [ 870, 871, 890 ], "closed": false },
+        { "targetUniqueId": 7, "targetSaveId": 355, "bankruptOn": "1986-09-01", "until": "1987-09-01",
+          "snapshotCpuSaveIds": [ 980, 991, 1015 ], "closed": true },
+        { "targetUniqueId": 9, "targetSaveId": 360, "bankruptOn": "1987-01-10", "until": "1988-01-10",
+          "snapshotCpuSaveIds": [], "closed": false }
+      ],
+      "rescueOrders": [
+        { "targetUniqueId": 10, "targetSaveId": 388, "maxAmount": 100000000.0, "active": true },
+        { "targetUniqueId": 12, "targetSaveId": 301, "maxAmount": 0.0, "active": false }
+      ],
+      "defaultMailSentForSaveIds": [ 388, 401 ],
+      "lastHostileOn": "1985-03-01",
+      "backfillDone": true,
+      "nextDealId": 6
+    },
+    "gpu-product-line": {
+      "_schema": 2,
+      "lines": [ "a", { "b": [ 1, 2, 3 ] } ],
+      "ratio": 0.5
+    },
+    "feature-that-was-removed": {
+      "_schema": 3,
+      "anything": { "nested": [ true, null, "text", 1.5 ] }
+    }
+  }
+}

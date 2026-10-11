@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "valuation": {
+    "kFab": 2.0,
+    "kTech": 0.5,
+    "kCpu": 1.0,
+    "cpuIncomeMonths": 12,
+    "kShare": 1.0,
+    "floorDebtLimitShare": 0.25,
+    "bankruptSnapshotCpuFactor": 0.5,
+    "roundTo": 1000
+  },
+  "deals": {
+    "bankrupt":   { "multiplier": 0.4, "assumeCash": false, "auctionDays": 365 },
+    "distressed": { "multiplier": 0.7, "assumeCash": true },
+    "hostile":    { "multiplier": 1.5, "biggerTargetMultiplier": 1.75, "cooldownDays": 365, "assumeCash": true },
+    "minCashAfter": 0
+  },
+  "stake": {
+    "options": [0.10, 0.25, 0.49],
+    "maxShare": 0.49,
+    "healthyMultiplier": 1.0,
+    "distressedMultiplier": 0.6,
+    "payoutRatio": 0.5,
+    "rescueTargetDebtLimitShare": -0.5
+  },
+  "reputation": { "hostile": -5, "rescue": 3, "distressed": 0, "bankrupt": 0 },
+  "techUnlockMaxPasses": 20
+}

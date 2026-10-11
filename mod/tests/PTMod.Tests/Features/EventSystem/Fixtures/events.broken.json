@@ -1,0 +1,102 @@
+{
+  "schema": 1,
+  "records": [
+    {
+      "id": "es.ok_first",
+      "category": "universal",
+      "title": {
+        "key": "es.ok_first.title"
+      },
+      "text": {
+        "key": "es.ok_first.text"
+      },
+      "trigger": {
+        "type": "DailyChance"
+      },
+      "weight": 3,
+      "effects": [
+        {
+          "type": "Reputation",
+          "params": {
+            "delta": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "es.teleport",
+      "category": "universal",
+      "title": {
+        "key": "es.teleport.title"
+      },
+      "text": {
+        "key": "es.teleport.text"
+      },
+      "trigger": {
+        "type": "DailyChance"
+      },
+      "effects": [
+        {
+          "type": "Teleport",
+          "params": {
+            "where": "moon"
+          }
+        }
+      ]
+    },
+    {
+      "id": "es.no_category",
+      "title": {
+        "key": "es.no_category.title"
+      },
+      "text": {
+        "key": "es.no_category.text"
+      },
+      "trigger": {
+        "type": "DailyChance"
+      }
+    },
+    {
+      "id": "es.bad_weight",
+      "category": "universal",
+      "title": {
+        "key": "es.bad_weight.title"
+      },
+      "text": {
+        "key": "es.bad_weight.text"
+      },
+      "trigger": {
+        "type": "DailyChance"
+      },
+      "weight": "heavy"
+    },
+    {
+      "title": {
+        "key": "es.no_id.title"
+      }
+    },
+    5,
+    {
+      "id": "es.ok_second",
+      "category": "universal",
+      "title": {
+        "key": "es.ok_second.title"
+      },
+      "text": {
+        "key": "es.ok_second.text"
+      },
+      "trigger": {
+        "type": "DailyChance"
+      },
+      "weight": 3,
+      "effects": [
+        {
+          "type": "Reputation",
+          "params": {
+            "delta": 1
+          }
+        }
+      ]
+    }
+  ]
+}

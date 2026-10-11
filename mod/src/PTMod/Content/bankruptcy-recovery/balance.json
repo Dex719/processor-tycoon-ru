@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "limits": { "floorBase": 2000000.0 },
+  "preWarning": { "thresholdDebtLimitShare": 0.75, "resetDebtLimitShare": 0.5 },
+  "earlyExit": { "streakDays": 7 },
+  "startupCredit": {
+    "years": 3,
+    "baseDebtLimitShareByDifficulty": [1.5, 1.25, 1.0, 0.75, 0.5, 0.25],
+    "revenueShare": 0.5,
+    "capDebtLimitShare": 3.0,
+    "annualRate": 0.10,
+    "autoDrawTriggerShare": 0.9,
+    "autoDrawTargetShare": 0.6,
+    "sweepShare": 0.25,
+    "termMonths": 24,
+    "termAnnualRate": 0.15
+  },
+  "bridgeLoan": {
+    "eligibleDebtLimitShare": 0.75,
+    "baseDebtLimitShare": 1.0,
+    "revenueShare": 0.25,
+    "fee": 0.05,
+    "annualRate": 0.30,
+    "months": 12,
+    "cooldownDays": 180
+  },
+  "bailout": {
+    "perGameByDifficulty": [2, 1, 1, 1, 1, 0],
+    "targetDebtLimitShare": 0.25,
+    "loan": { "annualRate": 0.40, "months": 36 },
+    "investor": { "profitShare": 0.30, "months": 60, "capMultiple": 3.0, "expenseOrigin": "Royalties" },
+    "reputationDelta": -10
+  },
+  "assets": { "minLinesLeft": 1 }
+}

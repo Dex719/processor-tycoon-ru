@@ -1,0 +1,164 @@
+{
+  "schema": 1,
+  "records": [
+    {
+      "id": "welcome", "order": 10, "kind": "sequential", "tracks": ["idm", "fabless", "foundry"],
+      "completeOnShow": true, "pauseOnShow": false, "priority": "critical",
+      "mail": { "titleKey": "onb.welcome.title", "bodyKey": "onb.welcome.body", "args": ["company", "founder"], "buttons": ["skipAll"] }
+    },
+    {
+      "id": "research", "order": 20, "kind": "sequential", "tracks": ["idm", "fabless", "foundry"],
+      "completeWhen": { "type": "researchActive" },
+      "pauseOnShow": true,
+      "mail": { "titleKey": "onb.research.title", "bodyKey": "onb.research.body", "buttons": ["hint", "skipStep"] },
+      "reminders": [
+        { "afterDays": 15, "hintKey": "onb.research.hint1" },
+        { "afterDays": 40, "hintKey": "onb.research.hint2" }
+      ]
+    },
+    {
+      "id": "design_cpu", "order": 30, "kind": "sequential", "tracks": ["idm", "fabless"],
+      "completeWhen": { "any": [
+        { "type": "onb.cpuProjectActive" },
+        { "type": "cpuCountAtLeast", "count": 1 }
+      ] },
+      "pauseOnShow": true,
+      "mail": { "titleKey": "onb.design_cpu.title", "bodyKey": "onb.design_cpu.body", "buttons": ["openCpuDesigner", "hint", "skipStep"] },
+      "reminders": [
+        { "afterDays": 20, "hintKey": "onb.design_cpu.hint1" },
+        { "afterDays": 50, "hintKey": "onb.design_cpu.hint2" }
+      ]
+    },
+    {
+      "id": "dev_wait", "order": 40, "kind": "sequential", "tracks": ["idm", "fabless"],
+      "showWhen": { "any": [
+        { "type": "onb.cpuProjectActive" },
+        { "type": "cpuCountAtLeast", "count": 1 }
+      ] },
+      "completeOnShow": true, "pauseOnShow": false,
+      "mail": { "titleKey": "onb.dev_wait.title", "bodyKey": "onb.dev_wait.body", "buttons": [] }
+    },
+    {
+      "id": "release_price", "order": 50, "kind": "sequential", "tracks": ["idm", "fabless"],
+      "completeWhen": { "type": "cpuCountAtLeast", "count": 1 },
+      "pauseOnShow": true,
+      "mail": { "titleKey": "onb.release_price.title", "bodyKey": "onb.release_price.body",
+                "args": ["highEndBudget", "midRangeBudget", "lowEndBudget", "industriesBudget"], "buttons": ["skipStep"] }
+    },
+    {
+      "id": "production", "order": 60, "kind": "sequential", "tracks": ["idm", "fabless"],
+      "completeWhen": { "type": "onb.producedToday" },
+      "pauseOnShow": true,
+      "mail": { "titleKey": "onb.production.title", "bodyKey": "onb.production.body", "buttons": ["hint", "skipStep"] },
+      "reminders": [
+        { "afterDays": 10, "hintKey": "onb.production.hint1" },
+        { "afterDays": 30, "hintKey": "onb.production.hint2" }
+      ]
+    },
+    {
+      "id": "first_sales", "order": 70, "kind": "sequential", "tracks": ["idm", "fabless"],
+      "completeWhen": { "type": "onb.soldToday" },
+      "mail": { "titleKey": "onb.first_sales.title", "bodyKey": "onb.first_sales.body", "buttons": ["hint", "skipStep"] },
+      "reminders": [
+        { "afterDays": 20, "hintKey": "onb.first_sales.hint1", "args": ["lowEndBudget"] },
+        { "afterDays": 45, "hintKey": "onb.first_sales.hint2" }
+      ]
+    },
+    {
+      "id": "oem_offer", "order": 80, "kind": "sequential", "tracks": ["idm", "fabless"],
+      "showWhen": { "type": "onb.oemAvailable" },
+      "completeWhen": { "any": [
+        { "type": "oemOfferSent" },
+        { "type": "onb.automate" }
+      ] },
+      "pauseOnShow": true,
+      "mail": { "titleKey": "onb.oem_offer.title", "bodyKey": "onb.oem_offer.body", "buttons": ["hint", "skipStep"] },
+      "reminders": [
+        { "afterDays": 30, "hintKey": "onb.oem_offer.hint1" },
+        { "afterDays": 90, "hintKey": "onb.oem_offer.hint2" }
+      ]
+    },
+    {
+      "id": "foundry_services", "order": 30, "kind": "sequential", "tracks": ["foundry"],
+      "completeWhen": { "type": "onb.foundryServices" },
+      "pauseOnShow": true,
+      "mail": { "titleKey": "onb.foundry_services.title", "bodyKey": "onb.foundry_services.body", "buttons": ["hint", "skipStep"] },
+      "reminders": [
+        { "afterDays": 20, "hintKey": "onb.foundry_services.hint1" }
+      ]
+    },
+    {
+      "id": "first_client", "order": 40, "kind": "sequential", "tracks": ["foundry"],
+      "completeWhen": { "type": "businessContractsAtLeast", "count": 1 },
+      "pauseOnShow": true,
+      "mail": { "titleKey": "onb.first_client.title", "bodyKey": "onb.first_client.body", "buttons": ["hint", "skipStep"] },
+      "reminders": [
+        { "afterDays": 30, "hintKey": "onb.first_client.hint1" },
+        { "afterDays": 90, "hintKey": "onb.first_client.hint2" }
+      ]
+    },
+    {
+      "id": "factory_expansion", "order": 50, "kind": "sequential", "tracks": ["foundry"],
+      "completeWhen": { "type": "onb.factoryProjectActive" },
+      "pauseOnShow": true,
+      "mail": { "titleKey": "onb.factory_expansion.title", "bodyKey": "onb.factory_expansion.body", "buttons": ["openFactoryExpansion", "hint", "skipStep"] },
+      "reminders": [
+        { "afterDays": 60, "hintKey": "onb.factory_expansion.hint1" }
+      ]
+    },
+    {
+      "id": "finance", "order": 90, "kind": "sequential", "tracks": ["idm", "fabless", "foundry"],
+      "showWhen": { "all": [
+        { "type": "onb.stepDone", "id": "research" },
+        { "type": "onb.dayOfMonth", "day": 1 }
+      ] },
+      "completeOnShow": true, "pauseOnShow": false,
+      "mail": { "titleKey": "onb.finance.title", "bodyKey": "onb.finance.body", "args": ["money"], "buttons": [] }
+    },
+    {
+      "id": "graduation", "order": 100, "kind": "sequential", "tracks": ["idm", "fabless", "foundry"],
+      "completeOnShow": true, "pauseOnShow": true,
+      "mail": { "titleKey": "onb.graduation.title", "bodyKey": "onb.graduation.body", "buttons": [] }
+    },
+    {
+      "id": "tip_debt", "order": 0, "kind": "situational", "tracks": ["idm", "fabless", "foundry"],
+      "showWhen": { "type": "moneyBelow", "amount": 0 },
+      "completeOnShow": true, "pauseOnShow": true, "priority": "critical",
+      "mail": { "titleKey": "onb.tip_debt.title", "bodyKey": "onb.tip_debt.body", "args": ["debtLimit", "defaultDays"], "buttons": [] }
+    },
+    {
+      "id": "tip_default", "order": 0, "kind": "situational", "tracks": ["idm", "fabless", "foundry"],
+      "showWhen": { "type": "inDefault" },
+      "completeOnShow": true, "pauseOnShow": true, "priority": "critical",
+      "mail": { "titleKey": "onb.tip_default.title", "bodyKey": "onb.tip_default.body", "args": ["defaultDays"], "buttons": [],
+                "variants": [ { "when": { "type": "featureActive", "id": "bankruptcy-recovery" }, "bodyKey": "onb.tip_default.body.rec" } ] }
+    },
+    {
+      "id": "tip_contract_signed", "order": 0, "kind": "situational", "tracks": ["idm", "fabless"],
+      "showWhen": { "type": "oemContractsActiveAtLeast", "count": 1 },
+      "completeOnShow": true, "pauseOnShow": false,
+      "mail": { "titleKey": "onb.tip_contract_signed.title", "bodyKey": "onb.tip_contract_signed.body", "buttons": [] }
+    },
+    {
+      "id": "tip_missed_sales", "order": 0, "kind": "situational", "tracks": ["idm", "fabless"],
+      "showWhen": { "type": "onb.missedOverSold" },
+      "streakDays": 7, "completeOnShow": true,
+      "mail": { "titleKey": "onb.tip_missed_sales.title", "bodyKey": "onb.tip_missed_sales.body", "buttons": ["openFactoryExpansion"] }
+    },
+    {
+      "id": "tip_year_summary", "order": 0, "kind": "situational", "tracks": ["idm", "fabless", "foundry"],
+      "showWhen": { "all": [
+        { "type": "onb.isJan1" },
+        { "type": "daysSinceStartAtLeast", "days": 30 }
+      ] },
+      "completeOnShow": true, "pauseOnShow": false,
+      "mail": { "titleKey": "onb.tip_year_summary.title", "bodyKey": "onb.tip_year_summary.body", "args": ["money"], "buttons": [] }
+    },
+    {
+      "id": "tip_old_cpu", "order": 0, "kind": "situational", "tracks": ["idm", "fabless"],
+      "showWhen": { "type": "onb.anyOldCpu" },
+      "completeOnShow": true, "pauseOnShow": false,
+      "mail": { "titleKey": "onb.tip_old_cpu.title", "bodyKey": "onb.tip_old_cpu.body", "buttons": [] }
+    }
+  ]
+}

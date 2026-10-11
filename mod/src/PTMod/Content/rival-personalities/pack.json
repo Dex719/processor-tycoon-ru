@@ -1,0 +1,6 @@
+{
+  "schema": 1,
+  "categories": [
+    { "id": "rival", "dailyChance": 0.0, "minGapDays": 0 }
+  ]
+}

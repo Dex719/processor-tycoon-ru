@@ -1,0 +1,59 @@
+{
+  "schema": 1,
+  "modVersion": "0.1.0",
+  "gameVersion": "0.2.3",
+  "saveName": "pg-fixture-schema-1",
+  "gameDate": "1996-06-01",
+  "writtenUtc": "2026-10-10T12:00:00Z",
+  "features": {
+    "mod-framework": {
+      "_schema": 1,
+      "startDate": "1990-01-01",
+      "random": { "worldSeed": 123456789, "streams": {} },
+      "flags": { "market-shocks": { "warned": 1 } },
+      "newGameOptions": {},
+      "modifiers": [],
+      "reputation": {},
+      "mail": { "nextId": 1, "mails": [], "queue": [] }
+    },
+    "platform-generations": {
+      "_schema": 1,
+      "generations": [
+        { "id": "gen-1971-dip", "announced": "1971-01-01", "launched": "", "launchedBy": "", "earlyAdopters": [] },
+        { "id": "gen-1980-plcc", "announced": "1980-01-01", "launched": "", "launchedBy": "", "earlyAdopters": [] },
+        { "id": "gen-1985-pga", "announced": "1985-01-01", "launched": "1986-01-01", "launchedBy": "ai:1",
+          "earlyAdopters": [ { "company": "ai:1", "date": "1986-01-01" } ] },
+        { "id": "gen-1990-pga", "announced": "1990-01-01", "launched": "1990-01-01", "launchedBy": "ai:2",
+          "earlyAdopters": [
+            { "company": "ai:2", "date": "1990-01-01" },
+            { "company": "ai:1", "date": "1990-01-01" },
+            { "company": "player", "date": "1990-01-01" } ] },
+        { "id": "gen-1995-pga", "announced": "1995-01-01", "launched": "1995-01-01", "launchedBy": "ai:1",
+          "earlyAdopters": [
+            { "company": "ai:1", "date": "1995-01-01" },
+            { "company": "ai:3", "date": "1995-01-01" },
+            { "company": "ai:2", "date": "1996-01-01" } ] }
+      ],
+      "socketIntros": [
+        { "company": "ai:1", "socket": "pkg:PGA 1985", "date": "1986-01-01", "main": "", "mainAgeMonths": 0, "severity": 0 },
+        { "company": "ai:2", "socket": "pkg:PGA 1990", "date": "1990-01-01", "main": "", "mainAgeMonths": 0, "severity": 0 },
+        { "company": "ai:1", "socket": "pkg:PGA 1990", "date": "1990-01-01", "main": "", "mainAgeMonths": 0, "severity": 0 },
+        { "company": "player", "socket": "pkg:PGA 1990", "date": "1990-01-01", "main": "", "mainAgeMonths": 0, "severity": 0 },
+        { "company": "ai:3", "socket": "pkg:PGA 1990", "date": "1991-01-01", "main": "", "mainAgeMonths": 0, "severity": 0 },
+        { "company": "ai:1", "socket": "pkg:PGA 1995", "date": "1995-01-01", "main": "", "mainAgeMonths": 0, "severity": 0 },
+        { "company": "ai:3", "socket": "pkg:PGA 1995", "date": "1995-01-01", "main": "", "mainAgeMonths": 0, "severity": 0 },
+        { "company": "ai:2", "socket": "pkg:PGA 1995", "date": "1996-01-01", "main": "", "mainAgeMonths": 0, "severity": 0 }
+      ],
+      "contractPrefs": [
+        { "key": "Dell|1996-3|60000|180|1", "gen": "gen-1995-pga" },
+        { "key": "Sony|1996-3|30000|240|2", "gen": "" },
+        { "key": "Acer|1996-4|45000|150|1", "gen": "gen-1990-pga" }
+      ]
+    },
+    "market-shocks": {
+      "_schema": 1,
+      "lastShock": "1995-03-01",
+      "queued": [ { "id": "ms.supply.fab-fire", "due": "1996-09-01" } ]
+    }
+  }
+}

@@ -1,0 +1,1970 @@
+{
+  "schema": 1,
+  "records": [
+    {
+      "id": "hist.1971.microprocessor",
+      "_note": "Intel 4004, 15.11.1971. Эффект: спрос сегмента IN ×1.10 на 730 дн. (таблица design, № 1).",
+      "category": "boom",
+      "major": false,
+      "catchUp": true,
+      "anchor": "1971-11-15",
+      "window": {
+        "from": "1971-11-01",
+        "to": "1972-06-30"
+      },
+      "jitterDays": 10,
+      "roles": [],
+      "conditions": [],
+      "stages": [
+        {
+          "offsetDays": 0,
+          "fires": [
+            {
+              "eventId": "hist.1971.microprocessor",
+              "role": "global"
+            }
+          ]
+        }
+      ],
+      "fallback": "skip",
+      "history": {
+        "titleKey": "hist.1971.microprocessor.title",
+        "factKey": "hist.1971.microprocessor.fact",
+        "sources": [
+          "https://en.wikipedia.org/wiki/Intel_4004"
+        ]
+      }
+    },
+    {
+      "id": "hist.1973.oilembargo",
+      "_note": "Арабское нефтяное эмбарго, 17.10.1973. Эффект: спрос всех ×0.85 (365), bank.interest ×1.25 (365).",
+      "category": "macro",
+      "major": true,
+      "catchUp": true,
+      "anchor": "1973-10-17",
+      "window": {
+        "from": "1973-10-01",
+        "to": "1974-03-31"
+      },
+      "jitterDays": 10,
+      "roles": [],
+      "conditions": [],
+      "stages": [
+        {
+          "offsetDays": 0,
+          "fires": [
+            {
+              "eventId": "hist.1973.oilembargo",
+              "role": "global"
+            }
+          ]
+        }
+      ],
+      "fallback": "skip",
+      "history": {
+        "titleKey": "hist.1973.oilembargo.title",
+        "factKey": "hist.1973.oilembargo.fact",
+        "sources": [
+          "https://en.wikipedia.org/wiki/1973_oil_crisis"
+        ]
+      }
+    },
+    {
+      "id": "hist.1975.altair",
+      "_note": "Altair 8800, 01.01.1975 (журнал Popular Electronics, январь 1975). Эффект: LE ×1.15 (540).",
+      "category": "boom",
+      "major": false,
+      "catchUp": true,
+      "anchor": "1975-01-01",
+      "window": {
+        "from": "1975-01-01",
+        "to": "1975-06-30"
+      },
+      "jitterDays": 10,
+      "roles": [],
+      "conditions": [],
+      "stages": [
+        {
+          "offsetDays": 0,
+          "fires": [
+            {
+              "eventId": "hist.1975.altair",
+              "role": "global"
+            }
+          ]
+        }
+      ],
+      "fallback": "skip",
+      "history": {
+        "titleKey": "hist.1975.altair.title",
+        "factKey": "hist.1975.altair.fact",
+        "sources": [
+          "https://en.wikipedia.org/wiki/Altair_8800"
+        ]
+      }
+    },
+    {
+      "id": "hist.1977.trinity",
+      "_note": "Apple II, Commodore PET, TRS-80, 1977. Эффект: LE ×1.20, MR ×1.10 (730).",
+      "category": "boom",
+      "major": false,
+      "catchUp": true,
+      "anchor": "1977-06-10",
+      "window": {
+        "from": "1977-06-01",
+        "to": "1977-12-31"
+      },
+      "jitterDays": 10,
+      "roles": [],
+      "conditions": [],
+      "stages": [
+        {
+          "offsetDays": 0,
+          "fires": [
+            {
+              "eventId": "hist.1977.trinity",
+              "role": "global"
+            }
+          ]
+        }
+      ],
+      "fallback": "skip",
+      "history": {
+        "titleKey": "hist.1977.trinity.title",
+        "factKey": "hist.1977.trinity.fact",
+        "sources": [
+          "https://en.wikipedia.org/wiki/Apple_II"
+        ]
+      }
+    },
+    {
+      "id": "hist.1980.volcker",
+      "_note": "Ставки ФРС США при Волкере, 1979–1981; дата в окне 14.03.1980 (кредитные ограничения). Эффект: bank.interest ×1.50 (730), спрос всех ×0.90 (540).",
+      "category": "macro",
+      "major": true,
+      "catchUp": true,
+      "anchor": "1980-03-14",
+      "window": {
+        "from": "1980-03-01",
+        "to": "1980-12-31"
+      },
+      "jitterDays": 10,
+      "roles": [],
+      "conditions": [],
+      "stages": [
+        {
+          "offsetDays": 0,
+          "fires": [
+            {
+              "eventId": "hist.1980.volcker",
+              "role": "global"
+            }
+          ]
+        }
+      ],
+      "fallback": "skip",
+      "history": {
+        "titleKey": "hist.1980.volcker.title",
+        "factKey": "hist.1980.volcker.fact",
+        "sources": [
+          "https://en.wikipedia.org/wiki/Early_1980s_recession"
+        ]
+      }
+    },
+    {
+      "id": "hist.1981.ibmpc",
+      "_note": "IBM PC, 12.08.1981. Цель — лидер (порог 0.15), второй — претендент. Выбор лидера: согласиться (signChance ×1.25 на 1095) или отказаться (×0.85 на 730, флаг declined). Претендент получает ×1.15 на 1095, если лидер не отказался (стадия +31 дн., skipIfFlag declined).",
+      "category": "boom",
+      "major": true,
+      "catchUp": true,
+      "anchor": "1981-08-12",
+      "window": {
+        "from": "1981-08-01",
+        "to": "1982-06-30"
+      },
+      "jitterDays": 10,
+      "roles": [
+        {
+          "name": "target",
+          "kind": "leader",
+          "segments": [
+            "all"
+          ],
+          "months": 24,
+          "minShare": 0.15
+        },
+        {
+          "name": "second",
+          "kind": "challenger",
+          "segments": [
+            "all"
+          ],
+          "months": 24,
+          "minShare": 0.0
+        }
+      ],
+      "conditions": [],
+      "stages": [
+        {
+          "offsetDays": 0,
+          "fires": [
+            {
+              "eventId": "hist.1981.ibmpc",
+              "role": "global"
+            },
+            {
+              "eventId": "hist.decide.secondsource",
+              "role": "target"
+            }
+          ]
+        },
+        {
+          "offsetDays": 31,
+          "fires": [
+            {
+              "eventId": "hist.1981.ibmpc.second",
+              "role": "second"
+            }
+          ],
+          "skipIfFlag": "declined"
+        }
+      ],
+      "fallback": "news",
+      "history": {
+        "titleKey": "hist.1981.ibmpc.title",
+        "factKey": "hist.1981.ibmpc.fact",
+        "sources": [
+          "https://en.wikipedia.org/wiki/IBM_Personal_Computer",
+          "https://en.wikipedia.org/wiki/Second_source"
+        ]
+      }
+    },
+    {
+      "id": "hist.1985.dramexit",
+      "_note": "Intel уходит из DRAM, 1985. Агрессор — Toshiba (UniqueID 6), если нет — лидер младшего сегмента. Ценовая война 180 дн., cut 0.15 / follow 0.08; production.unitCost ×0.95 (365). Источник [проверить]: раздел о выходе из DRAM (TSK-020).",
+      "category": "priceWar",
+      "major": true,
+      "catchUp": false,
+      "anchor": "1985-10-01",
+      "window": {
+        "from": "1985-10-01",
+        "to": "1986-06-30"
+      },
+      "jitterDays": 10,
+      "roles": [
+        {
+          "name": "aggressor",
+          "kind": "named",
+          "segments": [
+            "all"
+          ],
+          "months": 24,
+          "minShare": 0.0,
+          "uniqueId": 6,
+          "fallback": [
+            {
+              "kind": "leader",
+              "segments": [
+                "lowend"
+              ],
+              "months": 12,
+              "minShare": 0.0
+            }
+          ]
+        }
+      ],
+      "conditions": [],
+      "stages": [
+        {
+          "offsetDays": 0,
+          "fires": [
+            {
+              "eventId": "hist.1985.dramexit",
+              "role": "global"
+            },
+            {
+              "eventId": "hist.decide.pricewar.aggressor",
+              "role": "aggressor",
+              "extraArgs": ["dram1985", "lowend;0.15;0.08;180"]
+            },
+            {
+              "eventId": "hist.decide.pricewar.follower",
+              "role": "player",
+              "extraArgs": ["dram1985", "lowend;0.15;0.08;180"]
+            }
+          ]
+        }
+      ],
+      "fallback": "news",
+      "history": {
+        "titleKey": "hist.1985.dramexit.title",
+        "factKey": "hist.1985.dramexit.fact",
+        "sources": [
+          "https://en.wikipedia.org/wiki/Intel"
+        ]
+      }
+    },
+    {
+      "id": "hist.1986.usjapan",
+      "_note": "Соглашение США–Япония о полупроводниках, 02.09.1986. Эффект: production.unitCost ×1.08 (730). URL соглашения [проверить] (TSK-020: страница о соглашении 1986 года).",
+      "category": "macro",
+      "major": false,
+      "catchUp": true,
+      "anchor": "1986-09-02",
+      "window": {
+        "from": "1986-09-01",
+        "to": "1987-03-31"
+      },
+      "jitterDays": 10,
+      "roles": [],
+      "conditions": [],
+      "stages": [
+        {
+          "offsetDays": 0,
+          "fires": [
+            {
+              "eventId": "hist.1986.usjapan",
+              "role": "global"
+            }
+          ]
+        }
+      ],
+      "fallback": "skip",
+      "history": {
+        "titleKey": "hist.1986.usjapan.title",
+        "factKey": "hist.1986.usjapan.fact",
+        "sources": [
+          "https://en.wikipedia.org/wiki/Semiconductor_industry"
+        ]
+      }
+    },
+    {
+      "id": "hist.1987.koshiba",
+      "_note": "Скандал Toshiba–Kongsberg, 01.07.1987. Toshiba (UniqueID 6) строго, без запасного варианта. signChance ×0.70 (1095), market.rating.cpu ×0.90 (365), репутация −10.",
+      "category": "export",
+      "major": false,
+      "catchUp": false,
+      "anchor": "1987-07-01",
+      "window": {
+        "from": "1987-07-01",
+        "to": "1988-06-30"
+      },
+      "jitterDays": 10,
+      "roles": [
+        {
+          "name": "target",
+          "kind": "named",
+          "segments": [
+            "all"
+          ],
+          "months": 24,
+          "minShare": 0.0,
+          "uniqueId": 6
+        }
+      ],
+      "conditions": [],
+      "stages": [
+        {
+          "offsetDays": 0,
+          "fires": [
+            {
+              "eventId": "hist.1987.koshiba",
+              "role": "target"
+            }
+          ]
+        }
+      ],
+      "fallback": "news",
+      "history": {
+        "titleKey": "hist.1987.koshiba.title",
+        "factKey": "hist.1987.koshiba.fact",
+        "sources": [
+          "https://en.wikipedia.org/wiki/Toshiba%E2%80%93Kongsberg_scandal"
+        ]
+      }
+    },
+    {
+      "id": "hist.1987.blackmonday",
+      "_note": "Чёрный понедельник, 19.10.1987. Эффект: bank.creditLimit ×0.80 (180), спрос всех ×0.95 (180).",
+      "category": "macro",
+      "major": true,
+      "catchUp": true,
+      "anchor": "1987-10-19",
+      "window": {
+        "from": "1987-10-01",
+        "to": "1988-01-31"
+      },
+      "jitterDays": 10,
+      "roles": [],
+      "conditions": [],
+      "stages": [
+        {
+          "offsetDays": 0,
+          "fires": [
+            {
+              "eventId": "hist.1987.blackmonday",
+              "role": "global"
+            }
+          ]
+        }
+      ],
+      "fallback": "skip",
+      "history": {
+        "titleKey": "hist.1987.blackmonday.title",
+        "factKey": "hist.1987.blackmonday.fact",
+        "sources": [
+          "https://en.wikipedia.org/wiki/Black_Monday_(1987)"
+        ]
+      }
+    },
+    {
+      "id": "hist.1987.arbitration",
+      "_note": "Отзыв лицензии Intel у AMD, спор в арбитраже 1987–1989. Истец — Intel (UniqueID 0, запасной — лидер), ответчик — AMD (UniqueID 1, запасной — претендент). Выбор истца: подать / нет; ответ ответчика — в событии ответчика после подачи.",
+      "category": "patent",
+      "major": false,
+      "catchUp": false,
+      "anchor": "1987-03-01",
+      "window": {
+        "from": "1987-03-01",
+        "to": "1989-12-31"
+      },
+      "jitterDays": 10,
+      "roles": [
+        {
+          "name": "plaintiff",
+          "kind": "named",
+          "segments": [
+            "all"
+          ],
+          "months": 24,
+          "minShare": 0.0,
+          "uniqueId": 0,
+          "fallback": [
+            {
+              "kind": "leader",
+              "segments": [
+                "all"
+              ],
+              "months": 24,
+              "minShare": 0.2
+            }
+          ]
+        },
+        {
+          "name": "defendant",
+          "kind": "named",
+          "segments": [
+            "all"
+          ],
+          "months": 24,
+          "minShare": 0.0,
+          "uniqueId": 1,
+          "fallback": [
+            {
+              "kind": "challenger",
+              "segments": [
+                "all"
+              ],
+              "months": 24,
+              "minShare": 0.0
+            }
+          ]
+        }
+      ],
+      "conditions": [
+        {
+          "type": "hist.HasCpuSince",
+          "role": "plaintiff",
+          "months": 24,
+          "segments": [
+            "all"
+          ]
+        },
+        {
+          "type": "hist.HasCpuSince",
+          "role": "defendant",
+          "months": 24,
+          "segments": [
+            "all"
+          ]
+        }
+      ],
+      "stages": [
+        {
+          "offsetDays": 0,
+          "fires": [
+            {
+              "eventId": "hist.decide.patent.plaintiff",
+              "role": "plaintiff",
+              "extraArgs": [
+                "arb1987",
+                "licenseWithdrawal"
+              ]
+            }
+          ]
+        }
+      ],
+      "fallback": "news",
+      "history": {
+        "titleKey": "hist.1987.arbitration.title",
+        "factKey": "hist.1987.arbitration.fact",
+        "sources": [
+          "https://en.wikipedia.org/wiki/Advanced_Micro_Devices"
+        ]
+      }
+    },
+    {
+      "id": "hist.1988.dramshortage",
+      "_note": "Дефицит DRAM, 01.03.1988. Эффект: production.unitCost ×1.12 (365), contract.reward ×1.05 (365). Канал себестоимости — production.unitCost (AC-10.6). Источник [проверить]: раздел истории (TSK-020).",
+      "category": "shock",
+      "major": true,
+      "catchUp": true,
+      "anchor": "1988-03-01",
+      "window": {
+        "from": "1988-03-01",
+        "to": "1988-12-31"
+      },
+      "jitterDays": 10,
+      "roles": [],
+      "conditions": [],
+      "stages": [
+        {
+          "offsetDays": 0,
+          "fires": [
+            {
+              "eventId": "hist.1988.dramshortage",
+              "role": "global"
+            }
+          ]
+        }
+      ],
+      "fallback": "skip",
+      "history": {
+        "titleKey": "hist.1988.dramshortage.title",
+        "factKey": "hist.1988.dramshortage.fact",
+        "sources": [
+          "https://en.wikipedia.org/wiki/Dynamic_random-access_memory"
+        ]
+      }
+    },
+    {
+      "id": "hist.1991.brandprogram",
+      "_note": "Программа Intel Inside, 01.07.1991. Лидер (порог 0.25) решает, запускать ли программу; если нет — бонус популярности уходит претенденту (стадия +31 дн., skipIfFlag launched). Не-лидер-игрок — кооперативный маркетинг. Источник [проверить] (TSK-020).",
+      "category": "brand",
+      "major": false,
+      "catchUp": false,
+      "anchor": "1991-07-01",
+      "window": {
+        "from": "1991-07-01",
+        "to": "1992-06-30"
+      },
+      "jitterDays": 10,
+      "roles": [
+        {
+          "name": "target",
+          "kind": "leader",
+          "segments": [
+            "all"
+          ],
+          "months": 24,
+          "minShare": 0.25
+        },
+        {
+          "name": "second",
+          "kind": "challenger",
+          "segments": [
+            "all"
+          ],
+          "months": 24,
+          "minShare": 0.0
+        }
+      ],
+      "conditions": [],
+      "stages": [
+        {
+          "offsetDays": 0,
+          "fires": [
+            {
+              "eventId": "hist.decide.brand.leader",
+              "role": "target"
+            },
+            {
+              "eventId": "hist.decide.brand.coop",
+              "role": "player"
+            }
+          ]
+        },
+        {
+          "offsetDays": 31,
+          "fires": [
+            {
+              "eventId": "hist.1991.brandprogram.rival",
+              "role": "second"
+            }
+          ],
+          "skipIfFlag": "launched"
+        }
+      ],
+      "fallback": "news",
+      "history": {
+        "titleKey": "hist.1991.brandprogram.title",
+        "factKey": "hist.1991.brandprogram.fact",
+        "sources": [
+          "https://en.wikipedia.org/wiki/Intel_Inside"
+        ]
+      }
+    },
+    {
+      "id": "hist.1992.clonesuit",
+      "_note": "Intel против Cyrix, 1992: иск о нарушении (микрокод). Истец — Intel (UniqueID 0, запасной — лидер), ответчик — Cyrix (UniqueID 10, запасной — новейший участник).",
+      "category": "patent",
+      "major": false,
+      "catchUp": false,
+      "anchor": "1992-05-01",
+      "window": {
+        "from": "1992-05-01",
+        "to": "1993-12-31"
+      },
+      "jitterDays": 10,
+      "roles": [
+        {
+          "name": "plaintiff",
+          "kind": "named",
+          "segments": [
+            "all"
+          ],
+          "months": 24,
+          "minShare": 0.0,
+          "uniqueId": 0,
+          "fallback": [
+            {
+              "kind": "leader",
+              "segments": [
+                "all"
+              ],
+              "months": 24,
+              "minShare": 0.2
+            }
+          ]
+        },
+        {
+          "name": "defendant",
+          "kind": "named",
+          "segments": [
+            "all"
+          ],
+          "months": 24,
+          "minShare": 0.0,
+          "uniqueId": 10,
+          "fallback": [
+            {
+              "kind": "newestEntrant"
+            }
+          ]
+        }
+      ],
+      "conditions": [],
+      "stages": [
+        {
+          "offsetDays": 0,
+          "fires": [
+            {
+              "eventId": "hist.decide.patent.plaintiff",
+              "role": "plaintiff",
+              "extraArgs": [
+                "clone1992",
+                "infringement"
+              ]
+            }
+          ]
+        }
+      ],
+      "fallback": "news",
+      "history": {
+        "titleKey": "hist.1992.clonesuit.title",
+        "factKey": "hist.1992.clonesuit.fact",
+        "sources": [
+          "https://en.wikipedia.org/wiki/Cyrix"
+        ]
+      }
+    },
+    {
+      "id": "hist.1994.fdiv",
+      "_note": "Ошибка FDIV в Pentium, 07.11.1994. Цель — лидер HighEnd (порог 0.20) с CPU за 24 мес. ForceDesignFlaw arith, Major; запасной вариант — hist.1994.fdiv.fallback.",
+      "category": "flaw",
+      "major": true,
+      "catchUp": false,
+      "anchor": "1994-11-07",
+      "window": {
+        "from": "1994-11-01",
+        "to": "1995-06-30"
+      },
+      "jitterDays": 10,
+      "roles": [
+        {
+          "name": "target",
+          "kind": "leader",
+          "segments": [
+            "highend"
+          ],
+          "months": 24,
+          "minShare": 0.2
+        }
+      ],
+      "conditions": [
+        {
+          "type": "hist.ShareAtLeast",
+          "role": "target",
+          "value": 0.2,
+          "months": 24
+        },
+        {
+          "type": "hist.HasCpuSince",
+          "role": "target",
+          "months": 24,
+          "segments": [
+            "highend"
+          ]
+        }
+      ],
+      "stages": [
+        {
+          "offsetDays": 0,
+          "fires": [
+            {
+              "eventId": "hist.1994.fdiv",
+              "role": "target"
+            }
+          ]
+        }
+      ],
+      "fallback": "news",
+      "history": {
+        "titleKey": "hist.1994.fdiv.title",
+        "factKey": "hist.1994.fdiv.fact",
+        "sources": [
+          "https://en.wikipedia.org/wiki/Pentium_FDIV_bug"
+        ]
+      }
+    },
+    {
+      "id": "hist.1995.win95",
+      "_note": "Windows 95, 24.08.1995. Эффект: MR ×1.25, LE ×1.15 (730). Пример design (пример 1).",
+      "category": "boom",
+      "major": false,
+      "catchUp": true,
+      "anchor": "1995-08-24",
+      "window": {
+        "from": "1995-08-01",
+        "to": "1996-03-31"
+      },
+      "jitterDays": 10,
+      "roles": [],
+      "conditions": [],
+      "stages": [
+        {
+          "offsetDays": 0,
+          "fires": [
+            {
+              "eventId": "hist.1995.win95",
+              "role": "global"
+            }
+          ]
+        }
+      ],
+      "fallback": "skip",
+      "history": {
+        "titleKey": "hist.1995.win95.title",
+        "factKey": "hist.1995.win95.fact",
+        "sources": [
+          "https://en.wikipedia.org/wiki/Windows_95"
+        ]
+      }
+    },
+    {
+      "id": "hist.1997.asiancrisis",
+      "_note": "Азиатский финансовый кризис, 02.07.1997. Эффект: спрос всех ×0.90 (540), production.unitCost ×0.95 (365).",
+      "category": "macro",
+      "major": true,
+      "catchUp": true,
+      "anchor": "1997-07-02",
+      "window": {
+        "from": "1997-07-01",
+        "to": "1998-03-31"
+      },
+      "jitterDays": 10,
+      "roles": [],
+      "conditions": [],
+      "stages": [
+        {
+          "offsetDays": 0,
+          "fires": [
+            {
+              "eventId": "hist.1997.asiancrisis",
+              "role": "global"
+            }
+          ]
+        }
+      ],
+      "fallback": "skip",
+      "history": {
+        "titleKey": "hist.1997.asiancrisis.title",
+        "factKey": "hist.1997.asiancrisis.fact",
+        "sources": [
+          "https://en.wikipedia.org/wiki/1997_Asian_financial_crisis"
+        ]
+      }
+    },
+    {
+      "id": "hist.1998.sub1000",
+      "_note": "Celeron и цены ниже 1000 долларов, 15.04.1998. Агрессор — лидер LE+MR (порог 0.15). Ценовая война 270 дн., cut 0.15 / follow 0.08; LE ×1.15 (540).",
+      "category": "priceWar",
+      "major": false,
+      "catchUp": false,
+      "anchor": "1998-04-15",
+      "window": {
+        "from": "1998-04-01",
+        "to": "1998-12-31"
+      },
+      "jitterDays": 10,
+      "roles": [
+        {
+          "name": "aggressor",
+          "kind": "leader",
+          "segments": [
+            "lowend",
+            "midrange"
+          ],
+          "months": 12,
+          "minShare": 0.15
+        }
+      ],
+      "conditions": [],
+      "stages": [
+        {
+          "offsetDays": 0,
+          "fires": [
+            {
+              "eventId": "hist.1998.sub1000",
+              "role": "global"
+            },
+            {
+              "eventId": "hist.decide.pricewar.aggressor",
+              "role": "aggressor",
+              "extraArgs": ["sub1000", "lowend|midrange;0.15;0.08;270"]
+            },
+            {
+              "eventId": "hist.decide.pricewar.follower",
+              "role": "player",
+              "extraArgs": ["sub1000", "lowend|midrange;0.15;0.08;270"]
+            }
+          ]
+        }
+      ],
+      "fallback": "news",
+      "history": {
+        "titleKey": "hist.1998.sub1000.title",
+        "factKey": "hist.1998.sub1000.fact",
+        "sources": [
+          "https://en.wikipedia.org/wiki/Celeron"
+        ]
+      }
+    },
+    {
+      "id": "hist.1998.ftc",
+      "_note": "Intel и FTC, 08.06.1998: соглашение или суд. Цель — лидер (порог 0.60, 24 мес.). Соглашение: contract.reward ×0.95 (730). Источник [проверить]: раздел о FTC 1998 (TSK-020).",
+      "category": "antitrust",
+      "major": true,
+      "catchUp": false,
+      "anchor": "1998-06-08",
+      "window": {
+        "from": "1998-06-01",
+        "to": "1999-12-31"
+      },
+      "jitterDays": 15,
+      "roles": [
+        {
+          "name": "target",
+          "kind": "leader",
+          "segments": [
+            "all"
+          ],
+          "months": 24,
+          "minShare": 0.6
+        }
+      ],
+      "conditions": [
+        {
+          "type": "hist.ShareAtLeast",
+          "role": "target",
+          "value": 0.6,
+          "months": 24
+        }
+      ],
+      "stages": [
+        {
+          "offsetDays": 0,
+          "fires": [
+            {
+              "eventId": "hist.decide.antitrust.consent",
+              "role": "target",
+              "extraArgs": [
+                "ftc1998"
+              ]
+            }
+          ]
+        }
+      ],
+      "fallback": "news",
+      "history": {
+        "titleKey": "hist.1998.ftc.title",
+        "factKey": "hist.1998.ftc.fact",
+        "sources": [
+          "https://en.wikipedia.org/wiki/Intel"
+        ]
+      }
+    },
+    {
+      "id": "hist.1999.jiji",
+      "_note": "Землетрясение Цзицзи, 21.09.1999. Цель — именованный литейщик (UniqueID 9, нужна фабрика; запасной — лидер литейщиков). Выпуск цели ×0.50 (30), затем ×0.85 (60), если нет сверхурочных. Категория disaster выключена по умолчанию.",
+      "category": "disaster",
+      "major": true,
+      "catchUp": false,
+      "anchor": "1999-09-21",
+      "window": {
+        "from": "1999-09-01",
+        "to": "2000-03-31"
+      },
+      "jitterDays": 0,
+      "roles": [
+        {
+          "name": "target",
+          "kind": "named",
+          "segments": [
+            "all"
+          ],
+          "months": 24,
+          "minShare": 0.0,
+          "uniqueId": 9,
+          "requireFoundry": true,
+          "fallback": [
+            {
+              "kind": "foundryLeader"
+            }
+          ]
+        }
+      ],
+      "conditions": [],
+      "stages": [
+        {
+          "offsetDays": 0,
+          "fires": [
+            {
+              "eventId": "hist.1999.jiji.hit",
+              "role": "target"
+            },
+            {
+              "eventId": "hist.1999.jiji.market",
+              "role": "global"
+            }
+          ]
+        },
+        {
+          "offsetDays": 30,
+          "fires": [
+            {
+              "eventId": "hist.1999.jiji.recovery",
+              "role": "target"
+            }
+          ],
+          "skipIfFlag": "recovered"
+        }
+      ],
+      "fallback": "news",
+      "history": {
+        "titleKey": "hist.1999.jiji.title",
+        "factKey": "hist.1999.jiji.fact",
+        "sources": [
+          "https://en.wikipedia.org/wiki/1999_Jiji_earthquake"
+        ]
+      }
+    },
+    {
+      "id": "hist.2000.dotcom",
+      "_note": "Крах интернет-компаний, 02.10.2000. Эффект: HE ×0.80, MR ×0.90 (540); bank.creditLimit ×0.85 (365).",
+      "category": "macro",
+      "major": true,
+      "catchUp": true,
+      "anchor": "2000-10-02",
+      "window": {
+        "from": "2000-10-01",
+        "to": "2001-06-30"
+      },
+      "jitterDays": 10,
+      "roles": [],
+      "conditions": [],
+      "stages": [
+        {
+          "offsetDays": 0,
+          "fires": [
+            {
+              "eventId": "hist.2000.dotcom",
+              "role": "global"
+            }
+          ]
+        }
+      ],
+      "fallback": "skip",
+      "history": {
+        "titleKey": "hist.2000.dotcom.title",
+        "factKey": "hist.2000.dotcom.fact",
+        "sources": [
+          "https://en.wikipedia.org/wiki/Dot-com_bubble"
+        ]
+      }
+    },
+    {
+      "id": "hist.2000.ghzrace",
+      "_note": "Гонка частот, март 2000: 1 ГГц у Intel и AMD. Гонка по частоте, топ-3, ×1.10 для HE+MR+LE на 1460 дн.",
+      "category": "race",
+      "major": false,
+      "catchUp": true,
+      "anchor": "2000-03-06",
+      "window": {
+        "from": "2000-03-01",
+        "to": "2000-12-31"
+      },
+      "jitterDays": 10,
+      "roles": [],
+      "conditions": [],
+      "stages": [
+        {
+          "offsetDays": 0,
+          "fires": [
+            {
+              "eventId": "hist.2000.ghzrace",
+              "role": "global"
+            }
+          ]
+        }
+      ],
+      "fallback": "skip",
+      "history": {
+        "titleKey": "hist.2000.ghzrace.title",
+        "factKey": "hist.2000.ghzrace.fact",
+        "sources": [
+          "https://en.wikipedia.org/wiki/Megahertz_myth"
+        ]
+      }
+    },
+    {
+      "id": "hist.2005.jftc",
+      "_note": "Решение японской комиссии по справедливой торговле по Intel, 08.03.2005 [проверить URL]. Цель — лидер (порог 0.55, 24 мес.); бенефициар — претендент. Предупреждение: contract.reward цели ×0.97 (730), signChance бенефициара ×1.10 (730).",
+      "category": "antitrust",
+      "major": false,
+      "catchUp": false,
+      "anchor": "2005-03-08",
+      "window": {
+        "from": "2005-03-01",
+        "to": "2006-03-31"
+      },
+      "jitterDays": 15,
+      "roles": [
+        {
+          "name": "target",
+          "kind": "leader",
+          "segments": [
+            "all"
+          ],
+          "months": 24,
+          "minShare": 0.55
+        },
+        {
+          "name": "beneficiary",
+          "kind": "challenger",
+          "segments": [
+            "all"
+          ],
+          "months": 24,
+          "minShare": 0.0
+        }
+      ],
+      "conditions": [
+        {
+          "type": "hist.ShareAtLeast",
+          "role": "target",
+          "value": 0.55,
+          "months": 24
+        }
+      ],
+      "stages": [
+        {
+          "offsetDays": 0,
+          "fires": [
+            {
+              "eventId": "hist.2005.jftc",
+              "role": "target",
+              "extraArgs": [
+                "jftc2005"
+              ]
+            }
+          ]
+        }
+      ],
+      "fallback": "news",
+      "history": {
+        "titleKey": "hist.2005.jftc.title",
+        "factKey": "hist.2005.jftc.fact",
+        "sources": [
+          "https://en.wikipedia.org/wiki/Intel"
+        ]
+      }
+    },
+    {
+      "id": "hist.2005.archswitch",
+      "_note": "Apple переходит на процессоры Intel, 06.06.2005. Цель — лучшая по соотношению производительности и энергопотребления. signChance ×1.25 и contract.reward ×1.05 на 1095 дн.",
+      "category": "oem",
+      "major": false,
+      "catchUp": false,
+      "anchor": "2005-06-06",
+      "window": {
+        "from": "2005-06-01",
+        "to": "2006-06-30"
+      },
+      "jitterDays": 10,
+      "roles": [
+        {
+          "name": "target",
+          "kind": "bestPerfPerWatt",
+          "segments": [
+            "all"
+          ],
+          "months": 24,
+          "minShare": 0.0
+        }
+      ],
+      "conditions": [],
+      "stages": [
+        {
+          "offsetDays": 0,
+          "fires": [
+            {
+              "eventId": "hist.2005.archswitch",
+              "role": "target"
+            }
+          ]
+        }
+      ],
+      "fallback": "news",
+      "history": {
+        "titleKey": "hist.2005.archswitch.title",
+        "factKey": "hist.2005.archswitch.fact",
+        "sources": [
+          "https://en.wikipedia.org/wiki/Mac_transition_to_Intel_processors"
+        ]
+      }
+    },
+    {
+      "id": "hist.2006.core2war",
+      "_note": "Core 2 и ценовая война 2006 года, 27.07.2006. Агрессор — лидер HE+MR (порог 0.15). Ценовая война 180 дн., cut 0.20 / follow 0.10.",
+      "category": "priceWar",
+      "major": false,
+      "catchUp": false,
+      "anchor": "2006-07-27",
+      "window": {
+        "from": "2006-07-01",
+        "to": "2007-06-30"
+      },
+      "jitterDays": 10,
+      "roles": [
+        {
+          "name": "aggressor",
+          "kind": "leader",
+          "segments": [
+            "highend",
+            "midrange"
+          ],
+          "months": 12,
+          "minShare": 0.15
+        }
+      ],
+      "conditions": [],
+      "stages": [
+        {
+          "offsetDays": 0,
+          "fires": [
+            {
+              "eventId": "hist.decide.pricewar.aggressor",
+              "role": "aggressor",
+              "extraArgs": ["core2006", "highend|midrange;0.20;0.10;180"]
+            },
+            {
+              "eventId": "hist.decide.pricewar.follower",
+              "role": "player",
+              "extraArgs": ["core2006", "highend|midrange;0.20;0.10;180"]
+            }
+          ]
+        }
+      ],
+      "fallback": "news",
+      "history": {
+        "titleKey": "hist.2006.core2war.title",
+        "factKey": "hist.2006.core2war.fact",
+        "sources": [
+          "https://en.wikipedia.org/wiki/Intel_Core_2"
+        ]
+      }
+    },
+    {
+      "id": "hist.2008.netbook",
+      "_note": "Нетбуки, 02.03.2008. Эффект: LE ×1.30, IN ×1.05 (730).",
+      "category": "boom",
+      "major": false,
+      "catchUp": true,
+      "anchor": "2008-03-02",
+      "window": {
+        "from": "2008-03-01",
+        "to": "2008-12-31"
+      },
+      "jitterDays": 10,
+      "roles": [],
+      "conditions": [],
+      "stages": [
+        {
+          "offsetDays": 0,
+          "fires": [
+            {
+              "eventId": "hist.2008.netbook",
+              "role": "global"
+            }
+          ]
+        }
+      ],
+      "fallback": "skip",
+      "history": {
+        "titleKey": "hist.2008.netbook.title",
+        "factKey": "hist.2008.netbook.fact",
+        "sources": [
+          "https://en.wikipedia.org/wiki/Netbook"
+        ]
+      }
+    },
+    {
+      "id": "hist.2008.lehman",
+      "_note": "Крах Lehman Brothers, 15.09.2008. Эффект: спрос всех ×0.80 (365), bank.creditLimit ×0.70 (540), bank.interest ×1.20 (365).",
+      "category": "macro",
+      "major": true,
+      "catchUp": true,
+      "anchor": "2008-09-15",
+      "window": {
+        "from": "2008-09-01",
+        "to": "2009-03-31"
+      },
+      "jitterDays": 10,
+      "roles": [],
+      "conditions": [],
+      "stages": [
+        {
+          "offsetDays": 0,
+          "fires": [
+            {
+              "eventId": "hist.2008.lehman",
+              "role": "global"
+            }
+          ]
+        }
+      ],
+      "fallback": "skip",
+      "history": {
+        "titleKey": "hist.2008.lehman.title",
+        "factKey": "hist.2008.lehman.fact",
+        "sources": [
+          "https://en.wikipedia.org/wiki/2007%E2%80%932008_financial_crisis"
+        ]
+      }
+    },
+    {
+      "id": "hist.2009.eufine",
+      "_note": "Еврокомиссия, штраф Intel 13.05.2009 (1,06 млрд евро, ~4 % выручки). Цель — лидер (порог 0.55, 36 мес.). Пример design (пример 2).",
+      "category": "antitrust",
+      "major": true,
+      "catchUp": false,
+      "anchor": "2009-05-13",
+      "window": {
+        "from": "2009-05-01",
+        "to": "2010-12-31"
+      },
+      "jitterDays": 15,
+      "roles": [
+        {
+          "name": "target",
+          "kind": "leader",
+          "segments": [
+            "all"
+          ],
+          "months": 36,
+          "minShare": 0.55
+        }
+      ],
+      "conditions": [
+        {
+          "type": "hist.ShareAtLeast",
+          "role": "target",
+          "value": 0.55,
+          "months": 36
+        }
+      ],
+      "stages": [
+        {
+          "offsetDays": 0,
+          "fires": [
+            {
+              "eventId": "hist.decide.antitrust.fine",
+              "role": "target",
+              "extraArgs": [
+                "eu2009"
+              ]
+            }
+          ]
+        }
+      ],
+      "fallback": "news",
+      "history": {
+        "titleKey": "hist.2009.eufine.title",
+        "factKey": "hist.2009.eufine.fact",
+        "sources": [
+          "https://gulfnews.com/technology/intel-loses-court-challenge-against-144b-eu-fine-1.1346382",
+          "https://www.news4jax.com/business/2022/01/26/eu-court-annuls-intels-2009-billion-euro-antitrust-fine/",
+          "https://www.lawsociety.ie/gazette/top-stories/2023/september/eu-re-imposes-fine-on-intel-for-competition-breach/",
+          "https://globalcompetitionreview.com/article/general-court-slashes-re-imposed-penalty-against-intel"
+        ]
+      }
+    },
+    {
+      "id": "hist.2009.settlement",
+      "_note": "Иск пострадавшего (AMD против Intel), 12.11.2009. Условие: дело eu2009 активно и цель дела — не игрок. Истец — претендент (запасной вариант условия из design: игрок при доле ≥ 0.10 — через условие «подать» в событии).",
+      "category": "antitrust",
+      "major": false,
+      "catchUp": false,
+      "anchor": "2009-11-12",
+      "window": {
+        "from": "2009-11-01",
+        "to": "2010-12-31"
+      },
+      "jitterDays": 15,
+      "roles": [
+        {
+          "name": "defendant",
+          "kind": "leader",
+          "segments": [
+            "all"
+          ],
+          "months": 36,
+          "minShare": 0.55
+        },
+        {
+          "name": "plaintiff",
+          "kind": "challenger",
+          "segments": [
+            "all"
+          ],
+          "months": 36,
+          "minShare": 0.0
+        }
+      ],
+      "conditions": [
+        {
+          "type": "hist.CaseActive",
+          "caseId": "eu2009",
+          "targetNotPlayer": true
+        }
+      ],
+      "stages": [
+        {
+          "offsetDays": 0,
+          "fires": [
+            {
+              "eventId": "hist.decide.settlement",
+              "role": "plaintiff",
+              "extraArgs": [
+                "eu2009"
+              ]
+            }
+          ]
+        }
+      ],
+      "fallback": "news",
+      "history": {
+        "titleKey": "hist.2009.settlement.title",
+        "factKey": "hist.2009.settlement.fact",
+        "sources": [
+          "https://en.wikipedia.org/wiki/Advanced_Micro_Devices"
+        ]
+      }
+    },
+    {
+      "id": "hist.2011.tohoku",
+      "_note": "Землетрясение Тохоку, 11.03.2011. Цель — именованный производитель с мощностью (UniqueID 6; запасной — случайный). Всем production.unitCost ×1.10 (180); выпуск цели — в событии выбора.",
+      "category": "disaster",
+      "major": true,
+      "catchUp": false,
+      "anchor": "2011-03-11",
+      "window": {
+        "from": "2011-03-01",
+        "to": "2011-09-30"
+      },
+      "jitterDays": 0,
+      "roles": [
+        {
+          "name": "target",
+          "kind": "named",
+          "segments": [
+            "all"
+          ],
+          "months": 24,
+          "minShare": 0.0,
+          "uniqueId": 6,
+          "requireCapacity": true,
+          "fallback": [
+            {
+              "kind": "randomManufacturer"
+            }
+          ]
+        }
+      ],
+      "conditions": [],
+      "stages": [
+        {
+          "offsetDays": 0,
+          "fires": [
+            {
+              "eventId": "hist.2011.tohoku",
+              "role": "global"
+            },
+            {
+              "eventId": "hist.2011.tohoku.hit",
+              "role": "target"
+            }
+          ]
+        }
+      ],
+      "fallback": "news",
+      "history": {
+        "titleKey": "hist.2011.tohoku.title",
+        "factKey": "hist.2011.tohoku.fact",
+        "sources": [
+          "https://en.wikipedia.org/wiki/2011_T%C5%8Dhoku_earthquake_and_tsunami"
+        ]
+      }
+    },
+    {
+      "id": "hist.2012.postpc",
+      "_note": "Эпоха постПК, 01.04.2012. Эффект: MR ×0.85, LE ×0.85 (1460); IN ×1.15 (1460).",
+      "category": "macro",
+      "major": false,
+      "catchUp": true,
+      "anchor": "2012-04-01",
+      "window": {
+        "from": "2012-04-01",
+        "to": "2012-12-31"
+      },
+      "jitterDays": 10,
+      "roles": [],
+      "conditions": [],
+      "stages": [
+        {
+          "offsetDays": 0,
+          "fires": [
+            {
+              "eventId": "hist.2012.postpc",
+              "role": "global"
+            }
+          ]
+        }
+      ],
+      "fallback": "skip",
+      "history": {
+        "titleKey": "hist.2012.postpc.title",
+        "factKey": "hist.2012.postpc.fact",
+        "sources": [
+          "https://en.wikipedia.org/wiki/Post-PC_era"
+        ]
+      }
+    },
+    {
+      "id": "hist.2017.corewar",
+      "_note": "Ryzen и гонка ядер, 02.03.2017. Гонка по числу ядер, топ-3, ×1.10 для HE+MR на 1095 дн. Агрессор — лидер HE (порог 0.15, 12 мес.): ценовая война 180 дн., cut 0.10 / follow 0.05. Частично: только гонка катчап не переносит.",
+      "category": "race",
+      "major": false,
+      "catchUp": true,
+      "anchor": "2017-03-02",
+      "window": {
+        "from": "2017-03-01",
+        "to": "2017-12-31"
+      },
+      "jitterDays": 10,
+      "roles": [
+        {
+          "name": "aggressor",
+          "kind": "leader",
+          "segments": [
+            "highend"
+          ],
+          "months": 12,
+          "minShare": 0.15
+        }
+      ],
+      "conditions": [],
+      "stages": [
+        {
+          "offsetDays": 0,
+          "fires": [
+            {
+              "eventId": "hist.2017.corewar",
+              "role": "global"
+            },
+            {
+              "eventId": "hist.decide.pricewar.aggressor",
+              "role": "aggressor",
+              "extraArgs": ["corewar2017", "highend;0.10;0.05;180"]
+            },
+            {
+              "eventId": "hist.decide.pricewar.follower",
+              "role": "player",
+              "extraArgs": ["corewar2017", "highend;0.10;0.05;180"]
+            }
+          ]
+        }
+      ],
+      "fallback": "news",
+      "history": {
+        "titleKey": "hist.2017.corewar.title",
+        "factKey": "hist.2017.corewar.fact",
+        "sources": [
+          "https://en.wikipedia.org/wiki/Ryzen"
+        ]
+      }
+    },
+    {
+      "id": "hist.2018.meltdown",
+      "_note": "Уязвимости Meltdown и Spectre, 03.01.2018. Всем компаниям с CPU: по одному CPU с ИТ выше среднего; лидер HE — Major, прочие — Minor. Запасной вариант — hist.2018.meltdown.fallback.",
+      "category": "flaw",
+      "major": true,
+      "catchUp": false,
+      "anchor": "2018-01-03",
+      "window": {
+        "from": "2018-01-01",
+        "to": "2018-06-30"
+      },
+      "jitterDays": 10,
+      "roles": [],
+      "conditions": [],
+      "stages": [
+        {
+          "offsetDays": 0,
+          "fires": [
+            {
+              "eventId": "hist.2018.meltdown",
+              "role": "allCpuCompanies"
+            }
+          ]
+        }
+      ],
+      "fallback": "skip",
+      "history": {
+        "titleKey": "hist.2018.meltdown.title",
+        "factKey": "hist.2018.meltdown.fact",
+        "sources": [
+          "https://meltdownattack.com/",
+          "https://en.wikipedia.org/wiki/Spectre_(security_vulnerability)"
+        ]
+      }
+    },
+    {
+      "id": "hist.2018.tradewar",
+      "_note": "Торговая война США и Китая, 06.07.2018. Эффект: production.unitCost ×1.05 (730).",
+      "category": "macro",
+      "major": false,
+      "catchUp": true,
+      "anchor": "2018-07-06",
+      "window": {
+        "from": "2018-07-01",
+        "to": "2019-03-31"
+      },
+      "jitterDays": 10,
+      "roles": [],
+      "conditions": [],
+      "stages": [
+        {
+          "offsetDays": 0,
+          "fires": [
+            {
+              "eventId": "hist.2018.tradewar",
+              "role": "global"
+            }
+          ]
+        }
+      ],
+      "fallback": "skip",
+      "history": {
+        "titleKey": "hist.2018.tradewar.title",
+        "factKey": "hist.2018.tradewar.fact",
+        "sources": [
+          "https://en.wikipedia.org/wiki/China%E2%80%93United_States_trade_war"
+        ]
+      }
+    },
+    {
+      "id": "hist.2020.covid",
+      "_note": "Пандемия COVID-19, 11.03.2020 (категория disaster, выключена по умолчанию). Стадия 0: спрос всех ×0.85 (90); стадия +90: MR и LE ×1.30 (540).",
+      "category": "disaster",
+      "major": true,
+      "catchUp": true,
+      "anchor": "2020-03-11",
+      "window": {
+        "from": "2020-03-01",
+        "to": "2020-06-30"
+      },
+      "jitterDays": 0,
+      "roles": [],
+      "conditions": [],
+      "stages": [
+        {
+          "offsetDays": 0,
+          "fires": [
+            {
+              "eventId": "hist.2020.covid",
+              "role": "global"
+            }
+          ]
+        },
+        {
+          "offsetDays": 90,
+          "fires": [
+            {
+              "eventId": "hist.2020.covid.rebound",
+              "role": "global"
+            }
+          ]
+        }
+      ],
+      "fallback": "skip",
+      "history": {
+        "titleKey": "hist.2020.covid.title",
+        "factKey": "hist.2020.covid.fact",
+        "sources": [
+          "https://en.wikipedia.org/wiki/COVID-19_pandemic"
+        ]
+      }
+    },
+    {
+      "id": "hist.2020.shortage",
+      "_note": "Глобальный дефицит чипов, 01.12.2020. Эффект: production.unitCost ×1.15 и contract.reward ×1.15 (730); allFabless — выпуск ×0.90 (540). Игрок без собственных заводов: выбор приоритета OEM или рознице.",
+      "category": "shock",
+      "major": true,
+      "catchUp": true,
+      "anchor": "2020-12-01",
+      "window": {
+        "from": "2020-12-01",
+        "to": "2021-06-30"
+      },
+      "jitterDays": 10,
+      "roles": [],
+      "conditions": [],
+      "stages": [
+        {
+          "offsetDays": 0,
+          "fires": [
+            {
+              "eventId": "hist.2020.shortage",
+              "role": "global"
+            },
+            {
+              "eventId": "hist.2020.shortage.fabless",
+              "role": "allFabless"
+            },
+            {
+              "eventId": "hist.decide.shortage.priority",
+              "role": "player",
+              "onlyIf": {
+                "not": {
+                  "type": "hist.IsFabless"
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "fallback": "skip",
+      "history": {
+        "titleKey": "hist.2020.shortage.title",
+        "factKey": "hist.2020.shortage.fact",
+        "sources": [
+          "https://en.wikipedia.org/wiki/2020%E2%80%932023_global_chip_shortage"
+        ]
+      }
+    },
+    {
+      "id": "hist.2020.insourcing",
+      "_note": "Apple переходит на собственные чипы, 22.06.2020. Все компании с CPU: signChance ×0.85 (1095). Выбор — компании с OEM-контрактами: скидка или принять.",
+      "category": "oem",
+      "major": false,
+      "catchUp": false,
+      "anchor": "2020-06-22",
+      "window": {
+        "from": "2020-06-01",
+        "to": "2021-06-30"
+      },
+      "jitterDays": 10,
+      "roles": [],
+      "conditions": [],
+      "stages": [
+        {
+          "offsetDays": 0,
+          "fires": [
+            {
+              "eventId": "hist.2020.insourcing",
+              "role": "allCpuCompanies"
+            },
+            {
+              "eventId": "hist.decide.insourcing",
+              "role": "allCpuCompanies",
+              "onlyIf": {
+                "type": "oemContractsActiveAtLeast",
+                "count": 1
+              }
+            }
+          ]
+        }
+      ],
+      "fallback": "skip",
+      "history": {
+        "titleKey": "hist.2020.insourcing.title",
+        "factKey": "hist.2020.insourcing.fact",
+        "sources": [
+          "https://en.wikipedia.org/wiki/Mac_transition_to_Apple_silicon"
+        ]
+      }
+    },
+    {
+      "id": "hist.2022.chipsact",
+      "_note": "Закон CHIPS and Science Act, 09.08.2022. Производители с собственными заводами (HasFab): taxes ×0.75 (1825).",
+      "category": "macro",
+      "major": false,
+      "catchUp": true,
+      "anchor": "2022-08-09",
+      "window": {
+        "from": "2022-08-01",
+        "to": "2023-06-30"
+      },
+      "jitterDays": 10,
+      "roles": [],
+      "conditions": [],
+      "stages": [
+        {
+          "offsetDays": 0,
+          "fires": [
+            {
+              "eventId": "hist.2022.chipsact",
+              "role": "allManufacturers"
+            }
+          ]
+        }
+      ],
+      "fallback": "skip",
+      "history": {
+        "titleKey": "hist.2022.chipsact.title",
+        "factKey": "hist.2022.chipsact.fact",
+        "sources": [
+          "https://en.wikipedia.org/wiki/CHIPS_and_Science_Act"
+        ]
+      }
+    },
+    {
+      "id": "hist.2022.exportcontrol",
+      "_note": "Экспортный контроль США, 07.10.2022; ужесточение 17.10.2023 (стадия +375). Пример design (пример 4). Выбор — компании с CPU выше порога.",
+      "category": "export",
+      "major": true,
+      "catchUp": true,
+      "anchor": "2022-10-07",
+      "window": {
+        "from": "2022-10-01",
+        "to": "2023-06-30"
+      },
+      "jitterDays": 0,
+      "roles": [],
+      "conditions": [],
+      "stages": [
+        {
+          "offsetDays": 0,
+          "fires": [
+            {
+              "eventId": "hist.2022.export.rule",
+              "role": "global",
+              "extraArgs": [
+                "us2022"
+              ]
+            },
+            {
+              "eventId": "hist.decide.export",
+              "role": "allCpuCompanies",
+              "extraArgs": [
+                "us2022"
+              ],
+              "onlyIf": {
+                "type": "hist.PlayerHasCpuAbove",
+                "ruleId": "us2022",
+                "anyCompany": true
+              }
+            }
+          ]
+        },
+        {
+          "offsetDays": 375,
+          "fires": [
+            {
+              "eventId": "hist.2023.export.update",
+              "role": "global",
+              "extraArgs": [
+                "us2022"
+              ]
+            },
+            {
+              "eventId": "hist.decide.export.update",
+              "role": "allCpuCompanies",
+              "extraArgs": [
+                "us2022"
+              ],
+              "onlyIf": {
+                "type": "hist.PlayerHasCpuAbove",
+                "ruleId": "us2022",
+                "anyCompany": true
+              }
+            }
+          ]
+        }
+      ],
+      "fallback": "skip",
+      "history": {
+        "titleKey": "hist.2022.exportcontrol.title",
+        "factKey": "hist.2022.exportcontrol.fact",
+        "sources": [
+          "https://www.csis.org/analysis/where-chips-fall-us-export-controls-under-biden-administration-2022-2024",
+          "https://www.aiwiki.ai/wiki/nvidia_a800"
+        ]
+      }
+    },
+    {
+      "id": "hist.2023.aiboom",
+      "_note": "Бум ИИ, 15.01.2023. Эффект: HE ×1.20, IN ×1.20 (1095).",
+      "category": "boom",
+      "major": false,
+      "catchUp": true,
+      "anchor": "2023-01-15",
+      "window": {
+        "from": "2023-01-01",
+        "to": "2023-12-31"
+      },
+      "jitterDays": 10,
+      "roles": [],
+      "conditions": [],
+      "stages": [
+        {
+          "offsetDays": 0,
+          "fires": [
+            {
+              "eventId": "hist.2023.aiboom",
+              "role": "global"
+            }
+          ]
+        }
+      ],
+      "fallback": "skip",
+      "history": {
+        "titleKey": "hist.2023.aiboom.title",
+        "factKey": "hist.2023.aiboom.fact",
+        "sources": [
+          "https://en.wikipedia.org/wiki/AI_boom"
+        ]
+      }
+    },
+    {
+      "id": "hist.2017.cryptoboom",
+      "_note": "Криптобум 2017, 01.10.2017. Условие: gpu-product-line активна (AC-10.3). gpu.demand ×1.35 на 365 дн. (глобально). Источник [проверить] — TSK-020.",
+      "category": "boom",
+      "major": false,
+      "catchUp": true,
+      "anchor": "2017-10-01",
+      "window": {
+        "from": "2017-09-01",
+        "to": "2018-03-31"
+      },
+      "jitterDays": 15,
+      "roles": [],
+      "conditions": [
+        {
+          "type": "featureActive",
+          "id": "gpu-product-line"
+        }
+      ],
+      "stages": [
+        {
+          "offsetDays": 0,
+          "fires": [
+            {
+              "eventId": "hist.2017.cryptoboom",
+              "role": "global"
+            }
+          ]
+        }
+      ],
+      "fallback": "skip",
+      "history": {
+        "titleKey": "hist.2017.cryptoboom.title",
+        "factKey": "hist.2017.cryptoboom.fact",
+        "sources": [
+          "https://en.wikipedia.org/wiki/Cryptocurrency_bubble"
+        ]
+      }
+    },
+    {
+      "id": "hist.2021.cryptoboom",
+      "_note": "Второй криптобум, 01.04.2021. Условие: gpu-product-line активна. gpu.demand ×1.45 на 365 дн. (глобально). Источник [проверить] — TSK-020.",
+      "category": "boom",
+      "major": false,
+      "catchUp": true,
+      "anchor": "2021-04-01",
+      "window": {
+        "from": "2021-02-01",
+        "to": "2021-12-31"
+      },
+      "jitterDays": 15,
+      "roles": [],
+      "conditions": [
+        {
+          "type": "featureActive",
+          "id": "gpu-product-line"
+        }
+      ],
+      "stages": [
+        {
+          "offsetDays": 0,
+          "fires": [
+            {
+              "eventId": "hist.2021.cryptoboom",
+              "role": "global"
+            }
+          ]
+        }
+      ],
+      "fallback": "skip",
+      "history": {
+        "titleKey": "hist.2021.cryptoboom.title",
+        "factKey": "hist.2021.cryptoboom.fact",
+        "sources": [
+          "https://en.wikipedia.org/wiki/2020%E2%80%932023_global_chip_shortage"
+        ]
+      }
+    }
+  ]
+}

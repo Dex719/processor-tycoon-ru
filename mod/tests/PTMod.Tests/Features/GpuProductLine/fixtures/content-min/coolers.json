@@ -1,0 +1,7 @@
+{
+  "schema": 1,
+  "records": [
+    { "id": "c.one", "nameKey": "gpu.test.c1", "year": 1981, "thermalResistance": 2.0, "cost": 2 },
+    { "id": "c.two", "nameKey": "gpu.test.c2", "year": 1995, "thermalResistance": 0.5, "cost": 8 }
+  ]
+}

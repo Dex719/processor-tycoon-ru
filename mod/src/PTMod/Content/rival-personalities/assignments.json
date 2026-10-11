@@ -1,0 +1,18 @@
+{
+  "schema": 1,
+  "records": [
+    { "id": "intel",             "uniqueId": 0,  "key": "intel",             "archetype": "hegemon" },
+    { "id": "amd",               "uniqueId": 1,  "key": "amd",               "archetype": "price_warrior" },
+    { "id": "zilog",             "uniqueId": 2,  "key": "zilog",             "archetype": "niche_specialist" },
+    { "id": "texas_instruments", "uniqueId": 3,  "key": "texas_instruments", "archetype": "conservative" },
+    { "id": "ibm",               "uniqueId": 4,  "key": "ibm",               "archetype": "engineer" },
+    { "id": "fairchild",         "uniqueId": 5,  "key": "fairchild",         "archetype": "conservative" },
+    { "id": "toshiba",           "uniqueId": 6,  "key": "toshiba",           "archetype": "fast_follower" },
+    { "id": "motorola",          "uniqueId": 7,  "key": "motorola",          "archetype": "engineer" },
+    { "id": "globalfoundries",   "uniqueId": 8,  "key": "globalfoundries",   "archetype": "foundry_partner" },
+    { "id": "tsmc",              "uniqueId": 9,  "key": "tsmc",              "archetype": "foundry_partner" },
+    { "id": "cyrix",             "uniqueId": 10, "key": "cyrix",             "archetype": "fast_follower" },
+    { "id": "via",               "uniqueId": 11, "key": "via",               "archetype": "price_warrior" },
+    { "id": "digital_devices",   "uniqueId": 12, "key": "digital_devices",   "archetype": "niche_specialist" }
+  ]
+}

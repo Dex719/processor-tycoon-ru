@@ -1,0 +1,11 @@
+{
+  "schema": 1,
+  "modVersion": "9.9.9",
+  "features": {
+    "gpu-product-line": {
+      "_schema": 7,
+      "divisionFounded": true,
+      "somethingFromTheFuture": { "a": [1, 2, 3], "b": "kept as it is" }
+    }
+  }
+}

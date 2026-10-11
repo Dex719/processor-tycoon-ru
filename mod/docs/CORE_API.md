@@ -1493,6 +1493,7 @@ class SideFileModel   // The pure model of the side save file <c>&lt;name&gt;.pt
     SideFileReadReport ApplyCorrupt(string reason)   // The file could not be used (unreadable or invalid): defaults for everybody, status <see cref="SideFileStatus.Corrupt"/>.
     SideFileReadReport Apply(string text)   // Parses the file text and hands the sections out: a participant gets <c>Read</c> (section found, version not newer) or
     SideFileReadReport RestoreParticipant(string sectionId)   // Gives a participant its data after the feature was switched on in the middle of a session (it was inactive at load time):
+    SideFileBuildReport CaptureParticipant(string sectionId)   // The feature of a participant is being switched off in the middle of a session: takes the participant's state now and keeps it as the
     SideFileBuildReport Build(SideFileHeader header)   // Collects the document: the header, then the sections. Active participants contribute <c>Write()</c> with their <c>_schema</c>;
 ```
 
@@ -1996,6 +1997,7 @@ class ModSave   // The side save file of the mod (FR-5, decision 0004): <c>&lt;n
     string Key
     object[] Args
     static void Register(IModSaveParticipant participant)   // Registers a participant for the section <see cref="ISideFileParticipant.SectionId"/>. Features use <c>ctx.SaveParticipant(...)</c> in
+    static bool IsSectionNewer(string featureId)   // The section of this feature in the side file of the save in play was written by a newer mod than this one (its <c>_schema</c> is above
     static event Action AfterRead   // Every participant has been given its data after a load (or, with no file, its defaults). The place to wire what depends on several features.
     static event Action BeforeWrite   // The side file is about to be collected (a save is being written): the last moment to hand state over to a participant.
     void ResetToDefaults()

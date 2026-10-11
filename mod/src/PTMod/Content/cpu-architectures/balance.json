@@ -1,0 +1,28 @@
+{
+  "schema": 1,
+  "stage": 1,
+  "research": { "penaltyPerYear": 3.5, "bonusPerYear": 0.15, "bonusCap": 0.75, "isaExperienceFactor": 0.6 },
+  "rating": { "clampMin": 0.80, "clampMax": 1.20, "supportBase": 0.90, "supportSpan": 0.20,
+              "ecoBase": 0.95, "ecoSpan": 0.10, "mvpSupport": 50 },
+  "support": {
+    "tiers": {
+      "off":    { "target": 0,  "rate": 0.0,  "cost": 0.0 },
+      "low":    { "target": 40, "rate": 0.10, "cost": 0.5 },
+      "normal": { "target": 70, "rate": 0.10, "cost": 1.0 },
+      "high":   { "target": 95, "rate": 0.10, "cost": 2.0 }
+    },
+    "startOnResearch": 30, "inheritSameIsa": 0.5
+  },
+  "ecosystem": { "windowMonths": 12, "fallbackFamily": "proprietary", "milestones": [25, 50, 75] },
+  "migration": { "immatureMonths": 12, "immatureDevCost": 0.25 },
+  "extensions": [
+    { "id": "multicore", "trigger": "coreCount", "minCores": 2, "requiredSupport": 40, "penalty": 0.92 },
+    { "id": "smt",       "trigger": "smt",       "minCores": 1, "requiredSupport": 50, "penalty": 0.95 }
+  ],
+  "ai": { "fundingByDifficulty": [0.6, 0.8, 1.0, 1.3, 1.6], "reserveMonths": 6, "noInterruptTimeLeftDays": 30,
+          "switchMargin": 1.10, "switchMinSupport": 35, "normalTierReserveMonths": 12,
+          "candidateEcoForLowTier": 0.2, "salesWindowMonths": 3 },
+  "seed": { "playerPath": ["proprietary", "x86", "x86_64"],
+            "aiActiveSupport": 60, "aiOtherSupport": 35, "playerNewestSupport": 50, "playerOtherSupport": 30 },
+  "x86License": { "isa": "x86", "holderIds": [0, 1], "royaltyRate": 0.03 }
+}

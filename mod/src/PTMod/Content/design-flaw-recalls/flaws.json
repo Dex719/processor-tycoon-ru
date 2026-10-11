@@ -1,0 +1,60 @@
+{
+  "schema": 1,
+  "risk": {
+    "base": 0.02, "kFailureRate": 0.20, "kOverclock": 0.30, "kThermal": 0.60, "kNodeImmaturity": 0.08, "kRush": 0.06,
+    "overclockCap": 0.5, "unknownNodeImmaturity": 0.5, "pMax": 0.5, "aiRiskMultiplier": 1.0,
+    "difficultyMultiplier": [0.5, 0.75, 1.0, 1.15, 1.3, 1.5],
+    "era": [ { "fromYear": 1971, "toYear": 1984, "multiplier": 0.8 },
+             { "fromYear": 1985, "toYear": 1999, "multiplier": 1.0 },
+             { "fromYear": 2000, "toYear": 2030, "multiplier": 1.1 } ]
+  },
+  "severity": { "baseWeights": [0.60, 0.30, 0.10], "shiftMajor": 2.0, "shiftCritical": 4.0 },
+  "discovery": {
+    "hBase": [0.02, 0.04, 0.07], "kUnits": 1.0, "unitsRef": 100000, "hMax": 0.35,
+    "maxHiddenMonths": [48, 36, 24],
+    "qInternal": [0.65, 0.55, 0.40],
+    "expireAfterRetiredMonths": 36, "expireNoSalesMonths": 24,
+    "leakRate": { "ignore": 0.06, "quietStepping": 0.03, "tail": 0.015 }, "leakTailMonths": 12
+  },
+  "responses": {
+    "timerDays": 30,
+    "pendingSignChanceMultiplier": 0.8,
+    "pendingGraceDays": 14,
+    "recall": { "returnRate": [0.10, 0.25, 0.45], "logisticsShareOfPrice": 0.15,
+                "fixedCostBase": 2000000, "stockReworkShare": 0.5, "capShareOfRevenue12m": 0.30 },
+    "stepping": { "costShareOfDevCost": [0.15, 0.25, 0.35], "days": [60, 90, 120],
+                  "residualShareOfRecall": 0.30 },
+    "patch": { "costShareOfDevCost": 0.03, "fixedCostBase": 500000, "months": [12, 18, 24] },
+    "ignore": { "oemCancel": [0.10, 0.30, 0.60], "signChance": [0.95, 0.85, 0.70], "signChanceMonths": 12,
+                "classAction": [0.0, 0.05, 0.10], "suitShareOfRevenue": 0.03, "drainMonths": 12, "drainPerMonth": -1 },
+    "popHit": { "public": [0.02, 0.04, 0.08], "recall": [0.0, 0.01, 0.02], "stepping": [0.01, 0.02, 0.04],
+                "patch": [0.01, 0.02, 0.03], "ignore": [0.05, 0.12, 0.20] }
+  },
+  "reputation": {
+    "publicBase": [-2, -5, -10],
+    "recall": [1, 2, 4], "steppingPublic": [0, -1, -3], "steppingQuiet": [0, 0, 0],
+    "patch": [-1, -2, -4], "ignorePublic": [-3, -8, -15],
+    "coverUpMultiplier": 2.0
+  },
+  "press": { "overallAdjustment": [-8, -15, -15] },
+  "types": [
+    { "id": "arith",     "nameKey": "dfr.type.arith",     "fromYear": 1971, "toYear": 2030, "weight": 3,
+      "weightByOverclock": 0, "weightByThermal": 0,
+      "patchable": true, "patchFromYear": 1995, "ipsLoss": [0.03, 0.06, 0.10], "recallable": true },
+    { "id": "stability", "nameKey": "dfr.type.stability", "fromYear": 1971, "toYear": 2030, "weight": 3,
+      "weightByOverclock": 5, "weightByThermal": 0,
+      "patchable": true, "patchFromYear": 1990, "ipsLoss": [0.08, 0.12, 0.18], "recallable": true },
+    { "id": "thermal",   "nameKey": "dfr.type.thermal",   "fromYear": 1971, "toYear": 2030, "weight": 2,
+      "weightByOverclock": 0, "weightByThermal": 5,
+      "patchable": true, "patchFromYear": 1985, "ipsLoss": [0.06, 0.10, 0.15], "recallable": true },
+    { "id": "security",  "nameKey": "dfr.type.security",  "fromYear": 2015, "toYear": 2030, "weight": 2,
+      "weightByOverclock": 0, "weightByThermal": 0,
+      "patchable": true, "patchFromYear": 2015, "ipsLoss": [0.05, 0.12, 0.25], "recallable": true }
+  ],
+  "aiPolicy": {
+    "public":   { "recall": 0.30, "stepping": 0.30, "patch": 0.25, "ignore": 0.15 },
+    "internal": { "recall": 0.15, "stepping": 0.45, "patch": 0.15, "ignore": 0.25 },
+    "recallRequiresHeadroomFactor": 1.5
+  },
+  "rush": { "timeCut": 0.25, "costMultiplier": 1.10 }
+}

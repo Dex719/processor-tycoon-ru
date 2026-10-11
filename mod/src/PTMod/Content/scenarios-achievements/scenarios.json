@@ -1,0 +1,260 @@
+{
+  "schema": 1,
+  "records": [
+    {
+      "id": "garage-1975",
+      "order": 10,
+      "titleKey": "scn.garage-1975.title",
+      "descKey": "scn.garage-1975.desc",
+      "briefingKey": "scn.garage-1975.briefing",
+      "start": {
+        "year": 1975, "companyType": "idm", "difficultyLevel": 2, "startingTechnology": 4,
+        "startingFunds": 2500000, "factorySize": 10, "allowCheats": false, "techYear": 0
+      },
+      "onboarding": "forcedOn",
+      "modifiers": [],
+      "deadline": "1978-01-01",
+      "timeBonusMax": 300,
+      "goals": [
+        { "id": "g1", "required": true, "points": 100, "titleKey": "scn.garage-1975.g1", "by": "1976-07-01",
+          "check": { "kind": "event", "event": "cpu.released.player", "count": 1 } },
+        { "id": "g2", "required": true, "points": 100, "titleKey": "scn.garage-1975.g2",
+          "check": { "kind": "metric", "metric": "profit.lastMonth", "op": ">", "value": 0, "cadence": "monthly" } },
+        { "id": "g3", "required": true, "points": 200, "titleKey": "scn.garage-1975.g3",
+          "check": { "kind": "metric", "metric": "money", "op": ">=", "value": 5000000 },
+          "progress": { "metric": "money", "target": 5000000, "format": "money" } },
+        { "id": "g4", "required": false, "points": 100, "titleKey": "scn.garage-1975.g4",
+          "check": { "kind": "metric", "metric": "oem.signed.total", "op": ">=", "value": 1 },
+          "progress": { "metric": "oem.signed.total", "target": 1, "format": "count" } }
+      ],
+      "fail": [
+        { "id": "bankrupt", "textKey": "scn.fail.bankrupt", "check": { "kind": "event", "event": "player.bankrupt", "count": 1 } }
+      ],
+      "medals": { "bronze": 400, "silver": 600, "gold": 740 },
+      "allowedChallenges": ["expensive-research", "fickle-market", "taxman", "no-debt"]
+    },
+    {
+      "id": "pc-boom-1980",
+      "order": 20,
+      "titleKey": "scn.pc-boom-1980.title",
+      "descKey": "scn.pc-boom-1980.desc",
+      "briefingKey": "scn.pc-boom-1980.briefing",
+      "start": {
+        "year": 1980, "companyType": "idm", "difficultyLevel": 2, "startingTechnology": 4,
+        "startingFunds": 4000000, "factorySize": 15, "allowCheats": false, "techYear": 0
+      },
+      "onboarding": "allowed",
+      "modifiers": [],
+      "deadline": "1986-01-01",
+      "timeBonusMax": 300,
+      "goals": [
+        { "id": "g1", "required": true, "points": 300, "titleKey": "scn.pc-boom-1980.g1",
+          "check": { "kind": "metric", "metric": "share.midrange.avg30", "op": ">=", "value": 0.15 },
+          "progress": { "metric": "share.midrange.avg30", "target": 0.15, "format": "percent" } },
+        { "id": "g2", "required": true, "points": 200, "titleKey": "scn.pc-boom-1980.g2",
+          "check": { "kind": "metric", "metric": "oem.signed.total", "op": ">=", "value": 3 },
+          "progress": { "metric": "oem.signed.total", "target": 3, "format": "count" } },
+        { "id": "g3", "required": true, "points": 200, "titleKey": "scn.pc-boom-1980.g3",
+          "check": { "kind": "metric", "metric": "profit.streakMonths", "op": ">=", "value": 6, "cadence": "monthly" },
+          "progress": { "metric": "profit.streakMonths", "target": 6, "format": "count" } },
+        { "id": "g4", "required": false, "points": 100, "titleKey": "scn.pc-boom-1980.g4",
+          "check": { "kind": "metric", "metric": "share.lowend.avg30", "op": ">=", "value": 0.10 },
+          "progress": { "metric": "share.lowend.avg30", "target": 0.10, "format": "percent" } }
+      ],
+      "fail": [
+        { "id": "bankrupt", "textKey": "scn.fail.bankrupt", "check": { "kind": "event", "event": "player.bankrupt", "count": 1 } }
+      ],
+      "medals": { "bronze": 700, "silver": 900, "gold": 1040 },
+      "allowedChallenges": ["tight-credit", "expensive-research", "fickle-market", "taxman", "strong-rivals", "no-debt"]
+    },
+    {
+      "id": "fabless-1985",
+      "order": 30,
+      "titleKey": "scn.fabless-1985.title",
+      "descKey": "scn.fabless-1985.desc",
+      "briefingKey": "scn.fabless-1985.briefing",
+      "start": {
+        "year": 1985, "companyType": "fabless", "difficultyLevel": 2, "startingTechnology": 4,
+        "startingFunds": 125000000, "factorySize": 0, "allowCheats": false, "techYear": 0
+      },
+      "onboarding": "allowed",
+      "modifiers": [],
+      "deadline": "1991-01-01",
+      "timeBonusMax": 300,
+      "goals": [
+        { "id": "g1", "required": true, "points": 100, "titleKey": "scn.fabless-1985.g1",
+          "check": { "kind": "metric", "metric": "foundry.asClient.count", "op": ">=", "value": 1 } },
+        { "id": "g2", "required": true, "points": 300, "titleKey": "scn.fabless-1985.g2",
+          "check": { "kind": "metric", "metric": "share.total.avg30", "op": ">=", "value": 0.10 },
+          "progress": { "metric": "share.total.avg30", "target": 0.10, "format": "percent" } },
+        { "id": "g3", "required": true, "points": 200, "titleKey": "scn.fabless-1985.g3",
+          "check": { "kind": "metric", "metric": "revenue.last12m", "op": ">=", "value": 300000000, "cadence": "monthly" },
+          "progress": { "metric": "revenue.last12m", "target": 300000000, "format": "money" } },
+        { "id": "g4", "required": false, "points": 100, "titleKey": "scn.fabless-1985.g4",
+          "check": { "kind": "cpuReleased", "cpu": { "minFrequency": 20000 } } }
+      ],
+      "fail": [
+        { "id": "bankrupt", "textKey": "scn.fail.bankrupt", "check": { "kind": "event", "event": "player.bankrupt", "count": 1 } },
+        { "id": "fabless-rule", "textKey": "scn.fail.fablessRule", "check": { "kind": "metric", "metric": "factory.lines", "op": ">", "value": 0 } }
+      ],
+      "medals": { "bronze": 600, "silver": 800, "gold": 940 },
+      "allowedChallenges": ["tight-credit", "expensive-research", "fickle-market", "taxman", "strong-rivals", "no-oem", "no-debt"]
+    },
+    {
+      "id": "comeback-1985",
+      "order": 40,
+      "titleKey": "scn.comeback-1985.title",
+      "descKey": "scn.comeback-1985.desc",
+      "briefingKey": "scn.comeback-1985.briefing",
+      "start": {
+        "year": 1985, "companyType": "idm", "difficultyLevel": 2, "startingTechnology": 2,
+        "startingFunds": -20000000, "factorySize": 30, "allowCheats": false, "techYear": 0
+      },
+      "onboarding": "allowed",
+      "modifiers": [
+        { "channel": "bank.interest", "multiplier": 1.5, "appliesTo": "player" }
+      ],
+      "deadline": "1989-01-01",
+      "timeBonusMax": 200,
+      "goals": [
+        { "id": "g1", "required": true, "points": 300, "titleKey": "scn.comeback-1985.g1",
+          "check": { "kind": "metric", "metric": "money", "op": ">=", "value": 0 } },
+        { "id": "g2", "required": true, "points": 300, "titleKey": "scn.comeback-1985.g2",
+          "check": { "kind": "metric", "metric": "profit.streakMonths", "op": ">=", "value": 6, "cadence": "monthly" },
+          "progress": { "metric": "profit.streakMonths", "target": 6, "format": "count" } },
+        { "id": "g3", "required": false, "points": 200, "titleKey": "scn.comeback-1985.g3",
+          "check": { "kind": "metric", "metric": "money", "op": ">=", "value": 50000000 },
+          "progress": { "metric": "money", "target": 50000000, "format": "money" } }
+      ],
+      "fail": [
+        { "id": "bankrupt", "textKey": "scn.fail.bankrupt", "check": { "kind": "event", "event": "player.bankrupt", "count": 1 } },
+        { "id": "debt-limit", "textKey": "scn.fail.debtLimit", "check": { "kind": "metric", "metric": "money", "op": "<", "value": -80000000 } }
+      ],
+      "medals": { "bronze": 600, "silver": 800, "gold": 940 },
+      "allowedChallenges": ["expensive-research", "fickle-market", "taxman", "strong-rivals", "no-oem"]
+    },
+    {
+      "id": "foundry-1990",
+      "order": 50,
+      "titleKey": "scn.foundry-1990.title",
+      "descKey": "scn.foundry-1990.desc",
+      "briefingKey": "scn.foundry-1990.briefing",
+      "start": {
+        "year": 1990, "companyType": "foundry", "difficultyLevel": 3, "startingTechnology": 2,
+        "startingFunds": 250000000, "factorySize": 125, "allowCheats": false, "techYear": 0
+      },
+      "onboarding": "allowed",
+      "modifiers": [],
+      "deadline": "1996-01-01",
+      "timeBonusMax": 300,
+      "goals": [
+        { "id": "g1", "required": true, "points": 300, "titleKey": "scn.foundry-1990.g1",
+          "check": { "kind": "metric", "metric": "foundry.clients.active", "op": ">=", "value": 3 },
+          "progress": { "metric": "foundry.clients.active", "target": 3, "format": "count" } },
+        { "id": "g2", "required": true, "points": 300, "titleKey": "scn.foundry-1990.g2",
+          "check": { "kind": "metric", "metric": "revenue.clients.last12m", "op": ">=", "value": 200000000, "cadence": "monthly" },
+          "progress": { "metric": "revenue.clients.last12m", "target": 200000000, "format": "money" } },
+        { "id": "g3", "required": false, "points": 100, "titleKey": "scn.foundry-1990.g3",
+          "check": { "kind": "metric", "metric": "factory.lines", "op": ">=", "value": 200 },
+          "progress": { "metric": "factory.lines", "target": 200, "format": "count" } }
+      ],
+      "fail": [
+        { "id": "bankrupt", "textKey": "scn.fail.bankrupt", "check": { "kind": "event", "event": "player.bankrupt", "count": 1 } }
+      ],
+      "medals": { "bronze": 600, "silver": 800, "gold": 940 },
+      "allowedChallenges": ["tight-credit", "expensive-research", "fickle-market", "taxman", "strong-rivals", "no-debt"]
+    },
+    {
+      "id": "mhz-race-1990",
+      "order": 60,
+      "titleKey": "scn.mhz-race-1990.title",
+      "descKey": "scn.mhz-race-1990.desc",
+      "briefingKey": "scn.mhz-race-1990.briefing",
+      "start": {
+        "year": 1990, "companyType": "idm", "difficultyLevel": 3, "startingTechnology": 2,
+        "startingFunds": 50000000, "factorySize": 25, "allowCheats": false, "techYear": 0
+      },
+      "onboarding": "allowed",
+      "modifiers": [],
+      "deadline": "1996-01-01",
+      "timeBonusMax": 300,
+      "goals": [
+        { "id": "g1", "required": true, "points": 400, "titleKey": "scn.mhz-race-1990.g1",
+          "check": { "kind": "race", "cpu": { "minFrequency": 100000 }, "failOnLose": true } },
+        { "id": "g2", "required": true, "points": 300, "titleKey": "scn.mhz-race-1990.g2",
+          "check": { "kind": "metric", "metric": "share.highend.avg30", "op": ">=", "value": 0.20 },
+          "progress": { "metric": "share.highend.avg30", "target": 0.20, "format": "percent" } },
+        { "id": "g3", "required": false, "points": 100, "titleKey": "scn.mhz-race-1990.g3",
+          "check": { "kind": "metric", "metric": "profit.streakMonths", "op": ">=", "value": 12, "cadence": "monthly" },
+          "progress": { "metric": "profit.streakMonths", "target": 12, "format": "count" } }
+      ],
+      "fail": [
+        { "id": "bankrupt", "textKey": "scn.fail.bankrupt", "check": { "kind": "event", "event": "player.bankrupt", "count": 1 } }
+      ],
+      "medals": { "bronze": 700, "silver": 900, "gold": 1040 },
+      "allowedChallenges": ["tight-credit", "expensive-research", "fickle-market", "taxman", "strong-rivals", "no-oem", "no-debt"]
+    },
+    {
+      "id": "ghz-race-1995",
+      "order": 70,
+      "titleKey": "scn.ghz-race-1995.title",
+      "descKey": "scn.ghz-race-1995.desc",
+      "briefingKey": "scn.ghz-race-1995.briefing",
+      "start": {
+        "year": 1995, "companyType": "idm", "difficultyLevel": 2, "startingTechnology": 4,
+        "startingFunds": 150000000, "factorySize": 75, "allowCheats": false, "techYear": 0
+      },
+      "onboarding": "allowed",
+      "modifiers": [],
+      "deadline": "2003-01-01",
+      "timeBonusMax": 300,
+      "goals": [
+        { "id": "g1", "required": true, "points": 500, "titleKey": "scn.ghz-race-1995.g1",
+          "check": { "kind": "race", "cpu": { "minFrequency": 1000000 }, "failOnLose": true } },
+        { "id": "g2", "required": true, "points": 300, "titleKey": "scn.ghz-race-1995.g2",
+          "check": { "kind": "metric", "metric": "share.highend.avg30", "op": ">=", "value": 0.25 },
+          "progress": { "metric": "share.highend.avg30", "target": 0.25, "format": "percent" } },
+        { "id": "g3", "required": false, "points": 100, "titleKey": "scn.ghz-race-1995.g3",
+          "check": { "kind": "cpuReleased", "cpu": { "requireSmt": true } } }
+      ],
+      "fail": [
+        { "id": "bankrupt", "textKey": "scn.fail.bankrupt", "check": { "kind": "event", "event": "player.bankrupt", "count": 1 } }
+      ],
+      "medals": { "bronze": 800, "silver": 1000, "gold": 1140 },
+      "allowedChallenges": ["tight-credit", "expensive-research", "fickle-market", "taxman", "strong-rivals", "no-oem", "no-debt"]
+    },
+    {
+      "id": "power-wall-2000",
+      "order": 80,
+      "titleKey": "scn.power-wall-2000.title",
+      "descKey": "scn.power-wall-2000.desc",
+      "briefingKey": "scn.power-wall-2000.briefing",
+      "start": {
+        "year": 2000, "companyType": "idm", "difficultyLevel": 3, "startingTechnology": 2,
+        "startingFunds": 100000000, "factorySize": 50, "allowCheats": false, "techYear": 0
+      },
+      "onboarding": "allowed",
+      "modifiers": [],
+      "deadline": "2008-01-01",
+      "timeBonusMax": 300,
+      "goals": [
+        { "id": "g1", "required": true, "points": 400, "titleKey": "scn.power-wall-2000.g1",
+          "check": { "kind": "cpuReleased", "cpu": { "minCores": 2, "minFrequency": 2000000, "maxPower": 65 } } },
+        { "id": "g2", "required": true, "points": 200, "titleKey": "scn.power-wall-2000.g2",
+          "check": { "kind": "metric", "metric": "share.industries.avg30", "op": ">=", "value": 0.20 },
+          "progress": { "metric": "share.industries.avg30", "target": 0.20, "format": "percent" } },
+        { "id": "g3", "required": true, "points": 200, "titleKey": "scn.power-wall-2000.g3",
+          "check": { "kind": "metric", "metric": "profit.streakMonths", "op": ">=", "value": 12, "cadence": "monthly" },
+          "progress": { "metric": "profit.streakMonths", "target": 12, "format": "count" } },
+        { "id": "g4", "required": false, "points": 100, "titleKey": "scn.power-wall-2000.g4",
+          "check": { "kind": "metric", "metric": "share.highend.avg30", "op": ">=", "value": 0.15 },
+          "progress": { "metric": "share.highend.avg30", "target": 0.15, "format": "percent" } }
+      ],
+      "fail": [
+        { "id": "bankrupt", "textKey": "scn.fail.bankrupt", "check": { "kind": "event", "event": "player.bankrupt", "count": 1 } }
+      ],
+      "medals": { "bronze": 800, "silver": 1000, "gold": 1140 },
+      "allowedChallenges": ["tight-credit", "expensive-research", "fickle-market", "taxman", "strong-rivals", "no-oem", "no-debt"]
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "schema": 1,
+  "risk": {
+    "lowActualChance": 0.10,
+    "useAutomationMarginAsThreshold": true,
+    "breakFineVsCashRatio": 1.0
+  },
+  "log": { "capacity": 500, "tenderHistoryYears": 10 },
+  "ai": { "contractMarginThreshold": 0.45 },
+  "display": { "percentDecimals": 0, "actualPercentDecimals": 0 }
+}

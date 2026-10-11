@@ -300,6 +300,102 @@ namespace PTMod.Tests.Save
         }
 
         [Test]
+        public void ParticipantSwitchedOffBeforeAnySave_KeepsTheStateItHeldWhenItWasSwitchedOff()
+        {
+            // The gap the capture closes: loaded from the file, changed, switched off, and only then saved. Without the capture the model had
+            // dropped the stored copy at Read and never asked the participant, so the next file lost the section.
+            bool active = true;
+            var a = new Part("fs");
+            var model = new SideFileModel(id => active);
+            SideFileTestKit.Register(model, a);
+            model.Apply(SideFileTestKit.File1("\"fs\":{\"_schema\":1,\"v\":3}"));
+            a.Value = 7;                                         // played on after the load
+
+            active = false;                                      // the player switches the feature off; the host captures the state
+            SideFileBuildReport captured = model.CaptureParticipant("fs");
+            Assert.Equal(0, captured.Warnings.Count);
+            a.Value = 99;                                        // whatever happens to the dead feature later is not stored
+
+            SideFileTestKit.AssertJson(SideFileTestKit.Parse("{\"_schema\":1,\"v\":7}"), SideFileTestKit.Features(model.Build(null))["fs"]);
+            Assert.Equal(1, a.WriteCount, "asked once, when it was switched off; an inactive participant is not asked by Build");
+
+            active = true;                                       // switched on again: it gets the state of the moment it was switched off
+            SideFileReadReport restored = model.RestoreParticipant("fs");
+            Assert.Equal(0, restored.Warnings.Count);
+            Assert.Equal(7, a.Value);
+        }
+
+        [Test]
+        public void Capture_RefreshesTheCopyOfAnEarlierSave_SoReEnablingDoesNotGetTheOldState()
+        {
+            bool active = true;
+            var a = new Part("fs");
+            var model = new SideFileModel(id => active);
+            SideFileTestKit.Register(model, a);
+            model.Apply(SideFileTestKit.File1(string.Empty));
+
+            a.Value = 1;
+            model.Build(null);                                   // a save: the copy holds 1
+            a.Value = 2;                                         // changed after the save
+
+            active = false;
+            model.CaptureParticipant("fs");
+            active = true;
+            model.RestoreParticipant("fs");
+
+            Assert.Equal(2, a.Value, "the state at switch-off, not the state of the last save");
+        }
+
+        [Test]
+        public void Capture_LeavesAlone_ASectionKeptAsRead_AParticipantThatNeverGotData_AndUnknownIds()
+        {
+            bool active = true;
+            var newer = new Part("newer", 1);
+            var late = new Part("late");
+            var model = new SideFileModel(id => active);
+            SideFileTestKit.Register(model, newer);
+            model.Apply(SideFileTestKit.File1("\"newer\":{\"_schema\":5,\"v\":3},\"late\":{\"_schema\":1,\"v\":4}"));
+            SideFileTestKit.Register(model, late);               // registered after the load: it was never given its data
+
+            Assert.Equal(0, model.CaptureParticipant("newer").Warnings.Count);
+            Assert.Equal(0, model.CaptureParticipant("late").Warnings.Count);
+            Assert.Equal(0, model.CaptureParticipant("nobody").Warnings.Count);
+            Assert.Equal(0, model.CaptureParticipant(null).Warnings.Count);
+            Assert.Equal(0, newer.WriteCount + late.WriteCount, "neither is asked: their stored sections are the truth");
+
+            active = false;
+            JsonObject features = SideFileTestKit.Features(model.Build(null));
+            SideFileTestKit.AssertJson(SideFileTestKit.Parse("{\"_schema\":5,\"v\":3}"), features["newer"]);
+            SideFileTestKit.AssertJson(SideFileTestKit.Parse("{\"_schema\":1,\"v\":4}"), features["late"]);
+        }
+
+        [Test]
+        public void Capture_WriteThatThrows_KeepsThePreviousSection_WriteThatReturnsNull_LeavesItOut()
+        {
+            var a = new Part("fs");
+            var b = new Part("gs");
+            var model = new SideFileModel(id => false);
+            SideFileTestKit.Register(model, a, b);
+            model.Apply(SideFileTestKit.File1(string.Empty));    // inactive from the start: the sections were reset, nothing is held
+            model.RestoreParticipant("fs");
+            model.RestoreParticipant("gs");
+            a.Value = 5;
+            model.CaptureParticipant("fs");                      // holds v = 5
+
+            a.ThrowOnWrite = true;
+            SideFileBuildReport thrown = model.CaptureParticipant("fs");
+            Assert.True(SideFileTestKit.AnyContains(thrown.Warnings, "Write threw"), "the exception becomes a warning");
+            SideFileTestKit.AssertJson(SideFileTestKit.Parse("{\"_schema\":1,\"v\":5}"), SideFileTestKit.Features(model.Build(null))["fs"]);
+
+            b.Value = 8;
+            model.CaptureParticipant("gs");
+            Assert.True(SideFileTestKit.Features(model.Build(null)).ContainsKey("gs"));
+            b.ReturnNull = true;
+            model.CaptureParticipant("gs");
+            Assert.False(SideFileTestKit.Features(model.Build(null)).ContainsKey("gs"), "no data: the section is left out");
+        }
+
+        [Test]
         public void IsActiveThatThrows_MeansInactive_SoNoDataIsLost()
         {
             var a = new Part("fs");

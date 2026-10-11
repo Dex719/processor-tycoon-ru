@@ -1,0 +1,47 @@
+{
+  "divisionFounded": true,
+  "foundedOn": { "y": 1995, "m": 3, "d": 1 },
+  "marketModeApplied": "eras",
+  "nextId": 43,
+  "research": {
+    "completed": ["arch.2d", "arch.gui", "arch.3d", "vram.dram", "vram.vram", "vram.sgram", "cool.passive", "cool.fan"],
+    "currentId": "arch.tnl", "currentProgress": 0.37, "queue": ["vram.ddr"], "funding": 0.8
+  },
+  "designs": [
+    { "id": "d-17", "name": "Vortex 2", "archId": "arch.3d", "memId": "vram.sgram", "coolerId": "cool.fan",
+      "node": "250nm", "die": 110, "clockMHz": 150, "busWidth": 128, "vramMB": 16,
+      "stats": { "transistors": 3520000, "units": 8, "computeMops": 1200, "bandwidthMBs": 1600, "bandwidthRatio": 0.167,
+                 "effectivePerf": 342.4, "maxClockMHz": 160, "powerW": 10.37, "tempC": 40.2, "failureRate": 0.077,
+                 "dieMaterial": 8, "perGoodExtras": 53.6, "projectCost": 47500000, "projectDays": 330,
+                 "features": ["2d", "gui", "3d"] } }
+  ],
+  "projects": [
+    { "id": "p-17", "designId": "d-17", "progress": 0.62, "totalCost": 47500000, "days": 330, "inflationAtStart": 3.4, "paused": false }
+  ],
+  "products": [
+    { "id": "g-9", "designId": "d-9", "owner": "player", "vendorId": "", "companyKey": "player", "name": "Vortex 1",
+      "status": "selling", "price": 249, "sell": true, "auto": false, "lines": 4, "unitsPerDay": 0, "stock": 18450,
+      "released": { "y": 1997, "m": 6, "d": 12 }, "node": "350nm", "die": 80, "busWidth": 128, "vramMB": 4,
+      "stats": { "effectivePerf": 225.9, "powerW": 6.19, "failureRate": 0.085, "dieMaterial": 8, "perGoodExtras": 37.7 },
+      "segIds": ["office2d", "gaming.high", "gaming.mid"], "pop": [0.21, 0.64, 0.48],
+      "ledger": { "startMonthIndex": 317, "sold": [9120, 15310], "produced": [12000, 15000], "failed": [1020, 1275],
+                  "income": [2270880, 3812190], "cost": [1410000, 1730000] } },
+    { "id": "g-30", "designId": "", "owner": "vendor", "vendorId": "3dfx", "companyKey": "", "name": "Voodoo 3",
+      "status": "selling", "price": 299, "stock": 41000, "released": { "y": 1998, "m": 2, "d": 1 },
+      "segIds": ["gaming.high", "gaming.mid"], "pop": [0.83, 0.55] }
+  ],
+  "vendors": [
+    { "id": "3dfx", "state": "active", "companyKey": "", "launchCount": 3, "lastLaunch": [ { "seg": "gaming.high", "date": { "y": 1998, "m": 2, "d": 1 } } ] },
+    { "id": "ati", "state": "active", "companyKey": "", "launchCount": 5 },
+    { "id": "amd.gpu", "state": "pending", "companyKey": "ai:1" }
+  ],
+  "market": { "seeded": true, "openSegIds": ["office2d", "gaming.high", "gaming.mid", "gaming.low"], "potentialSales": [310, 820, 1450, 2100],
+              "lastBackgroundRefresh": { "y": 1998, "m": 1, "d": 1 } },
+  "synergy": { "entries": [ { "companyKey": "player", "sCpu": 0.04, "sGpu": 0.02 } ] },
+  "news": { "lastLeaderMail": [ { "seg": "gaming.high", "date": { "y": 1998, "m": 3, "d": 1 } } ] },
+  "consoleOrders": [
+    { "id": "sony.2", "status": "active", "productId": "g-9", "mailId": 100012, "offeredOn": { "y": 1998, "m": 1, "d": 1 },
+      "startedOn": { "y": 1998, "m": 1, "d": 20 }, "endsOn": { "y": 2004, "m": 1, "d": 20 }, "unitsPerDay": 1800, "price": 118.5,
+      "deliveredWindow": [1800, 1800, 1500], "missedWindow": [0, 0, 300] }
+  ]
+}

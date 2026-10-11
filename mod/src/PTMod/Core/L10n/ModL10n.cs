@@ -184,6 +184,29 @@ namespace PTMod.Core
             return Tables.Keys(language);
         }
 
+        /// <summary>
+        /// The raw text of a key in one language, as written in the table: <c>{0}</c> not replaced, no fallback to another language, no plural
+        /// form picked. False when that language has no such key. For checks of content against the texts (the number of placeholders, the
+        /// length); to show text to the player use <see cref="L"/>.
+        /// </summary>
+        internal static bool TryGetText(string language, string key, out string text)
+        {
+            text = null;
+            if (string.IsNullOrEmpty(language) || string.IsNullOrEmpty(key)) return false;
+
+            try
+            {
+                EnsureLoaded();
+                return Tables.TryGet(language, key, out text);
+            }
+            catch (Exception ex)
+            {
+                ModLog.Error(ModLog.CoreFeatureId, "l10n: cannot read the text of '" + key + "'", ex);
+                text = null;
+                return false;
+            }
+        }
+
         /// <summary>The file a key came from (<c>l10n/ru/event-system.json</c> or <c>PTMod/l10n/ru.json</c> for an override), or null.</summary>
         internal static string SourceOf(string language, string key)
         {

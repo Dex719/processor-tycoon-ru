@@ -1,0 +1,105 @@
+{
+  "schema": 1,
+  "records": [
+    {
+      "id": "gen-1971-dip", "order": 0,
+      "name": { "ru": "DIP-40", "en": "DIP-40" },
+      "description": { "ru": "Первые микропроцессоры в корпусе DIP.", "en": "The first microprocessors in DIP packages." },
+      "announceYear": 1971, "obsoleteYear": 1987,
+      "sockets": [ "DIP 1970", "DIP 1975" ], "memories": [ "DIP SRAM" ],
+      "earlyWindowMonths": 36,
+      "oem": { "delayMonths": 0, "rampMonths": 48, "maxAdoption": 0.9, "ibAccel": 0.5 },
+      "compatibleSockets": [ { "a": "DIP 1970", "b": "DIP 1975" } ]
+    },
+    {
+      "id": "gen-1980-plcc", "order": 1,
+      "name": { "ru": "PLCC-68", "en": "PLCC-68" },
+      "description": { "ru": "Квадратный корпус PLCC с выводами по краям и память DRAM.", "en": "The square PLCC package with leads along the edges, and DRAM memory." },
+      "announceYear": 1980, "obsoleteYear": 1991,
+      "sockets": [ "PLCC 1980" ], "memories": [ "DRAM" ],
+      "earlyWindowMonths": 24,
+      "oem": { "delayMonths": 6, "rampMonths": 48, "maxAdoption": 0.9, "ibAccel": 0.5 },
+      "compatibleSockets": []
+    },
+    {
+      "id": "gen-1985-pga", "order": 2,
+      "name": { "ru": "PGA-132", "en": "PGA-132" },
+      "description": { "ru": "Штырьковый корпус PGA с сеткой выводов и память DRAM.", "en": "The pin grid array package, and DRAM memory." },
+      "announceYear": 1985, "obsoleteYear": 1995,
+      "sockets": [ "PGA 1985" ], "memories": [ "DRAM" ],
+      "earlyWindowMonths": 24,
+      "oem": { "delayMonths": 6, "rampMonths": 36, "maxAdoption": 0.9, "ibAccel": 0.5 },
+      "compatibleSockets": []
+    },
+    {
+      "id": "gen-1990-pga", "order": 3,
+      "name": { "ru": "Socket 1–3", "en": "Socket 1–3" },
+      "description": { "ru": "Ранние процессорные сокеты на корпусе PGA и память SDR.", "en": "The early CPU sockets on the PGA package, and SDR memory." },
+      "announceYear": 1990, "obsoleteYear": 2000,
+      "sockets": [ "PGA 1990" ], "memories": [ "SDR" ],
+      "earlyWindowMonths": 24,
+      "oem": { "delayMonths": 6, "rampMonths": 36, "maxAdoption": 0.9, "ibAccel": 0.5 },
+      "compatibleSockets": []
+    },
+    {
+      "id": "gen-1995-pga", "order": 4,
+      "name": { "ru": "Socket 5/7", "en": "Socket 5/7" },
+      "description": { "ru": "Сокеты 5 и 7 на корпусе PGA, память SDR.", "en": "Sockets 5 and 7 on the PGA package, SDR memory." },
+      "announceYear": 1995, "obsoleteYear": 2005,
+      "sockets": [ "PGA 1995" ], "memories": [ "SDR" ],
+      "earlyWindowMonths": 24,
+      "oem": { "delayMonths": 6, "rampMonths": 36, "maxAdoption": 0.9, "ibAccel": 0.5 },
+      "compatibleSockets": []
+    },
+    {
+      "id": "gen-2000", "order": 5,
+      "name": { "ru": "LGA 775 / Socket 939", "en": "LGA 775 / Socket 939" },
+      "description": { "ru": "Две ветки сокетов (LGA и PGA), память DDR и затем DDR2.", "en": "Two socket branches (LGA and PGA), DDR memory and then DDR2." },
+      "announceYear": 2000, "obsoleteYear": 2013,
+      "sockets": [ "LGA 2000", "PGA 2000" ], "memories": [ "DDR", "DDR2" ],
+      "earlyWindowMonths": 24,
+      "oem": { "delayMonths": 6, "rampMonths": 36, "maxAdoption": 0.9, "ibAccel": 0.5 },
+      "compatibleSockets": []
+    },
+    {
+      "id": "gen-2010", "order": 6,
+      "name": { "ru": "LGA 1156 / AM3", "en": "LGA 1156 / AM3" },
+      "description": { "ru": "Две ветки сокетов (LGA и PGA), память DDR3.", "en": "Two socket branches (LGA and PGA), DDR3 memory." },
+      "announceYear": 2010, "obsoleteYear": 2020,
+      "sockets": [ "LGA 2010", "PGA 2010" ], "memories": [ "DDR3" ],
+      "earlyWindowMonths": 24,
+      "oem": { "delayMonths": 6, "rampMonths": 30, "maxAdoption": 0.9, "ibAccel": 0.5 },
+      "compatibleSockets": []
+    },
+    {
+      "id": "gen-2015", "order": 7,
+      "name": { "ru": "LGA 1151 / AM4", "en": "LGA 1151 / AM4" },
+      "description": { "ru": "Две ветки сокетов (LGA и PGA), память DDR4.", "en": "Two socket branches (LGA and PGA), DDR4 memory." },
+      "announceYear": 2015, "obsoleteYear": 2026,
+      "sockets": [ "LGA 2015", "PGA 2015" ], "memories": [ "DDR4" ],
+      "earlyWindowMonths": 24,
+      "oem": { "delayMonths": 6, "rampMonths": 30, "maxAdoption": 0.9, "ibAccel": 0.5 },
+      "compatibleSockets": []
+    },
+    {
+      "id": "gen-2020", "order": 8,
+      "name": { "ru": "LGA 1700 / AM5", "en": "LGA 1700 / AM5" },
+      "description": { "ru": "Две ветки сокетов LGA (A и B), память DDR4 и затем DDR5.", "en": "Two LGA socket branches (A and B), DDR4 memory and then DDR5." },
+      "announceYear": 2020, "obsoleteYear": 2034,
+      "sockets": [ "LGA 2020 A", "LGA 2020 B" ], "memories": [ "DDR4", "DDR5" ],
+      "earlyWindowMonths": 24,
+      "oem": { "delayMonths": 6, "rampMonths": 30, "maxAdoption": 0.9, "ibAccel": 0.5 },
+      "compatibleSockets": []
+    },
+    {
+      "id": "gen-2030", "order": 9,
+      "name": { "ru": "LGA 2030 A/B", "en": "LGA 2030 A/B" },
+      "description": { "ru": "Будущие сокеты LGA 2030 A и B: реальных аналогов ещё нет. Память DDR6.", "en": "The future LGA 2030 A and B sockets, which have no real counterparts yet. DDR6 memory." },
+      "announceYear": 2030, "obsoleteYear": 0,
+      "sockets": [ "LGA 2030 A", "LGA 2030 B" ], "memories": [ "DDR6" ],
+      "earlyWindowMonths": 24,
+      "oem": { "delayMonths": 6, "rampMonths": 30, "maxAdoption": 0.9, "ibAccel": 0.5 },
+      "compatibleSockets": []
+    }
+  ]
+}

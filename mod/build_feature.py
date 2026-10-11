@@ -94,8 +94,13 @@ def build_feature(layout, game, csc, slug, deps):
 def build_feature_tests(layout, csc, slug):
     src = layout.src
     files = []
-    for folder in (os.path.join(src, 'Core', 'Logic'), os.path.join(src, 'Core', 'Compat'),
-                   os.path.join(src, 'Features', pascal(slug), 'Logic')):
+    features = os.path.join(src, 'Features')
+    folders = [os.path.join(src, 'Core', 'Logic'), os.path.join(src, 'Core', 'Compat'),
+               os.path.join(features, pascal(slug), 'Logic')]
+    # the data types of the feature's own public API (Api/Model, Api/Dto, Api/Contracts): its logic and its tests use them
+    # (no Logic folder uses the types of another feature, so the APIs of the dependencies are not compiled here)
+    folders += build.pure_api_folders(features, pascal(slug))
+    for folder in folders:
         files += _files(folder)
     for f in build._walk(layout.tests, '.cs'):
         parts = f.split('/')
@@ -135,7 +140,8 @@ def main(argv=None):
         build.say('csc %s (%s)' % (csc_version, csc))
         if args.tests:
             exe = build_feature_tests(layout, csc, args.slug)
-            return build.run_tests(layout, exe, True, False, args.filter, args.verbose)
+            # the BuiltDll_* architecture tests look at the DLL of the full build (mod/build): the DLL of one feature holds the resources of that feature only
+            return build.run_tests(layout, exe, True, False, args.filter, args.verbose, dll_dir=os.path.join(HERE, 'build'))
         game = build.find_game(args.game_dir)
         build_feature(layout, game, csc, args.slug, deps)
         return 0

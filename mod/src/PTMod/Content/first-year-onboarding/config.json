@@ -1,0 +1,6 @@
+{
+  "schema": 1,
+  "tutorialWindowDays": 730,
+  "minDaysBetweenMails": 1,
+  "defaultDaysFallback": 120
+}

@@ -1,0 +1,65 @@
+{
+  "schema": 1,
+  "records": [
+    {
+      "id": "perf_bar_highend",
+      "condition": { "type": "leaderGrowth", "segment": "HighEnd", "min": 0.25 },
+      "textKey": "press.note.perfBar", "args": ["segment", "qualitativeGrowth"], "cooldownQuarters": 4, "weight": 3
+    },
+    {
+      "id": "perf_bar_midrange",
+      "condition": { "type": "leaderGrowth", "segment": "MidRange", "min": 0.25 },
+      "textKey": "press.note.perfBar", "args": ["segment", "qualitativeGrowth"], "cooldownQuarters": 4, "weight": 2
+    },
+    {
+      "id": "price_pressure_low",
+      "condition": { "type": "medianPriceChange", "segment": "LowEnd", "max": -0.10 },
+      "textKey": "press.note.pricePressure", "args": ["segment", "qualitativeChange"], "cooldownQuarters": 4, "weight": 2
+    },
+    {
+      "id": "price_pressure_mid",
+      "condition": { "type": "medianPriceChange", "segment": "MidRange", "max": -0.10 },
+      "textKey": "press.note.pricePressure", "args": ["segment", "qualitativeChange"], "cooldownQuarters": 4, "weight": 2
+    },
+    {
+      "id": "price_rise_highend",
+      "condition": { "type": "medianPriceChange", "segment": "HighEnd", "min": 0.15 },
+      "textKey": "press.note.priceRise", "args": ["segment", "qualitativeChange"], "cooldownQuarters": 4, "weight": 1
+    },
+    {
+      "id": "highend_focus",
+      "condition": { "type": "segmentFocus", "segment": "HighEnd" },
+      "textKey": "press.note.highEndFocus", "args": [], "cooldownQuarters": 8, "weight": 1
+    },
+    {
+      "id": "midrange_focus",
+      "condition": { "type": "segmentFocus", "segment": "MidRange" },
+      "textKey": "press.note.midRangeFocus", "args": [], "cooldownQuarters": 8, "weight": 1
+    },
+    {
+      "id": "industries_efficiency",
+      "condition": { "type": "segmentFocus", "segment": "Industries" },
+      "textKey": "press.note.industriesEfficiency", "args": [], "cooldownQuarters": 8, "weight": 1
+    },
+    {
+      "id": "pga_shift",
+      "condition": { "type": "pgaShift" },
+      "textKey": "press.note.pgaShift", "args": [], "cooldownQuarters": 40, "weight": 5
+    },
+    {
+      "id": "player_rep_up",
+      "condition": { "type": "reputationTrend", "min": 8 },
+      "textKey": "press.note.playerRepUp", "args": ["companyName"], "cooldownQuarters": 4, "weight": 2
+    },
+    {
+      "id": "player_rep_down",
+      "condition": { "type": "reputationTrend", "max": -8 },
+      "textKey": "press.note.playerRepDown", "args": ["companyName"], "cooldownQuarters": 4, "weight": 2
+    },
+    {
+      "id": "new_entrant",
+      "condition": { "type": "newEntrant" },
+      "textKey": "press.note.newEntrant", "args": ["companyName"], "cooldownQuarters": 2, "weight": 3
+    }
+  ]
+}

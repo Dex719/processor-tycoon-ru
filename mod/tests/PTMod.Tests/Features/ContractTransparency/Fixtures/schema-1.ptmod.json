@@ -1,0 +1,314 @@
+{
+  "schema": 1,
+  "modVersion": "0.1.0",
+  "gameVersion": "0.2.3",
+  "saveName": "1987_1_2",
+  "gameDate": "1987-01-02",
+  "writtenUtc": "2026-10-10T18:42:07Z",
+  "features": {
+    "mod-framework": {
+      "_schema": 1,
+      "startDate": "1980-01-01",
+      "flags": {
+        "first-year-onboarding": {
+          "tutorialSeen": 1
+        }
+      }
+    },
+    "contract-transparency": {
+      "_schema": 1,
+      "log": [
+        {
+          "date": "1986-12-04",
+          "type": "OfferSent",
+          "source": "Manual",
+          "contractKey": "Apple|1986-1|52000|299|1",
+          "contractLabel": "Apple — Computer, 52 000 шт./мес.",
+          "cpuId": 41,
+          "cpuName": "Alpha 286",
+          "reasonKey": "ct.reason.sentManual",
+          "data": {
+            "units": "52000",
+            "payment": "299",
+            "chance": "40",
+            "actual": "0.2105",
+            "risks": "0"
+          },
+          "colour": "teal"
+        },
+        {
+          "date": "1986-12-05",
+          "type": "OfferCancelledOnReview",
+          "source": "Manual",
+          "contractKey": "Apple|1986-1|52000|299|1",
+          "contractLabel": "Apple — Computer, 52 000 шт./мес.",
+          "cpuId": 42,
+          "cpuName": "Alpha 386",
+          "reasonKey": "ct.reason.cancelledOnReview",
+          "data": {}
+        },
+        {
+          "date": "1986-12-06",
+          "type": "OfferAutoConfirmed",
+          "source": "Manual",
+          "contractKey": "Sega|1986-2|10000|50|2",
+          "contractLabel": "Sega — Console, 10 000 шт./мес.",
+          "cpuId": 42,
+          "cpuName": "Alpha 386",
+          "reasonKey": "ct.reason.autoConfirmedSafe",
+          "data": {
+            "chance": "100",
+            "actual": "1",
+            "risks": "0"
+          }
+        },
+        {
+          "date": "1986-12-31",
+          "type": "AutomationDecision",
+          "source": "Automation",
+          "contractKey": "Apple|1986-1|52000|299|1",
+          "contractLabel": "Apple — Computer, 52 000 шт./мес.",
+          "cpuId": 41,
+          "cpuName": "Alpha 286",
+          "reasonKey": "ct.reason.margin",
+          "data": {
+            "margin": "0.35",
+            "threshold": "0.4",
+            "payment": "194.4",
+            "unitCost": "126.36"
+          }
+        },
+        {
+          "date": "1986-12-31",
+          "type": "AutomationDecision",
+          "source": "Automation",
+          "contractKey": "Sega|1986-2|10000|50|2",
+          "contractLabel": "Sega — Console, 10 000 шт./мес.",
+          "cpuId": 42,
+          "cpuName": "Alpha 386",
+          "reasonKey": "ct.reason.sent",
+          "data": {
+            "units": "10000",
+            "payment": "50"
+          }
+        },
+        {
+          "date": "1986-12-31",
+          "type": "AutomationDecision",
+          "source": "Automation",
+          "contractKey": "Atari|1986-3|2000|120|0",
+          "contractLabel": "Atari — Calculator, 2 000 шт./мес.",
+          "cpuId": 41,
+          "cpuName": "Alpha 286",
+          "reasonKey": "ct.reason.requirements",
+          "data": {
+            "failed": "ips,power"
+          }
+        },
+        {
+          "date": "1986-12-31",
+          "type": "AutomationSummary",
+          "source": "Automation",
+          "contractKey": "",
+          "contractLabel": "",
+          "cpuId": 0,
+          "cpuName": "",
+          "reasonKey": "ct.reason.automationSummary",
+          "data": {
+            "sent": "1",
+            "skipped": "2",
+            "skippedMargin": "1",
+            "skippedRequirements": "1"
+          }
+        },
+        {
+          "date": "1987-01-01",
+          "type": "AutoRejected",
+          "source": "Game",
+          "contractKey": "Apple|1986-1|52000|299|1",
+          "contractLabel": "Apple — Computer, 52 000 шт./мес.",
+          "cpuId": 41,
+          "cpuName": "Alpha 286",
+          "reasonKey": "ct.reason.autoReject",
+          "data": {
+            "required": "5",
+            "contracted": "3",
+            "capacity": "6"
+          }
+        },
+        {
+          "date": "1987-01-01",
+          "type": "TenderResult",
+          "source": "Game",
+          "contractKey": "Apple|1986-1|52000|299|1",
+          "contractLabel": "Apple — Computer, 52 000 шт./мес.",
+          "cpuId": 41,
+          "cpuName": "Alpha 286",
+          "reasonKey": "ct.tender.outbid",
+          "data": {
+            "outcome": "Lost",
+            "chance": "40",
+            "actual": "0.2105",
+            "winner": "AMD",
+            "winnerCpu": "Am286"
+          }
+        },
+        {
+          "date": "1987-01-01",
+          "type": "TenderResult",
+          "source": "Game",
+          "contractKey": "Sega|1986-2|10000|50|2",
+          "contractLabel": "Sega — Console, 10 000 шт./мес.",
+          "cpuId": 42,
+          "cpuName": "Alpha 386",
+          "reasonKey": "ct.tender.won",
+          "data": {
+            "outcome": "Won",
+            "chance": "100",
+            "actual": "1"
+          }
+        },
+        {
+          "date": "1986-06-15",
+          "type": "BusinessSigned",
+          "source": "Manual",
+          "contractKey": "",
+          "contractLabel": "",
+          "cpuId": 0,
+          "cpuName": "",
+          "reasonKey": "ct.reason.businessSigned",
+          "data": {
+            "provider": "Intel",
+            "client": "Zilog",
+            "years": "5",
+            "share": "40",
+            "markup": "12",
+            "exclusive": "1",
+            "providerFines": "10000",
+            "clientFines": "20000",
+            "score": "82"
+          }
+        },
+        {
+          "date": "1986-12-31",
+          "type": "Mismatch",
+          "source": "Game",
+          "contractKey": "Atari|1986-3|2000|120|0",
+          "contractLabel": "Atari — Calculator, 2 000 шт./мес.",
+          "cpuId": 41,
+          "cpuName": "Alpha 286",
+          "reasonKey": "ct.reason.mismatch",
+          "data": {
+            "predicted": "WillOffer",
+            "observed": "notSent"
+          }
+        }
+      ],
+      "tenders": [
+        {
+          "contractKey": "Apple|1986-1|52000|299|1",
+          "contractLabel": "Apple — Computer, 52 000 шт./мес.",
+          "date": "1987-01-01",
+          "outcome": "Lost",
+          "reasonKey": "ct.tender.outbid",
+          "playerCpuId": 41,
+          "playerCpuName": "Alpha 286",
+          "playerGameChance": 40,
+          "playerActual": 0.2105,
+          "winnerCpuId": 7,
+          "winnerCompany": "AMD",
+          "winnerCpuName": "Am286",
+          "capacityNotChecked": false,
+          "offers": [
+            {
+              "company": "AMD",
+              "cpu": "Am286",
+              "ips": 52000,
+              "chance": 60,
+              "actual": 0.7895,
+              "player": false,
+              "rank": 1
+            },
+            {
+              "company": "Alpha Corp",
+              "cpu": "Alpha 286",
+              "ips": 34000.5,
+              "chance": 40,
+              "actual": 0.2105,
+              "player": true
+            }
+          ],
+          "pruned": [
+            {
+              "company": "Cyrix",
+              "cpu": "Cx486",
+              "required": 5,
+              "contracted": 3,
+              "capacity": 6,
+              "maker": "",
+              "player": false,
+              "reason": "no free lines"
+            }
+          ],
+          "note": "a field of some later version"
+        },
+        {
+          "contractKey": "Sega|1986-2|10000|50|2",
+          "contractLabel": "Sega — Console, 10 000 шт./мес.",
+          "date": "1987-01-01",
+          "outcome": "Won",
+          "reasonKey": "ct.tender.won",
+          "playerCpuId": 42,
+          "playerCpuName": "Alpha 386",
+          "playerGameChance": 100,
+          "playerActual": 1,
+          "winnerCpuId": 42,
+          "winnerCompany": "Alpha Corp",
+          "winnerCpuName": "Alpha 386",
+          "capacityNotChecked": false,
+          "offers": [
+            {
+              "company": "Alpha Corp",
+              "cpu": "Alpha 386",
+              "ips": 90000,
+              "chance": 100,
+              "actual": 1,
+              "player": true
+            }
+          ],
+          "pruned": []
+        }
+      ],
+      "offersSent": 7,
+      "tendersWon": 1,
+      "futureCounter": 12,
+      "preferences": {
+        "sort": "newest",
+        "columns": [
+          1,
+          2,
+          3
+        ]
+      }
+    },
+    "event-system": {
+      "_schema": 2,
+      "v": 5
+    },
+    "gpu-product-line": {
+      "_schema": 3,
+      "lines": [
+        "a",
+        {
+          "b": [
+            1,
+            2,
+            3
+          ]
+        }
+      ],
+      "ratio": 0.5,
+      "big": 9007199254740993
+    }
+  }
+}

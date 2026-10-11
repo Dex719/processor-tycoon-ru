@@ -1,0 +1,11 @@
+{
+  "schema": 1,
+  "records": [
+    { "id": "sony.2",      "clientKey": "gpu.console.client.sony",      "offerYear": 1998, "termYears": 6 },
+    { "id": "microsoft.1", "clientKey": "gpu.console.client.microsoft", "offerYear": 1999, "termYears": 5 },
+    { "id": "nintendo.4",  "clientKey": "gpu.console.client.nintendo",  "offerYear": 2000, "termYears": 5 },
+    { "id": "sony.3",      "clientKey": "gpu.console.client.sony",      "offerYear": 2004, "termYears": 7 },
+    { "id": "nintendo.6",  "clientKey": "gpu.console.client.nintendo",  "offerYear": 2015, "termYears": 7 },
+    { "id": "sony.5",      "clientKey": "gpu.console.client.sony",      "offerYear": 2018, "termYears": 7 }
+  ]
+}

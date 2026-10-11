@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "marketMode": "eras",
+  "market": { "opensYear": 1981 },
+  "founding": { "cost": 25000000, "catchUpLagYears": 3 },
+  "research": { "penaltyPerYear": 3.5, "bonusPerYear": 0.15, "maxBonus": 0.75, "fundingMin": 0.1, "fundingMax": 1.0, "queueMax": 5 },
+  "design": {
+    "minDie": 20, "clockMinShare": 0.25, "bandwidthExponent": 0.7, "bandwidthRatioMin": 0.05,
+    "densityExponent": -0.25, "basePowerW": 0.5, "ambientC": 35, "safeTempC": 95, "frTempK": 5, "frClockK": 15,
+    "boardBase": 20, "boardCostPerBit": 0.08, "nodeProjectShare": 0.5, "maxParallelProjects": 3, "nameMaxLength": 32
+  },
+  "production": { "autoDemandFactor": 1.1, "autoMaxShare": 0.5, "storageCostPerUnitMonth": 0.5, "liquidationShare": 0.1, "fablessYieldProgress": 0.75 },
+  "popularity": {
+    "start": 0.05, "floor": 0.05, "cap": 1.0, "gainBase": 0.025, "baselineGain": 0.00005,
+    "eraYears": [1990, 2010], "eraGain": [1.0, 2.5, 5.0], "eraBaseline": [1.0, 1.5, 3.0],
+    "oldDecay": 0.0005, "oldYears": 5, "oldYearsBefore1990": 7, "brandCarry": 0.5
+  },
+  "background": { "enabled": true, "techLagYears": 2.0, "popularity": 0.8, "refreshMonths": 12, "priceFactor": 0.8 },
+  "rivals": { "maxProductsPerSegment": 2, "intervalJitterMonths": 3, "priceFloorMarkup": 1.3, "targetTempC": 85, "clockShare": 0.95, "dieJitter": 0.05 },
+  "synergy": { "cpuMax": 0.08, "cpuK": 0.2, "gpuMax": 0.10, "gpuK": 0.25, "shareWindowDays": 30, "gpuLearningShare": 1.0, "coDevYears": 2, "coDevFactor": 0.85 },
+  "news": { "leaderCooldownMonths": 3 },
+  "console": {
+    "unitsShare": 0.15, "minPerfShare": 0.6, "priceFactor": 0.55, "priceFloorMarkup": 1.15, "segment": "gaming.mid", "fallbackSegment": "consumer",
+    "offerTimeoutDays": 60, "revalidateDays": 7, "graceDays": 90, "failCancelShare": 0.25, "reputationPenalty": 3
+  },
+  "limits": { "products": 500, "vendors": 32, "ledgerMonths": 600, "consoleOrders": 32 }
+}

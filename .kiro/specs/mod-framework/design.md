@@ -580,6 +580,8 @@ namespace PTMod.Core
         public static void Register(IModSaveParticipant participant);
         public static string CurrentSaveName { get; }      // без .txt
         public static SideFileStatus Status { get; }
+        public static SideFileHeader FileHeader { get; }    // поля шапки прочитанного бокового файла; null, если файла не читали
+        public static bool IsSectionNewer(string featureId); // секцию фичи (или весь файл) записал более новый мод: фича получила значения по умолчанию, секция хранится как есть
         public static System.DateTime? GameStartDate { get; } // дата старта новой игры (для условий)
         public static ModFlags Flags { get; }               // флаги фич в секции ядра
         public static event System.Action AfterRead;        // все участники прочитаны

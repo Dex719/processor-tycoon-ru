@@ -1,0 +1,11 @@
+{
+  "schema": 1,
+  "records": [
+    { "id": "era.2d",      "startYear": 1981, "nameKey": "gpu.era.2d",      "mailKey": "gpu.mail.era.2d",      "hintNodes": ["arch.2d", "vram.dram"] },
+    { "id": "era.3d",      "startYear": 1996, "nameKey": "gpu.era.3d",      "mailKey": "gpu.mail.era.3d",      "hintNodes": ["arch.3d", "vram.sgram", "cool.fan"] },
+    { "id": "era.shader",  "startYear": 2003, "nameKey": "gpu.era.shader",  "mailKey": "gpu.mail.era.shader",  "hintNodes": ["arch.shader", "vram.gddr3"] },
+    { "id": "era.compute", "startYear": 2007, "nameKey": "gpu.era.compute", "mailKey": "gpu.mail.era.compute", "hintNodes": ["arch.gpgpu", "vram.gddr5"] },
+    { "id": "era.ai",      "startYear": 2016, "nameKey": "gpu.era.ai",      "mailKey": "gpu.mail.era.ai",      "hintNodes": ["arch.tensor", "vram.hbm"] },
+    { "id": "era.rt",      "startYear": 2020, "nameKey": "gpu.era.rt",      "mailKey": "gpu.mail.era.rt",      "hintNodes": ["arch.rt", "vram.gddr6"] }
+  ]
+}

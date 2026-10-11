@@ -1,0 +1,14 @@
+{
+  "schema": 1,
+  "records": [
+    { "id": "vram.dram",  "nameKey": "gpu.mem.dram",  "year": 1981, "dataRateMTs": 4,     "costPerMB": 400,   "costDecayPerYear": 0.75, "costFloor": 0.2, "maxVramMB": 0.25,  "busWidths": [8, 16],                      "projectCost": 1000000,   "projectDays": 60 },
+    { "id": "vram.vram",  "nameKey": "gpu.mem.vram",  "year": 1986, "dataRateMTs": 16,    "costPerMB": 250,   "costDecayPerYear": 0.75, "costFloor": 0.2, "maxVramMB": 1,     "busWidths": [16, 32],                     "projectCost": 3000000,   "projectDays": 90 },
+    { "id": "vram.sgram", "nameKey": "gpu.mem.sgram", "year": 1994, "dataRateMTs": 100,   "costPerMB": 4,     "costDecayPerYear": 0.70, "costFloor": 0.2, "maxVramMB": 16,    "busWidths": [32, 64, 128],                "projectCost": 10000000,  "projectDays": 150 },
+    { "id": "vram.ddr",   "nameKey": "gpu.mem.ddr",   "year": 1999, "dataRateMTs": 300,   "costPerMB": 1.0,   "costDecayPerYear": 0.80, "costFloor": 0.2, "maxVramMB": 128,   "busWidths": [64, 128],                    "projectCost": 20000000,  "projectDays": 180 },
+    { "id": "vram.gddr3", "nameKey": "gpu.mem.gddr3", "year": 2004, "dataRateMTs": 1600,  "costPerMB": 0.1,   "costDecayPerYear": 0.80, "costFloor": 0.2, "maxVramMB": 1024,  "busWidths": [128, 256, 384],              "projectCost": 40000000,  "projectDays": 200 },
+    { "id": "vram.gddr5", "nameKey": "gpu.mem.gddr5", "year": 2008, "dataRateMTs": 4000,  "costPerMB": 0.02,  "costDecayPerYear": 0.85, "costFloor": 0.2, "maxVramMB": 8192,  "busWidths": [128, 256, 384, 512],         "projectCost": 80000000,  "projectDays": 220 },
+    { "id": "vram.hbm",   "nameKey": "gpu.mem.hbm",   "year": 2015, "dataRateMTs": 1000,  "costPerMB": 0.015, "costDecayPerYear": 0.85, "costFloor": 0.2, "maxVramMB": 32768, "busWidths": [1024, 2048, 4096],           "projectCost": 200000000, "projectDays": 260 },
+    { "id": "vram.gddr6", "nameKey": "gpu.mem.gddr6", "year": 2018, "dataRateMTs": 14000, "costPerMB": 0.008, "costDecayPerYear": 0.90, "costFloor": 0.2, "maxVramMB": 24576, "busWidths": [128, 192, 256, 384],       "projectCost": 150000000, "projectDays": 240 },
+    { "id": "vram.gddr7", "nameKey": "gpu.mem.gddr7", "year": 2024, "dataRateMTs": 28000, "costPerMB": 0.006, "costDecayPerYear": 0.90, "costFloor": 0.2, "maxVramMB": 32768, "busWidths": [128, 192, 256, 384, 512],  "projectCost": 250000000, "projectDays": 260 }
+  ]
+}

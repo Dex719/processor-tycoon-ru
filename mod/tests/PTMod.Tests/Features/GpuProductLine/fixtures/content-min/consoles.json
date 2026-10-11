@@ -1,0 +1,6 @@
+{
+  "schema": 1,
+  "records": [
+    { "id": "k.one", "clientKey": "gpu.console.client.one", "offerYear": 1998, "termYears": 6 }
+  ]
+}

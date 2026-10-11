@@ -5,7 +5,8 @@
   "research-tree-ux"
  ],
  "design-flaw-recalls": [
-  "event-system"
+  "event-system",
+  "press-reviews"
  ],
  "event-system": [],
  "first-year-onboarding": [],

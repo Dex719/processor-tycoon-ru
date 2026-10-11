@@ -270,7 +270,7 @@ namespace PTMod.Tests.Modifiers
                 Assert.Null(error);
             }
             Assert.Equal(2, table.Count(s => s.HasBalanceRange));
-            Assert.Equal(1, table.Count(s => !s.Cacheable));
+            Assert.Equal(2, table.Count(s => !s.Cacheable));
             Assert.Equal(1, table.Count(s => s.IsFamily));
         }
 

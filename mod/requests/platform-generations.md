@@ -160,3 +160,7 @@ F8 и Component 5 пишут `FNV1a64(key + "#" + G.id + "#" + WorldSeed) / 2^64
 - **TSK-019**: ключи лежат не в `L10n/ru.json` и `L10n/en.json`, а в `L10n/ru|en/platform-generations.json` (так требует ядро для фич).
 - **TSK-020**: «таймеры `ModLog`» сделаны через `PlatformPerf` и `ReportPerf`; сам `ModLog.Debug` отбрасывается ядром без `VerboseLog`, строки собираются только если он включён.
 - **Подмешанные множители (TSK-022)** идут через настоящий `ChannelRegistry` и поле `BalanceMin/BalanceMax` канала `market.rating.cpu`, а не через самодельную имитацию клампа.
+
+## Закрыто после QA (2026-10-11)
+
+- Дневной кеш `contract.signChance`: `ContractID` — индекс шаблона десятилетия и не уникален, поэтому множитель OEM-предпочтения одного контракта мог достаться другому контракту того же шаблона. Канал объявлен в `core.json` с `"cacheable": false` (каждый запрос доходит до провайдеров), design.md ядра обновлён, регрессионный тест `LazyBindingTests.SignChance_TwoContractsOfOneTemplate_AreNotMixedUpByTheCache`.

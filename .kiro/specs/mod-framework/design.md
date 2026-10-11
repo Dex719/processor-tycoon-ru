@@ -859,7 +859,7 @@ namespace PTMod.Core
     {
         public ProcessorTycoon.CompanySystem.ICompany Company; public string CompanyKey;
         public ProcessorTycoon.Hardware.Cpu Cpu; public Segment Segment;
-        public ProcessorTycoon.ContractSystem.Contract Contract;   // только в P8 (contract.signChance); иначе null; ID контракта входит в ключ кеша
+        public ProcessorTycoon.ContractSystem.Contract Contract;   // только в P8 (contract.signChance); иначе null; канал не кешируется
         public DesignContext Design;                               // только в P19 (development.cost.design); иначе null; такие значения не кешируются
     }
 
@@ -1251,7 +1251,7 @@ P1–P18 сохраняют номера (на них ссылаются спе�
 | P5 | `Market.UpdatePopularities` | prefix + postfix | prefix: снимок `Popularities[0..3]` CPU рынка в переиспользуемый буфер; postfix: положительный прирост × `M(popularity.gain, company, cpu, k)`, затем `clamp` [пол, 1] | — | канал |
 | P6 | `ContractSeller.SellContracts` | prefix + postfix + finalizer | prefix: флаг области `contract.reward = on`; postfix: `IncomeLastDayFromContracts *= M(company)` у CPU с поставками; finalizer: флаг off | — | канал |
 | P7 | `Company.EarnMoney`, `AICompany.EarnMoney` | prefix | при флаге P6 и `RevenueOrigin.Contracts`: `value *= M(contract.reward, this)` | другие фичи могут ставить postfix для учёта, но не менять `value` | канал (только в области P6) |
-| P8 | `Contract.CpuOffer.DefineChance` | postfix | `Chance = clamp(round(ipsShare×100×M(contract.signChance, ctx)), 1, 100)` (поле `<Chance>k__BackingField`), где `ctx = {Company = cpu.Company, Cpu = cpu, Contract = ModContractScope.Current}`; ID контракта входит в ключ кеша | вложенный приватный тип: `AccessTools.Inner(typeof(Contract), "CpuOffer")`; контракт берётся из P23 | канал |
+| P8 | `Contract.CpuOffer.DefineChance` | postfix | `Chance = clamp(round(ipsShare×100×M(contract.signChance, ctx)), 1, 100)` (поле `<Chance>k__BackingField`), где `ctx = {Company = cpu.Company, Cpu = cpu, Contract = ModContractScope.Current}`; канал не кешируется | вложенный приватный тип: `AccessTools.Inner(typeof(Contract), "CpuOffer")`; контракт берётся из P23 | канал |
 | P9 | `CentralBank.UpdateCreditLimit` | postfix | `DebtLimit = max(1e6, DebtLimit × M(bank.creditLimit, Global))` | — | канал |
 | P10 | `BankruptcyHandler.TickBankruptcies` | transpiler (Optional) | каждую загрузку локальной `V_0` (−`DebtLimit`) внутри цикла заменяет на `ModCreditHooks.Threshold(V_0, V_2)` = `CreditMath.Threshold` = `V_0 × M(bank.creditLimit, company)` | ожидается ровно 3 загрузки в теле цикла; иначе патч не ставится (только глобальный лимит, `ModCredit.IsPerCompanyActive` = false). `bankruptcy-recovery` — только prefix/postfix | канал (transpiler) |
 | P11 | `MoneyBalance.UpdateUI`, `Money.UpdateMoneyText`, `BankruptcyHandler.UpdateUI` | transpiler (Optional) | чтение свойства `CentralBank.DebtLimit` (вызов его геттера) → `ModCreditHooks.PlayerDebtLimit(bank)` = `ModCredit.PlayerDebtLimit()` = `DebtLimit × M(player)` | при несовпадении паттерна — отображение по глобальному лимиту, предупреждение | канал (transpiler) |
@@ -1440,7 +1440,7 @@ namespace PTMod.Core.Logic.Save
     { "name": "market.rating.cpu",     "min": 0.0,  "max": 5.0,  "balanceMin": 0.5, "balanceMax": 2.0, "perCompany": true, "perCpu": true, "perSegment": true },
     { "name": "popularity.gain",       "min": 0.0,  "max": 5.0,  "balanceMin": 0.5, "balanceMax": 2.0, "perCompany": true, "perCpu": true, "perSegment": true },
     { "name": "contract.reward",       "min": 0.25, "max": 4.0,  "perCompany": true },
-    { "name": "contract.signChance",   "min": 0.0,  "max": 5.0,  "perCompany": true, "perCpu": true },
+    { "name": "contract.signChance",   "min": 0.0,  "max": 5.0,  "perCompany": true, "perCpu": true, "cacheable": false },
     { "name": "gpu.demand",            "min": 0.1,  "max": 3.0,  "global": true, "owner": "gpu-product-line" },
     { "name": "gpu.demand.*",          "min": 0.1,  "max": 3.0,  "global": true, "owner": "gpu-product-line" },
     { "name": "gpu.rating",            "min": 0.25, "max": 4.0,  "perCompany": true, "owner": "gpu-product-line" },
@@ -1684,7 +1684,7 @@ namespace PTMod.Core.Logic.Ids
 
 ### contract.signChance (P8)
 - Игра: `Contract.GetBestOffers` → `Contract.CpuOffer.DefineChance(ipsShare)`: `Chance = clamp(round(ipsShare × 100), 1, 100)`; `Contract.ChooseCpu` перебирает лучшие предложения и берёт CPU, если `Chance ≥ rand[1..100]`; `Contract.ChanceToSign` показывает тот же шанс в интерфейсе.
-- Мод: `Chance = clamp(round(ipsShare × 100 × M(contract.signChance, ctx)), 1, 100)`, где `ctx` содержит `Contract` — контракт, для которого сейчас строится список предложений (P23 захватывает его в `GetBestOffers`; `CpuOffer` ссылки на контракт не хранит). Выбор (`ChooseCpu`) и интерфейс (`ChanceToSign`) идут через один и тот же `GetBestOffers`, поэтому согласованы. 1 января один CPU разыгрывается сразу в нескольких контрактах, и провайдер видит каждый отдельно (`ctx.Contract.ContractID`, `ctx.Contract.Company`); ID контракта входит в ключ дневного кеша.
+- Мод: `Chance = clamp(round(ipsShare × 100 × M(contract.signChance, ctx)), 1, 100)`, где `ctx` содержит `Contract` — контракт, для которого сейчас строится список предложений (P23 захватывает его в `GetBestOffers`; `CpuOffer` ссылки на контракт не хранит). Выбор (`ChooseCpu`) и интерфейс (`ChanceToSign`) идут через один и тот же `GetBestOffers`, поэтому согласованы. 1 января один CPU разыгрывается сразу в нескольких контрактах, и провайдер видит каждый отдельно (`ctx.Contract.ContractID`, `ctx.Contract.Company`). Канал не кешируется (`cacheable: false`): `ContractID` — индекс шаблона десятилетия и не уникален, два контракта одного шаблона в один день иначе получили бы одно значение (находка QA platform-generations).
 - Пример: доля IPS 0,4 → 40; M = 1,25 → 50.
 
 ### Новые каналы ModModifiers

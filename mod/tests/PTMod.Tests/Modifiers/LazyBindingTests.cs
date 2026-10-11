@@ -388,7 +388,21 @@ namespace PTMod.Tests.Modifiers
             Assert.Near(0.8, registry.Get("contract.signChance", second), 1e-6);
             Assert.Near(1.5, registry.Get("contract.signChance", first), 1e-6, "the interface asks again: the draw and the window agree");
             Assert.Near(0.8, registry.Get("contract.signChance", second), 1e-6);
-            Assert.Equal(new[] { 11, 12 }, asked.ToArray(), "each contract is computed once and cached separately");
+            Assert.Equal(new[] { 11, 12, 11, 12 }, asked.ToArray(), "contract.signChance is not cached: every question reaches the provider");
+        }
+
+        [Test]
+        public void SignChance_TwoContractsOfOneTemplate_AreNotMixedUpByTheCache()
+        {
+            // ContractID is the index of the decade's template, so two offers from different clients can share it on one day.
+            ChannelRegistry registry = ModifierFixtures.Registry();
+            float perContract = 1.5f;
+            registry.RegisterProvider("platform-generations", "contract.signChance", q => perContract);
+            ModifierQuery query = ModifierFixtures.Q("player", 40, Segment.MidRange, 7);
+
+            Assert.Near(1.5, registry.Get("contract.signChance", query), 1e-6);
+            perContract = 0.8f;   // the second contract with the same ContractID prefers another platform
+            Assert.Near(0.8, registry.Get("contract.signChance", query), 1e-6, "the value of the first contract must not leak to the second");
         }
 
         [Test]

@@ -77,7 +77,7 @@ namespace PTMod.Tests.Modifiers
                 Spec("market.rating.cpu", 0f, 5f, 0.5f, 2f),
                 Spec("popularity.gain", 0f, 5f, 0.5f, 2f),
                 Spec("contract.reward", 0.25f, 4f),
-                Spec("contract.signChance", 0f, 5f),
+                Spec("contract.signChance", 0f, 5f, cacheable: false),
                 Spec("gpu.demand", 0.1f, 3f, owner: "gpu-product-line"),
                 Spec("gpu.demand.*", 0.1f, 3f, owner: "gpu-product-line"),
                 Spec("gpu.rating", 0.25f, 4f, owner: "gpu-product-line"),

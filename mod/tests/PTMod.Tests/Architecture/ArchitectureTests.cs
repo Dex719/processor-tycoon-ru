@@ -801,7 +801,7 @@ namespace PTMod.Tests.Architecture
                 Ch("market.rating.cpu", 0.0, 5.0, "CPS", balanceMin: 0.5, balanceMax: 2.0),
                 Ch("popularity.gain", 0.0, 5.0, "CPS", balanceMin: 0.5, balanceMax: 2.0),
                 Ch("contract.reward", 0.25, 4.0, "C"),
-                Ch("contract.signChance", 0.0, 5.0, "CP"),
+                Ch("contract.signChance", 0.0, 5.0, "CP", cacheable: false),
                 Ch("gpu.demand", 0.1, 3.0, "G", "gpu-product-line"),
                 Ch("gpu.demand.*", 0.1, 3.0, "G", "gpu-product-line"),
                 Ch("gpu.rating", 0.25, 4.0, "C", "gpu-product-line"),
@@ -1003,7 +1003,7 @@ namespace PTMod.Tests.Architecture
             Assert.Equal(7, owned, "7 channels of features declared ahead (D21)");
             Assert.Equal(4, demand, "market.demand.<segment> for the four segments");
             Assert.Equal(2, balanced, "the balance range exists only on market.rating.cpu and popularity.gain");
-            Assert.Equal(1, uncached, "only development.cost.design is not cached");
+            Assert.Equal(2, uncached, "development.cost.design and contract.signChance are not cached");
         }
 
         [Test]

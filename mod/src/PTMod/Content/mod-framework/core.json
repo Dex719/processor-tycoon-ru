@@ -37,7 +37,7 @@
     { "name": "market.rating.cpu",     "min": 0.0,  "max": 5.0,  "balanceMin": 0.5, "balanceMax": 2.0, "perCompany": true, "perCpu": true, "perSegment": true },
     { "name": "popularity.gain",       "min": 0.0,  "max": 5.0,  "balanceMin": 0.5, "balanceMax": 2.0, "perCompany": true, "perCpu": true, "perSegment": true },
     { "name": "contract.reward",       "min": 0.25, "max": 4.0,  "perCompany": true },
-    { "name": "contract.signChance",   "min": 0.0,  "max": 5.0,  "perCompany": true, "perCpu": true },
+    { "name": "contract.signChance",   "min": 0.0,  "max": 5.0,  "perCompany": true, "perCpu": true, "cacheable": false },
     { "name": "gpu.demand",            "min": 0.1,  "max": 3.0,  "global": true, "owner": "gpu-product-line" },
     { "name": "gpu.demand.*",          "min": 0.1,  "max": 3.0,  "global": true, "owner": "gpu-product-line" },
     { "name": "gpu.rating",            "min": 0.25, "max": 4.0,  "perCompany": true, "owner": "gpu-product-line" },

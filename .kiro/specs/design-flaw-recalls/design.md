@@ -1227,7 +1227,7 @@ sequenceDiagram
 
 ## Testing Strategy
 
-### Юнит-тесты (`mod/tests/PTMod.Tests/DesignFlawRecalls/`, мини-раннер ядра, без Unity)
+### Юнит-тесты (`mod/tests/PTMod.Tests/Features/DesignFlawRecalls/`, мини-раннер ядра, без Unity)
 
 Тесты помечены `[Test]`, каждый публичный тип `Logic/` указан в `[Covers(typeof(X))]`; запуск — `python mod/build.py --tests`. `IModRng` в тестах — детерминированный фейк.
 

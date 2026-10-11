@@ -167,7 +167,7 @@ graph LR
 | Слой | Технология | Обоснование |
 |---|---|---|
 | Патчи | Harmony 2.3.x (через `ModHooks`) | Решение 0002; нужен доступ к приватным `ChooseCpu`, `SendOffers`, `SignContract` |
-| Чистая логика | C# latest, общее подмножество API .NET Framework 4.8 и `mscorlib` Unity (без `init`, `record`, `Index`, `Range`), без ссылок на `UnityEngine` | Решение 0003; тестируется мини-раннером в `mod/tests/PTMod.Tests/ContractTransparency/` без игры |
+| Чистая логика | C# latest, общее подмножество API .NET Framework 4.8 и `mscorlib` Unity (без `init`, `record`, `Index`, `Range`), без ссылок на `UnityEngine` | Решение 0003; тестируется мини-раннером в `mod/tests/PTMod.Tests/Features/ContractTransparency/` без игры |
 | UI | `ModUI` (клоны окон игры) | Решение 0005 |
 | Данные | `ModSave` (JSON) + `ModContent` (JSON) | Решения 0004, 0006 |
 
@@ -849,7 +849,7 @@ sequenceDiagram
 
 ## Testing Strategy
 
-### Unit Testing (`mod/tests/PTMod.Tests/ContractTransparency/`, мини-раннер ядра: `python mod/build.py --tests`)
+### Unit Testing (`mod/tests/PTMod.Tests/Features/ContractTransparency/`, мини-раннер ядра: `python mod/build.py --tests`)
 
 Каждый публичный тип `Logic/` указан в `[Covers(typeof(X))]`; проверки — `Assert.Equal/Near/True/Throws<T>`.
 

@@ -158,7 +158,7 @@ graph LR
 | Слой | Технология | Обоснование |
 |-------|------------|-----------|
 | Патчи | Harmony 2 через `ModHooks` | решение 0002; изоляция ошибок на патч |
-| Логика | C# latest, чистые статические классы без `UnityEngine` в `Features/RivalPersonalities/Logic/`; общее подмножество API .NET Framework 4.8 и mscorlib Unity (без `init`, `record`, `Index`, `Range`) | юнит-тесты мини-раннером в `mod/tests/PTMod.Tests/RivalPersonalities/` без запуска игры (`python mod/build.py --tests`) |
+| Логика | C# latest, чистые статические классы без `UnityEngine` в `Features/RivalPersonalities/Logic/`; общее подмножество API .NET Framework 4.8 и mscorlib Unity (без `init`, `record`, `Index`, `Range`) | юнит-тесты мини-раннером в `mod/tests/PTMod.Tests/Features/RivalPersonalities/` без запуска игры (`python mod/build.py --tests`) |
 | Контент | JSON через `ModContent` | решение 0006; правка баланса без сборки |
 | Состояние | секция `ModSave` (`IModSaveParticipant`) | решение 0004; версия секции — `_schema` ядра |
 | UI | `ModUI` (клон окна игры + `ButtonUI`, `InfoText`, `Themeable*`) | решение 0005 |
@@ -1307,7 +1307,7 @@ sequenceDiagram
 
 ## Testing Strategy
 
-### Unit Testing (`mod/tests/PTMod.Tests/RivalPersonalities/`)
+### Unit Testing (`mod/tests/PTMod.Tests/Features/RivalPersonalities/`)
 Тесты — мини-раннер на .NET Framework 4.8 (`python mod/build.py --tests`): атрибуты `[Test]` и `[Covers(typeof(X))]`, `Assert.True/False/Equal/Near/InRange/Throws<T>`. Каждый публичный тип `Features/RivalPersonalities/Logic/` указан в `[Covers]`. Покрываются чистые классы без `UnityEngine`: `AttitudeMath`, `ReactionMath`, `PriceCutMath`, `ShareCalculator`, `PoachMath`, `CharacterVisibility`, `IntelFog`, `CautionMath`, `ArchetypeCatalog.Validate`, сериализация `RivalState`, `NegotiationScope`. Классификатор сегмента тестируется в ядре (`SegmentRuleTests`, mod-framework/TSK-055); здесь только проверка, что фича не содержит собственного.
 
 | Тест | Что проверяет |

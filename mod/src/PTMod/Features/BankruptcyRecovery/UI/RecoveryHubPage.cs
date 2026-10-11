@@ -8,7 +8,9 @@ namespace PTMod.Features.BankruptcyRecovery
     /// The page of the feature in the mods hub (TSK-015, design.md "Прочее"; FR-2 item 6), registered with <c>FeatureContext.HubPage</c> under the heading "Finance". The core draws the
     /// five switches of the parts above it by itself; this adds a short state of the finances (the balance, the threshold, how far the bankruptcy is) and the button "Recovery
     /// options", which opens the rescue menu at any moment, in default or not. The hub is a modal window, so it is closed first: the menu opens over a closed hub.
-    /// The core calls <see cref="Build"/> every time the page is opened, with an empty container, while the feature is on. Main thread only.
+    /// The core calls <see cref="Build"/> every time the page is opened, with an empty container, while the feature is on. In a debug build, with the flag
+    /// <c>debug.recovery</c> of <c>ptmod_settings.json</c> on, the page ends with the debug block of the manual scenarios (<see cref="RecoveryDebugActions"/>, TSK-019); a release build
+    /// does not compile it. Main thread only.
     /// </summary>
     internal static class RecoveryHubPage
     {
@@ -45,6 +47,10 @@ namespace PTMod.Features.BankruptcyRecovery
             }
 
             ModUI.Button(page, ModL10n.L("rec.menu.open"), OpenMenu, ButtonStyle.CallToAction);
+
+#if PTMOD_DEBUG
+            RecoveryDebugActions.Build(page);   // TSK-019: "Balance = k × D" and "DaysInDefault = N" for the manual scenarios; only with the flag debug.recovery
+#endif
         }
 
         private static void OpenMenu()

@@ -46,7 +46,7 @@
 
 - [x] **TSK-002**: Контент `rules.json`, `ContractRules` и настройки (авто 2026-10-10)
   - **Requirement**: FR-4, FR-13, NFR-6
-  - **Deliverables**: `mod/src/PTMod/Content/contract-transparency/rules.json`, `mod/src/PTMod/Features/ContractTransparency/Logic/ContractRules.cs`, `mod/tests/PTMod.Tests/ContractTransparency/ContractRulesTests.cs`
+  - **Deliverables**: `mod/src/PTMod/Content/contract-transparency/rules.json`, `mod/src/PTMod/Features/ContractTransparency/Logic/ContractRules.cs`, `mod/tests/PTMod.Tests/Features/ContractTransparency/ContractRulesTests.cs`
   - **Acceptance**:
     - значения по умолчанию как в design.md (`lowActualChance` 0.10, `capacity` 500, `tenderHistoryYears` 10, `ai.contractMarginThreshold` 0.45);
     - значение вне диапазона заменяется дефолтом и пишется в `ModLog` (тест);
@@ -56,7 +56,7 @@
 
 - [x] **TSK-003**: `OddsMath` — шансы и фактическая вероятность (авто 2026-10-10)
   - **Requirement**: FR-2, FR-11
-  - **Deliverables**: `mod/src/PTMod/Features/ContractTransparency/Logic/OddsMath.cs`, `mod/tests/PTMod.Tests/ContractTransparency/OddsMathTests.cs`
+  - **Deliverables**: `mod/src/PTMod/Features/ContractTransparency/Logic/OddsMath.cs`, `mod/tests/PTMod.Tests/Features/ContractTransparency/OddsMathTests.cs`
   - **Acceptance**:
     - тесты проходят: 60/40 → 78.9/21.1 %; 50/30/20 → 69.4/20.8/9.7 %; 1000/1 → шансы 100/1, P 100/0 %; 50/50 → 66.7/33.3 % (раньше предложивший первым);
     - `IpsForChance(0.5, 60) == 60`;
@@ -68,7 +68,7 @@
 
 - [x] **TSK-004**: `RequirementCheck`, `CommitmentMath`, `ConfirmPolicy` (авто 2026-10-10)
   - **Requirement**: FR-1, FR-3, FR-4
-  - **Deliverables**: `mod/src/PTMod/Features/ContractTransparency/Logic/RequirementCheck.cs`, `.../Logic/CommitmentMath.cs`, `.../Logic/ConfirmPolicy.cs`, `mod/tests/PTMod.Tests/ContractTransparency/RequirementCheckTests.cs`, `.../CommitmentMathTests.cs`, `.../ConfirmPolicyTests.cs`
+  - **Deliverables**: `mod/src/PTMod/Features/ContractTransparency/Logic/RequirementCheck.cs`, `.../Logic/CommitmentMath.cs`, `.../Logic/ConfirmPolicy.cs`, `mod/tests/PTMod.Tests/Features/ContractTransparency/RequirementCheckTests.cs`, `.../CommitmentMathTests.cs`, `.../ConfirmPolicyTests.cs`
   - **Acceptance**:
     - границы `Ips == MinIps × 0.75` и `Power == Max` проходят; корпус 0/1/2 × DIP/PLCC/PGA — 9 тестов;
     - штраф за разрыв 50 000 шт. / 730 дней ≈ 888 166 667;
@@ -93,7 +93,7 @@
 
 - [x] **TSK-006**: `ContractLog`, `ContractLogModel`, DTO, `ContractKey` и секция `ModSave` (авто 2026-10-10)
   - **Requirement**: FR-8, NFR-3, NFR-6
-  - **Deliverables**: `mod/src/PTMod/Features/ContractTransparency/ContractLog.cs` (`IModSaveParticipant`, тонкий адаптер), `.../Logic/ContractLogModel.cs`, `.../Logic/SaveModels.cs` (DTO без поля версии), `.../Logic/LogRing.cs`, `.../Logic/ContractKeyBuilder.cs`, `mod/tests/PTMod.Tests/ContractTransparency/ContractLogModelTests.cs`, `.../ContractKeyTests.cs`
+  - **Deliverables**: `mod/src/PTMod/Features/ContractTransparency/ContractLog.cs` (`IModSaveParticipant`, тонкий адаптер), `.../Logic/ContractLogModel.cs`, `.../Logic/SaveModels.cs` (DTO без поля версии), `.../Logic/LogRing.cs`, `.../Logic/ContractKeyBuilder.cs`, `mod/tests/PTMod.Tests/Features/ContractTransparency/ContractLogModelTests.cs`, `.../ContractKeyTests.cs`
   - **Acceptance**:
     - `Read`/`Write` через `ModJson.Bind`/`ModJson.From`; `Write()` не возвращает `_schema` (его добавляет ядро), `SchemaVersion = 1`; `ResetToDefaults` даёт пустой журнал;
     - 520 записей → 500 последних;
@@ -118,7 +118,7 @@
 
 - [x] **TSK-008**: `TenderRecorder` — итоги тендеров и автоотмена (авто 2026-10-10)
   - **Requirement**: FR-5, FR-7
-  - **Deliverables**: `mod/src/PTMod/Features/ContractTransparency/Patches/TenderRecorder.cs`, `.../Logic/TenderOutcomeClassifier.cs`, `mod/tests/PTMod.Tests/ContractTransparency/TenderOutcomeTests.cs`
+  - **Deliverables**: `mod/src/PTMod/Features/ContractTransparency/Patches/TenderRecorder.cs`, `.../Logic/TenderOutcomeClassifier.cs`, `mod/tests/PTMod.Tests/Features/ContractTransparency/TenderOutcomeTests.cs`
   - **Acceptance**:
     - prefix `Contract.ChooseCpu` снимает `OffersIDs` и мощности;
     - postfix `Contract.ChooseCpu` пересобирает шансы розыгрыша повторным вызовом `Contract.GetBestOffers(OffersIDs)`; патча на `GetBestOffers` нет, самопроверка подтверждает, что цель не закреплена за ядром;
@@ -129,7 +129,7 @@
 
 - [x] **TSK-009**: `AutomationAdvisor` и `AutomationLogger` (авто 2026-10-10)
   - **Requirement**: FR-6, FR-9
-  - **Deliverables**: `mod/src/PTMod/Features/ContractTransparency/Logic/AutomationAdvisor.cs`, `.../Patches/AutomationLogger.cs`, `mod/tests/PTMod.Tests/ContractTransparency/AutomationAdvisorTests.cs`
+  - **Deliverables**: `mod/src/PTMod/Features/ContractTransparency/Logic/AutomationAdvisor.cs`, `.../Patches/AutomationLogger.cs`, `mod/tests/PTMod.Tests/Features/ContractTransparency/AutomationAdvisorTests.cs`
   - **Acceptance**:
     - порядок проверок совпадает с `ContractAutomation.SendOffers` (снят → `SellOnContracts` → маржа → требования `AddOffer`);
     - маржа 0.35 при пороге 40 → `SkippedMargin` с числами;
@@ -239,7 +239,7 @@
 
 - [x] **TSK-019**: Строки `ct.*` (ru, en) (авто 2026-10-10)
   - **Requirement**: NFR-4
-  - **Deliverables**: `mod/src/PTMod/L10n/ru.json`, `mod/src/PTMod/L10n/en.json` (раздел `ct.*`)
+  - **Deliverables**: `mod/src/PTMod/L10n/ru/contract-transparency.json`, `mod/src/PTMod/L10n/en/contract-transparency.json` (раздел `ct.*`)
   - **Acceptance**:
     - каждый ключ из кода есть в обоих файлах; `python install.py --check` не находит расхождений ru/en и чужих префиксов;
     - термины совпадают с `ptru` («Предложить», «Отозвать», «Вероятность:», «Автоотмена предложений», «Автоподписание контрактов»);
@@ -257,7 +257,7 @@
 
 - [x] **TSK-021**: Тесты совместимости сейвов (авто 2026-10-10)
   - **Requirement**: NFR-3
-  - **Deliverables**: `mod/tests/PTMod.Tests/ContractTransparency/SaveCompatibilityTests.cs`, фикстуры `mod/tests/PTMod.Tests/ContractTransparency/Fixtures/*.ptmod.json`
+  - **Deliverables**: `mod/tests/PTMod.Tests/Features/ContractTransparency/SaveCompatibilityTests.cs`, фикстуры `mod/tests/PTMod.Tests/Features/ContractTransparency/Fixtures/*.ptmod.json`
   - **Acceptance**:
     - фикстуры без секции, с `_schema` 1 и с `_schema` 99 грузятся (для `_schema` 99 секция сохраняется ядром нетронутой, журнал пуст);
     - неизвестные поля игнорируются;
@@ -273,9 +273,9 @@
     - метрика «≤ 0.05 мс в день» подтверждена замером.
   - **Depends**: TSK-001…TSK-021; mod-framework TSK-044, TSK-068 (установка `install.py --with-mods`)
 
-- [ ] **TSK-023**: Описание фичи для игроков — Частично (авто 2026-10-10): ключи `ct.hub.*` и страница в хабе готовы и под тестами; раздел README написан в `mod/requests/contract-transparency.md`, п. 15, и ждёт вставки итоговым интегратором (`mod/README.md` нет, корневой README — не файл этой фичи)
+- [x] **TSK-023**: Описание фичи для игроков (авто 2026-10-11)
   - **Requirement**: FR-13
-  - **Deliverables**: текст описания в хабе «Моды» (ключи `ct.hub.*` в `mod/src/PTMod/L10n/*.json`); раздел «Прозрачность контрактов» в README модов (`mod/README.md`)
+  - **Deliverables**: текст описания в хабе «Моды» (ключи `ct.hub.*` в `mod/src/PTMod/L10n/{ru,en}/contract-transparency.json`); раздел «Прозрачность контрактов» в корневом README (`README.md`)
   - **Acceptance**:
     - описание объясняет режимы подтверждения, «фактическую вероятность» и журнал;
     - есть пример с числами 60/40 → 21 %.
@@ -329,7 +329,7 @@ TSK-001…TSK-021 ──> TSK-022 (владелец)
 | TSK-020 Самопроверка и замеры | Complete (авто 2026-10-10, кусок 5: `Logic/MemberCatalog` — 6 целей патчей и 19 приватных членов из design.md (в т.ч. `Contract.GetBestOffers`, `CpuOffer.Cpu/Chance`, поля `ContractWindow` и `ContractNegotiationWindow`), у каждой строки — части фичи, которые отключает пропажа; `Logic/SelfCheckEvaluator` решает, что отключено и не делает ли пропажа цели обязательного патча фичу недоступной; `ContractSelfCheck` (из `OnEnabled`) ищет члены в игре, спрашивает `ModHooks.IsReserved` про шесть целей (тест по таблице ядра: ни одна не закреплена, `GetBestOffers` закреплена — P23 — и только вызывается), пишет находки в `ModLog`; все 25 строк сверены с настоящим `Assembly-CSharp.dll` (ReflectionOnly); тестовый флаг `debug.ct.missing.<ключ члена>` прячет член от `GameMembers` — единственной двери к приватным членам для `ContractInspector`, `ContractWindowAugmenter` и `BusinessSignGate` — и отключает только зависящую часть (модель флага и «каждый член по одному» — `SelfCheckTests`); таймеры `PerfTimer` / `TimingSites` / `TimingStats` в `OfferGate`, `TenderRecorder`, `AutomationLogger`, `TenderMailer`, а также в `BuildOdds` и `ContractLog.Read/Write`: при `ModSettings.VerboseLog` пишут `time: <место> N ms (n, avg, max, budget)`, первые 20, потом каждый сотый и любой выше бюджета; бюджеты — таблица «Performance Considerations»; `TimingTests`; в игре не проверялось: строка «selfcheck: all 25 members…», флаг на отладочной сборке, замеры 0,05 мс в день — TSK-022, см. `mod/requests/contract-transparency.md`, п. 14 и 16) |
 | TSK-021 Совместимость сейвов | Complete (авто 2026-10-10, кусок 5: `SaveCompatibilityTests` и четыре фикстуры `Fixtures/{no-section,schema-1,schema-99,damaged-section}.ptmod.json` в `mod/tests/PTMod.Tests/Features/ContractTransparency/` (не в `ContractTransparency/` из Deliverables, см. п. 3 запросов); секции раздаёт настоящая `SideFileModel` ядра, файл пишет и читает настоящий `SideFileIo` поверх `FakeFileSystem`; без секции — пустой журнал без жалоб, секция появляется при следующем сохранении; `_schema` 1 — 12 записей, 2 итога, счётчики 7 и 1, всё пишется и читается обратно; неизвестные поля (в секции, записи, итоге, строках предложений и снятых предложений) игнорируются без записи в журнал; `_schema` 99 — журнал пуст, `Write()` не вызывается, секция в файле прежняя после нескольких сохранений и повторной загрузки; запись не меняет секции ядра, чужой фичи и ничьи (в т.ч. число 2^53 + 1); выключенная фича оставляет секцию как была; битая секция читается, сколько удаётся, и перезаписывается целой; 520 записей автоматики в записанном файле ≤ 256 КБ; исходник `ContractLog` сверен с участником теста; загрузка настоящего сейва в игре — M9, M11, M12, TSK-022) |
 | TSK-022 Ручная проверка в игре (владелец) | Pending |
-| TSK-023 Описание для игроков | Частично (авто 2026-10-10, кусок 5: `ct.hub.description` (строка фичи в хабе — три темы и пример «40 % против 60 % — 21 %») и подробный текст на странице настроек фичи в хабе — `ct.hub.help.modes|actual|example|log` с заголовками, ru и en: режимы подтверждения («Всегда», «Только рискованные», «Никогда») с кнопками «Предложить» и «Отозвать», фактическая вероятность с примером 60/40 → 21 % (0,4 × 0,4 / (1 − 0,4 × 0,6); числа сверены тестом с `OddsMath`: 78,9 / 21,1), журнал; `StringTablesTests`; **не сделано:** раздел «Прозрачность контрактов» в README — `mod/README.md` нет, корневой README — не файл этой фичи; готовый текст лежит в `mod/requests/contract-transparency.md`, п. 15, для вставки итоговым интегратором) |
+| TSK-023 Описание для игроков | Complete (авто 2026-10-11, кусок 5: `ct.hub.description` (строка фичи в хабе — три темы и пример «40 % против 60 % — 21 %») и подробный текст на странице настроек фичи в хабе — `ct.hub.help.modes|actual|example|log` с заголовками, ru и en: режимы подтверждения («Всегда», «Только рискованные», «Никогда») с кнопками «Предложить» и «Отозвать», фактическая вероятность с примером 60/40 → 21 % (0,4 × 0,4 / (1 − 0,4 × 0,6); числа сверены тестом с `OddsMath`: 78,9 / 21,1), журнал; `StringTablesTests`; раздел «Прозрачность контрактов» есть в корневом `README.md`, проверено 2026-10-11) |
 
 ## Покрытие требований
 

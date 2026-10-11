@@ -143,7 +143,7 @@ graph LR
 | Слой | Технология | Обоснование |
 |-------|------------|-----------|
 | Патчи | Harmony 2 через `ModHooks` | только `HardwareWindow.ShowMarket` (Could); патчей на `AddCpu` нет — события ядра |
-| Логика | чистый C# без `UnityEngine` в `Features/PressReviews/Logic/`: `ReviewMath`, `OutletPanel`, `EffectMath`, `DigestBuilder`, `MarketTrends`; общее подмножество API .NET Framework 4.8 и mscorlib Unity (без `init`, `record`, `Index`, `Range`) | юнит-тесты мини-раннером в `mod/tests/PTMod.Tests/PressReviews/` без игры (`python mod/build.py --tests`), каждый публичный тип в `[Covers]` |
+| Логика | чистый C# без `UnityEngine` в `Features/PressReviews/Logic/`: `ReviewMath`, `OutletPanel`, `EffectMath`, `DigestBuilder`, `MarketTrends`; общее подмножество API .NET Framework 4.8 и mscorlib Unity (без `init`, `record`, `Index`, `Range`) | юнит-тесты мини-раннером в `mod/tests/PTMod.Tests/Features/PressReviews/` без игры (`python mod/build.py --tests`), каждый публичный тип в `[Covers]` |
 | Контент | JSON через `ModContent` | решение 0006 |
 | Состояние | секция `ModSave` (`IModSaveParticipant`) | решение 0004; версия секции — `_schema` ядра |
 | UI | `ModUI` | решение 0005 |
@@ -997,7 +997,7 @@ sequenceDiagram
 
 ## Testing Strategy
 
-### Unit Testing (`mod/tests/PTMod.Tests/PressReviews/`)
+### Unit Testing (`mod/tests/PTMod.Tests/Features/PressReviews/`)
 
 Тесты — мини-раннер на .NET Framework 4.8 (`python mod/build.py --tests`): атрибуты `[Test]` и `[Covers(typeof(X))]`, `Assert.True/False/Equal/Near/InRange/Throws<T>`; каждый публичный тип `Features/PressReviews/Logic/` указан в `[Covers]`. Классификатор сегмента тестируется в ядре (`SegmentRuleTests`, mod-framework/TSK-055); дрейф репутации — в `ReputationTests` ядра.
 

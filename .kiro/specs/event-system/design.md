@@ -207,7 +207,7 @@ graph LR
 | Данные | JSON через `ModContent` / `ModJson` | Решение 0006 |
 | Состояние | `ModSave` (боковой файл) | Решение 0004 |
 | UI | `ModUI` (клоны окон игры, `ButtonUI`, `InfoText`, `ToggleUI`, `DropdownUI`, TMP-текст) | Решение 0005 |
-| Тесты | Свой мини-раннер .NET Framework 4.8 (`[Test]`, `[Covers]`, `Assert.*`) в `mod/tests/PTMod.Tests/EventSystem/`, запуск `python mod/build.py --tests` | Чистая логика за `IGameFacade`, фейки `IModRng` и `IGameState` |
+| Тесты | Свой мини-раннер .NET Framework 4.8 (`[Test]`, `[Covers]`, `Assert.*`) в `mod/tests/PTMod.Tests/Features/EventSystem/`, запуск `python mod/build.py --tests` | Чистая логика за `IGameFacade`, фейки `IModRng` и `IGameState` |
 
 ## Components and Interfaces
 
@@ -1197,7 +1197,7 @@ stateDiagram-v2
 
 ## Testing Strategy
 
-### Unit Testing (`mod/tests/PTMod.Tests/EventSystem/`, свой мини-раннер .NET Framework 4.8, без Unity)
+### Unit Testing (`mod/tests/PTMod.Tests/Features/EventSystem/`, свой мини-раннер .NET Framework 4.8, без Unity)
 
 Тесты — методы с `[Test]`, покрытие типов — `[Covers(typeof(X))]` (каждый публичный тип `Features/EventSystem/Logic` указан хотя бы в одном `[Covers]`; процент строк не измеряется). Запуск — `python mod/build.py --tests`. Логика тестируется за `IGameFacade`, фейковым `IModRng` (детерминированная последовательность) и фейковым приёмником провайдеров вместо `ModModifiers`. Условия — на `FakeGameState` фреймворка. Эффекты в тестах учитывают общий балансовый диапазон ядра [0,5; 2,0] на CPU для `popularity.gain` и `market.rating.cpu`.
 

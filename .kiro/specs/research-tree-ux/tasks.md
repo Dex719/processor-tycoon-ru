@@ -34,19 +34,19 @@
 
 - [x] **TSK-001**: Каркас фичи research-tree-ux (авто 2026-10-10)
   - **Requirement**: FR-8, NFR-2, NFR-4, NFR-8
-  - **Deliverables**: `mod/src/PTMod/Features/ResearchTreeUx/ResearchTreeUxFeature.cs` (`[ModFeature] sealed class … : IModFeature`: `Id` = `research-tree-ux`, `NameKey`, `DescriptionKey`, `DependsOn` = пусто, `EnabledByDefault` = true, `SupportsHotToggle` = true, `Register(FeatureContext)`, `OnEnabled`, `OnDisabled`), `ResearchUxPrefs.cs` (чтение и запись через `ModProfile.Section`), `ResearchUxSaveParticipant.cs` (`IModSaveParticipant`, `SchemaVersion` = 1, без собственного поля версии), `UxParts.cs`; параметры `notifyNewTech` и `notifyIdleLab` через `ctx.Param`; пустые ключи `rtux.*` в `mod/src/PTMod/L10n/ru.json`, `mod/src/PTMod/L10n/en.json`; `mod/src/PTMod/Content/research-tree-ux/ui.json` с данными из `design.md`
+  - **Deliverables**: `mod/src/PTMod/Features/ResearchTreeUx/ResearchTreeUxFeature.cs` (`[ModFeature] sealed class … : IModFeature`: `Id` = `research-tree-ux`, `NameKey`, `DescriptionKey`, `DependsOn` = пусто, `EnabledByDefault` = true, `SupportsHotToggle` = true, `Register(FeatureContext)`, `OnEnabled`, `OnDisabled`), `ResearchUxPrefs.cs` (чтение и запись через `ModProfile.Section`), `ResearchUxSaveParticipant.cs` (`IModSaveParticipant`, `SchemaVersion` = 1, без собственного поля версии), `mod/src/PTMod/Features/ResearchTreeUx/Logic/UxParts.cs`; параметры `notifyNewTech` и `notifyIdleLab` через `ctx.Param`; пустые ключи `rtux.*` в `mod/src/PTMod/L10n/ru/research-tree-ux.json`, `mod/src/PTMod/L10n/en/research-tree-ux.json`; `mod/src/PTMod/Content/research-tree-ux/ui.json` с данными из `design.md`
   - **Acceptance**: сборка проходит; ядро находит фичу по `[ModFeature]`, она видна в хабе «Моды», `ModFeatures.StateOf("research-tree-ux")` = Enabled; самопроверка пишет в лог список найденных целей (`ResearchTreeWindow.InitializeUI`, `ResearchTreeWindow.UpdateButtonStates`, `InspectorWindow.Start`) и приватных полей; при отсутствии поля соответствующий флаг `UxParts` снят; в коде фичи нет прямых подписок на `DateController`, `Player`, `SaveHandler` и собственных счётчиков ошибок
   - **Depends**: mod-framework/TSK-021 (`ModSettings`, `ModProfile`, `ModL10n`, `ModContent`), mod-framework/TSK-022 (`IModFeature`, `FeatureContext`), mod-framework/TSK-023 (`ModHooks`), mod-framework/TSK-025 (`ModSave`), mod-framework/TSK-043 (`core.json`: префикс `rtux`)
 
 - [x] **TSK-002**: Чистая модель технологий и вкладок (авто 2026-10-10)
   - **Requirement**: FR-1, FR-2, FR-4
-  - **Deliverables**: `mod/src/PTMod/Features/ResearchTreeUx/Logic/TechSnapshot.cs`, `TechCategory.cs`, `TabDefinition.cs`, `CategoryFilter.cs`, `UnnecessaryRule.cs`, `UnlocksIndex.cs` (обратные зависимости); `mod/tests/PTMod.Tests/ResearchTreeUx/CategoryFilterTests.cs`, `UnnecessaryRuleTests.cs`
+  - **Deliverables**: `mod/src/PTMod/Features/ResearchTreeUx/Logic/TechSnapshot.cs`, `TechCategory.cs`, `TabDefinition.cs`, `CategoryFilter.cs`, `UnnecessaryRule.cs`, `UnlocksIndex.cs` (обратные зависимости); `mod/tests/PTMod.Tests/Features/ResearchTreeUx/CategoryFilterTests.cs`, `UnnecessaryRuleTests.cs`
   - **Acceptance**: тесты покрывают 7 типов × «Все», линии с одним скрытым концом, `FocusTarget` (доступная/исследованная/пусто), правило «ненужной» для IDM/fabless/foundry (совпадает с `ResearchButton.TechnologyIsUnnecessary`); все публичные типы в `[Covers]`; все тесты зелёные
   - **Depends**: TSK-001, mod-framework/TSK-067 (мини-раннер)
 
 - [x] **TSK-003**: Индекс дерева и сопоставление линий (авто 2026-10-10)
   - **Requirement**: FR-1, NFR-2
-  - **Deliverables**: `mod/src/PTMod/Features/ResearchTreeUx/Tree/TreeIndex.cs`, `Logic/LineMatcher.cs`, `Patches/TreeWindowPatches.cs` (`[ModPatch]` postfix `ResearchTreeWindow.InitializeUI`, вызывающий `OnTreeBuilt`); `mod/tests/PTMod.Tests/ResearchTreeUx/LineMatcherTests.cs`
+  - **Deliverables**: `mod/src/PTMod/Features/ResearchTreeUx/Tree/TreeIndex.cs`, `Logic/LineMatcher.cs`, `Patches/TreeWindowPatches.cs` (`[ModPatch]` postfix `ResearchTreeWindow.InitializeUI`, вызывающий `OnTreeBuilt`); `mod/tests/PTMod.Tests/Features/ResearchTreeUx/LineMatcherTests.cs`
   - **Acceptance**: `LineMatcher` проходит тесты (точное совпадение, допуск 0,5 px, несопоставленные); в отладочном логе после загрузки сцены: «кнопок 97, линий N, сопоставлено N»; исключение в постфиксе не доходит до игры (`ModHooks.Guard`; проверка искусственным исключением в debug-сборке)
   - **Depends**: TSK-002, mod-framework/TSK-023 (`ModHooks`)
 
@@ -54,13 +54,13 @@
 
 - [x] **TSK-004**: Полоса вкладок и фильтр дерева (авто 2026-10-10)
   - **Requirement**: FR-1
-  - **Deliverables**: `mod/src/PTMod/Features/ResearchTreeUx/Tree/TabStrip.cs`, `Tree/TreeFocus.cs` (центрирование через `ResearchTreeController.controller`); ключи `rtux.tab.*` в `L10n/ru.json`, `L10n/en.json`
+  - **Deliverables**: `mod/src/PTMod/Features/ResearchTreeUx/Tree/TabStrip.cs`, `Tree/TreeFocus.cs` (центрирование через `ResearchTreeController.controller`); ключи `rtux.tab.*` в `mod/src/PTMod/L10n/ru/research-tree-ux.json`, `mod/src/PTMod/L10n/en/research-tree-ux.json`
   - **Acceptance**: 8 встроенных вкладок по `ui.json`; выбор вкладки скрывает чужие кнопки и линии, «Все» возвращает исходное состояние; вид центрируется на первой доступной технологии вкладки; последняя вкладка запоминается в `ModProfile` и восстанавливается после загрузки сейва; переключение ≤ 5 мс в отладочном замере
   - **Depends**: TSK-003, mod-framework/TSK-036 (виджеты `ModUI`), mod-framework/TSK-021 (`ModProfile`)
 
 - [x] **TSK-005**: Метки «новое» и счётчики вкладок (авто 2026-10-10)
   - **Requirement**: FR-3
-  - **Deliverables**: `mod/src/PTMod/Features/ResearchTreeUx/Logic/NewTechTracker.cs`, `Tree/NewBadges.cs`; постфикс `ResearchTreeWindow.UpdateButtonStates` в `Patches/TreeWindowPatches.cs` (ранний выход при перемотке); `ResearchUxSaveParticipant.Read`/`Write` (секция `research-tree-ux`, `List<int> seenAvailable`, без поля версии); обработчик `ModTicks.GameReady` (`NewGame`: всё доступное просмотрено; `Loaded` без секции: то же); `mod/tests/PTMod.Tests/ResearchTreeUx/NewTechTrackerTests.cs`
+  - **Deliverables**: `mod/src/PTMod/Features/ResearchTreeUx/Logic/NewTechTracker.cs`, `Tree/NewBadges.cs`; постфикс `ResearchTreeWindow.UpdateButtonStates` в `Patches/TreeWindowPatches.cs` (ранний выход при перемотке); `ResearchUxSaveParticipant.Read`/`Write` (секция `research-tree-ux`, `List<int> seenAvailable`, без поля версии); обработчик `ModTicks.GameReady` (`NewGame`: всё доступное просмотрено; `Loaded` без секции: то же); `mod/tests/PTMod.Tests/Features/ResearchTreeUx/NewTechTrackerTests.cs`
   - **Acceptance**: тесты трекера зелёные (непросмотренные, отметка, «всё доступное просмотрено», сериализация, отбрасывание неверных ID); в игре метка «НОВОЕ» появляется у новой доступной технологии, снимается при уходе с вкладки и при наведении; после сохранения/загрузки не возвращается; старый сейв без секции — меток нет; на старте новой игры меток нет
   - **Depends**: TSK-004, mod-framework/TSK-024 (`ModTicks`, `GameReady`), mod-framework/TSK-025 (`ModSave`)
 
@@ -72,7 +72,7 @@
 
 - [x] **TSK-007**: Подсказка технологии (авто 2026-10-10)
   - **Requirement**: FR-4
-  - **Deliverables**: `mod/src/PTMod/Features/ResearchTreeUx/Logic/TechTooltipBuilder.cs`, `Logic/ResearchContext.cs`, `Tree/TechSnapshotReader.cs`; подключение `TechTooltips.Attach` к каждой `ResearchButton`; ключи `rtux.tip.*`; `mod/tests/PTMod.Tests/ResearchTreeUx/TechTooltipBuilderTests.cs`
+  - **Deliverables**: `mod/src/PTMod/Features/ResearchTreeUx/Logic/TechTooltipBuilder.cs`, `Logic/ResearchContext.cs`, `Tree/TechSnapshotReader.cs`; подключение `TechTooltips.Attach` к каждой `ResearchButton`; ключи `rtux.tip.*`; `mod/tests/PTMod.Tests/Features/ResearchTreeUx/TechTooltipBuilderTests.cs`
   - **Acceptance**: тесты: DDR6 в 1990 → «+13 300 %», 130nm в 2005 → «−45 %», BaseTime = 0 → «мгновенно», Funding ≈ 0 → «∞», ненужная для fabless, внешние строки; в игре время в подсказке совпадает с временем на кнопке дерева
   - **Depends**: TSK-002, TSK-006
 
@@ -80,7 +80,7 @@
 
 - [x] **TSK-008**: Модель списка исследований (авто 2026-10-10)
   - **Requirement**: FR-2
-  - **Deliverables**: `mod/src/PTMod/Features/ResearchTreeUx/Logic/ResearchListModel.cs`, `Logic/ListFilter.cs`; `mod/tests/PTMod.Tests/ResearchTreeUx/ResearchListModelTests.cs`
+  - **Deliverables**: `mod/src/PTMod/Features/ResearchTreeUx/Logic/ResearchListModel.cs`, `Logic/ListFilter.cs`; `mod/tests/PTMod.Tests/Features/ResearchTreeUx/ResearchListModelTests.cs`
   - **Acceptance**: тесты: три фильтра в комбинациях, три сортировки, ничьи по ID, группы с «исследовано/всего», пустой результат; все зелёные
   - **Depends**: TSK-002
 
@@ -94,7 +94,7 @@
 
 - [x] **TSK-010**: Таблица ванильных модификаторов и отчёт (авто 2026-10-10)
   - **Requirement**: FR-5
-  - **Deliverables**: `mod/src/PTMod/Features/ResearchTreeUx/Logic/VanillaModifierTable.cs`, `Logic/ModifierReportBuilder.cs`, `Logic/ModifierSnapshot.cs` (включая `ExplainData`/`ExplainRow`); `mod/tests/PTMod.Tests/ResearchTreeUx/VanillaModifierTableTests.cs`, `ModifierReportBuilderTests.cs`
+  - **Deliverables**: `mod/src/PTMod/Features/ResearchTreeUx/Logic/VanillaModifierTable.cs`, `Logic/ModifierReportBuilder.cs`, `Logic/ModifierSnapshot.cs` (включая `ExplainData`/`ExplainRow`); `mod/tests/PTMod.Tests/Features/ResearchTreeUx/VanillaModifierTableTests.cs`, `ModifierReportBuilderTests.cs`
   - **Acceptance**: тесты: 7 типов × флаги IDM/foundry/fabless/TCMS/«невезучая» совпадают с кодом `Modifiers.GetModifier`; строки источников из `ExplainData` (фича, причина, множитель, срок); «(ограничено)» при `IsBalanceCapped`/`IsFuseCapped`; `Explain` недоступен → «Моды ×k» = итог/ваниль; проекты в работе; внешние группы; пример AC-5.1 даёт «×1,29»
   - **Depends**: TSK-002
 
@@ -106,7 +106,7 @@
 
 - [x] **TSK-012**: Модель сравнения CPU (авто 2026-10-10)
   - **Requirement**: FR-6
-  - **Deliverables**: `mod/src/PTMod/Features/ResearchTreeUx/Logic/CompareModel.cs`, `Logic/CpuFacts.cs`, `Logic/IFormatter.cs`; `mod/tests/PTMod.Tests/ResearchTreeUx/CompareModelTests.cs`
+  - **Deliverables**: `mod/src/PTMod/Features/ResearchTreeUx/Logic/CompareModel.cs`, `Logic/CpuFacts.cs`, `Logic/IFormatter.cs`; `mod/tests/PTMod.Tests/Features/ResearchTreeUx/CompareModelTests.cs`
   - **Acceptance**: тесты: дельта (B − A)/|A|, «—» при A = 0 и нечисловых, порог 2,5 %, направления higher/lower/none, A = B → 0 %, внешние строки по `Order`; все зелёные
   - **Depends**: TSK-002, mod-framework/TSK-067
 
@@ -120,13 +120,13 @@
 
 - [x] **TSK-014**: API расширения ResearchTreeUxApi (авто 2026-10-10)
   - **Requirement**: FR-7, NFR-7
-  - **Deliverables**: `mod/src/PTMod/Features/ResearchTreeUx/Api/ResearchTreeUxApi.cs`, `Api/IResearchTabProvider.cs`, `Api/ICompareRowProvider.cs`, `Api/IModifierLineSource.cs`, `Api/ITechTooltipLineSource.cs`, `Api/ILabOccupancySource.cs`; подключение в `TabStrip`, `CompareWindow`, `ModifiersPanel`, `TechTooltipBuilder`, `ResearchListView`, `NotifierPolicy`; отладочная вкладка-заглушка (только debug-сборка); `mod/tests/PTMod.Tests/ResearchTreeUx/ApiRegistryTests.cs`
+  - **Deliverables**: `mod/src/PTMod/Features/ResearchTreeUx/Api/ResearchTreeUxApi.cs`, `Api/IResearchTabProvider.cs`, `Api/ICompareRowProvider.cs`, `Api/IModifierLineSource.cs`, `Api/ITechTooltipLineSource.cs`, `Api/ILabOccupancySource.cs`; подключение в `TabStrip`, `CompareWindow`, `ModifiersPanel`, `TechTooltipBuilder`, `ResearchListView`, `NotifierPolicy`; отладочная вкладка-заглушка (только debug-сборка); `mod/tests/PTMod.Tests/Features/ResearchTreeUx/ApiRegistryTests.cs`
   - **Acceptance**: регистрация до и после построения окна работает; дубль `TabId` отклоняется с предупреждением; исключение провайдера отключает только его и записывается через `ModHooks.ReportFault` на фичу-владельца (AC-7.2); `IsActive` = false при выключенной фиче, регистрации запоминаются и действуют после включения; `ILabOccupancySource` опрашивается списком и политикой напоминаний (AC-2.4, AC-9.2); отладочная вкладка видна после «Ядра»
   - **Depends**: TSK-004, TSK-007, TSK-011, TSK-013, mod-framework/TSK-022 (`ModFeatures.FeatureOfType`, `StateChanged`), mod-framework/TSK-023 (`ReportFault`)
 
 - [x] **TSK-015**: Напоминания о новых исследованиях и простое лаборатории (авто 2026-10-10)
   - **Requirement**: FR-9
-  - **Deliverables**: `mod/src/PTMod/Features/ResearchTreeUx/Notify/ResearchUxNotifier.cs`, `Logic/NotifierPolicy.cs`; переключатели в хабе (`ParamSpec`); ключи `rtux.notify.*`; `mod/tests/PTMod.Tests/ResearchTreeUx/NotifierPolicyTests.cs`
+  - **Deliverables**: `mod/src/PTMod/Features/ResearchTreeUx/Notify/ResearchUxNotifier.cs`, `Logic/NotifierPolicy.cs`; переключатели в хабе (`ParamSpec`); ключи `rtux.notify.*`; `mod/tests/PTMod.Tests/Features/ResearchTreeUx/NotifierPolicyTests.cs`
   - **Acceptance**: тесты политики зелёные (включая «лаборатория занята источником»); в игре сценарий AC-9.1: одно уведомление на 8-й день простоя, без повторов 30 дней; AC-9.2: лаборатория, занятая архитектурой, простоем не считается; во время перемотки напоминаний нет; в пакетном прогоне `NextMonth` показ откладывает `ModNotify`; выключенный переключатель — уведомлений нет
   - **Depends**: TSK-005, TSK-014, mod-framework/TSK-033 (`ModNotify`), mod-framework/TSK-062 (отложенный показ на `BatchEnded`)
 
@@ -140,19 +140,19 @@
 
 - [x] **TSK-017**: Локализация ru/en и тест полноты ключей (авто 2026-10-10)
   - **Requirement**: NFR-5
-  - **Deliverables**: все ключи `rtux.*` в `mod/src/PTMod/L10n/ru.json` и `mod/src/PTMod/L10n/en.json`; `mod/tests/PTMod.Tests/ResearchTreeUx/L10nKeysTests.cs`
+  - **Deliverables**: все ключи `rtux.*` в `mod/src/PTMod/L10n/ru/research-tree-ux.json` и `mod/src/PTMod/L10n/en/research-tree-ux.json`; `mod/tests/PTMod.Tests/Features/ResearchTreeUx/L10nKeysTests.cs`
   - **Acceptance**: тест находит каждый ключ, используемый в коде фичи, в обоих файлах; все ключи имеют префикс `rtux.` (кроме `core.*` ядра); в игре с языком `en` нет «сырых» ключей
   - **Depends**: TSK-009, TSK-011, TSK-013, TSK-015, mod-framework/TSK-043, mod-framework/TSK-066 (`ModIds`)
 
 - [x] **TSK-018**: Самопроверка, замеры производительности и тесты контента (авто 2026-10-10)
   - **Requirement**: NFR-1, NFR-2
-  - **Deliverables**: замеры `ModLog` (`ModSettings.Debug`) в `TabStrip.Select`, `ResearchListView.Refresh`, постфиксе `UpdateButtonStates`, построении подсказки; `mod/tests/PTMod.Tests/ResearchTreeUx/ContentSchemaTests.cs`
+  - **Deliverables**: замеры `ModLog` (`ModSettings.Debug`) в `TabStrip.Select`, `ResearchListView.Refresh`, постфиксе `UpdateButtonStates`, построении подсказки; `mod/tests/PTMod.Tests/Features/ResearchTreeUx/ContentSchemaTests.cs`
   - **Acceptance**: в отладочной сессии: вкладка ≤ 5 мс, список ≤ 3 мс, дневной тик при закрытом окне ≤ 0,1 мс, подсказка ≤ 1 мс; тест битого `ui.json` проходит (битая запись пропущена, при полном отказе — значения по умолчанию)
   - **Depends**: TSK-016
 
 - [x] **TSK-019**: Совместимость сейвов (авто 2026-10-10)
   - **Requirement**: NFR-4
-  - **Deliverables**: `mod/tests/PTMod.Tests/ResearchTreeUx/SaveSectionTests.cs` (нет секции, пустая, ID вне диапазона, дубликаты, > 512 элементов, `ResetToDefaults`)
+  - **Deliverables**: `mod/tests/PTMod.Tests/Features/ResearchTreeUx/SaveSectionTests.cs` (нет секции, пустая, ID вне диапазона, дубликаты, > 512 элементов, `ResetToDefaults`)
   - **Acceptance**: все тесты зелёные; участник не читает и не пишет поле версии (`_schema` — дело ядра, проверяется `mod-framework/TSK-016`); секция новее мода сохраняется ядром как есть при выключенной фиче
   - **Depends**: TSK-005, mod-framework/TSK-016 (модель бокового файла)
 
@@ -166,7 +166,7 @@
 
 - [x] **TSK-021**: Регулируемая ширина боковой панели (авто 2026-10-10)
   - **Requirement**: FR-10
-  - **Deliverables**: `mod/src/PTMod/Features/ResearchTreeUx/Logic/SidebarWidthRule.cs`, `Sidebar/SidebarResizer.cs` (ручка на левом крае `SideWindow`, масштаб `RectTransform`, пересчёт `visiblePosition`/`hiddenPosition` через `AccessTools`, запись множителя в `ModProfile`); флаг `UxParts.Sidebar`; ключи `rtux.sidebar.*`; `mod/tests/PTMod.Tests/ResearchTreeUx/SidebarWidthRuleTests.cs`
+  - **Deliverables**: `mod/src/PTMod/Features/ResearchTreeUx/Logic/SidebarWidthRule.cs`, `Sidebar/SidebarResizer.cs` (ручка на левом крае `SideWindow`, масштаб `RectTransform`, пересчёт `visiblePosition`/`hiddenPosition` через `AccessTools`, запись множителя в `ModProfile`); флаг `UxParts.Sidebar`; ключи `rtux.sidebar.*`; `mod/tests/PTMod.Tests/Features/ResearchTreeUx/SidebarWidthRuleTests.cs`
   - **Acceptance**: спайк: структура `SideWindow` позволяет менять ширину без патчей; тесты зажима [1,0; 1,6] и позиции скрытого состояния зелёные; сценарий M11 (ширина до 1,6 ×, запоминается, закрытая панель за экраном); при выключении фичи исходные ширина и позиции возвращаются; нет поля — только эта часть выключена
   - **Depends**: TSK-016, mod-framework/TSK-021 (`ModProfile`)
 

@@ -442,7 +442,7 @@
 - Собственный патч фичи один: postfix `ProjectReleaseWindow.Open` (`Optional`).
 - Ванильные `Market.PgaDebuffMultiplier`, `MarketEventHandler.TriggerPgaEvent`, `Cpu.get_AveragePopularity` не трогаются.
 - Новых каналов `ModModifiers` фича не объявляет. Провайдеры регистрируются один раз (`Register`); `OnEnabled`/`OnDisabled` их не пересоздают.
-- Тесты чистой логики — мини-раннер ядра (`python mod/build.py --tests`, `mod/tests/PTMod.Tests/PlatformGenerations/`); код `Logic/` использует общее подмножество API .NET Framework 4.8 и `mscorlib` Unity (без `init`, `record`, `Index`, `Range`). Сборка — `python mod/build.py --game-dir <папка игры>`.
+- Тесты чистой логики — мини-раннер ядра (`python mod/build.py --tests`, `mod/tests/PTMod.Tests/Features/PlatformGenerations/`); код `Logic/` использует общее подмножество API .NET Framework 4.8 и `mscorlib` Unity (без `init`, `record`, `Index`, `Range`). Сборка — `python mod/build.py --game-dir <папка игры>`.
 
 ### Business Constraints
 - Баланс по умолчанию — умеренный (NFR-5). Окончательные числа подбирает владелец после ручной проверки.

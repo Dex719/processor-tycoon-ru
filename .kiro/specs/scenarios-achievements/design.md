@@ -237,7 +237,7 @@ graph LR
 
 ## Components and Interfaces
 
-Пространство имён — `PTMod.Features.ScenariosAchievements` (`ModFeatures.FeatureOfType` определяет фичу по нему). Чистая логика лежит в `mod/src/PTMod/Features/ScenariosAchievements/Logic/` (пространство `…ScenariosAchievements.Logic`, тесты — `mod/tests/PTMod.Tests/ScenariosAchievements/`), адаптеры к игре и UI — рядом (`Integration/`, `UI/`, `Content/`).
+Пространство имён — `PTMod.Features.ScenariosAchievements` (`ModFeatures.FeatureOfType` определяет фичу по нему). Чистая логика лежит в `mod/src/PTMod/Features/ScenariosAchievements/Logic/` (пространство `…ScenariosAchievements.Logic`, тесты — `mod/tests/PTMod.Tests/Features/ScenariosAchievements/`), адаптеры к игре и UI — рядом (`Integration/`, `UI/`, `Content/`).
 
 ### ScenariosFeature (точка входа)
 
@@ -1193,7 +1193,7 @@ sequenceDiagram
 
 ## Testing Strategy
 
-### Юнит-тесты (мини-раннер, `mod/tests/PTMod.Tests/ScenariosAchievements/`, без Unity; запуск `python mod/build.py --tests`; каждый публичный тип `Features/ScenariosAchievements/Logic` указан в `[Covers]`)
+### Юнит-тесты (мини-раннер, `mod/tests/PTMod.Tests/Features/ScenariosAchievements/`, без Unity; запуск `python mod/build.py --tests`; каждый публичный тип `Features/ScenariosAchievements/Logic` указан в `[Covers]`)
 - `ContentValidatorTests`: каждый пункт Validation Rules; 8 стандартных сценариев, `challenges.json`, `achievements.json` проходят; неизвестный канал (`IsKnownChannel`) отклоняется; условие `condition` с неизвестным предикатом отклоняется (фейковый `IValidationContext`).
 - `RollingWindowTests`: заполнение, кольцевой сдвиг, доля при нулевом знаменателе = 0, сериализация.
 - `MetricsCalculatorTests`: серии (прибыль, платёжеспособность, отрицательные дни, без упущенных, лидер IPS), `money.min`, восстановление после дефолта, `share.minSegment`.

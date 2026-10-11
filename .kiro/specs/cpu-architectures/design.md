@@ -183,7 +183,7 @@ graph LR
 | Рынок и стоимость | провайдеры `ModModifiers` стандартных каналов `market.rating.cpu`, `development.cost.design` | патчи формул делает ядро |
 | Сегмент | `Segment`, `ModSegments` | единый классификатор ядра |
 | UI | `ModUI` + `ResearchTreeUxApi` | решение 0005; общая точка расширения дерева |
-| Тесты | `mod/tests/PTMod.Tests/CpuArchitectures/` (мини-раннер .NET Framework 4.8) | чистая логика без Unity и типов игры |
+| Тесты | `mod/tests/PTMod.Tests/Features/CpuArchitectures/` (мини-раннер .NET Framework 4.8) | чистая логика без Unity и типов игры |
 
 ### Используемые сервисы PTMod.Core
 
@@ -1218,7 +1218,7 @@ sequenceDiagram
 
 ## Testing Strategy
 
-### Юнит-тесты чистой логики (`mod/tests/PTMod.Tests/CpuArchitectures/`, мини-раннер)
+### Юнит-тесты чистой логики (`mod/tests/PTMod.Tests/Features/CpuArchitectures/`, мини-раннер)
 
 Запуск — `python mod/build.py --tests`; каждый публичный тип `Features/CpuArchitectures/Logic/**` указан в `[Covers]`.
 

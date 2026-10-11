@@ -53,7 +53,7 @@ namespace PTMod.Features.BankruptcyRecovery.Logic
         /// <summary>The line ran out of time and the drawn part became a term loan.</summary>
         public const string ReasonExpired = "expired";
 
-        /// <summary>The feature was switched off and the drawn part became ordinary debt (FR-12).</summary>
+        /// <summary>The feature was switched off while something was owed (FR-12 item 4): the line was closed, and the drawn part, if any, became ordinary debt.</summary>
         public const string ReasonDisabled = "disabled";
 
         /// <summary><see cref="StateNone"/>, <see cref="StateOpen"/> or <see cref="StateClosed"/>.</summary>

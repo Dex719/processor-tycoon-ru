@@ -284,6 +284,56 @@ namespace PTMod.Tests.Features.BankruptcyRecovery
         }
 
         [Test]
+        public void Settle_AnOpenLineWithNothingDrawn_IsClosedWhenSomethingElseIsOwed_FR_12_4()
+        {
+            // FR-12 item 4: "close the loans, the line and the contract" - the line goes with them even when nothing is drawn on it
+            RecoveryRig rig = SettlementKit.OneBridgeRig();
+            rig.State.creditLine = new CreditLineData { state = CreditLineData.StateOpen, opensOn = "1975-01-01", closesOn = "1978-01-01", drawn = 0.0 };
+            var flags = new FakeSettlementFlags();
+
+            SettleResult result = Engine(rig, flags).Settle();
+
+            Assert.Equal(SettleStatus.Done, result.Status);
+            Assert.True(result.LineClosed, "the line is closed whenever something is settled");
+            Assert.Equal(CreditLineData.StateClosed, rig.State.creditLine.state);
+            Assert.Equal(CreditLineData.ReasonDisabled, rig.State.creditLine.closedReason);
+            Assert.Near(5000000.0, result.Converted, 0, "nothing was drawn, so the line adds nothing to the sum");
+            Assert.Equal("1 loan", rig.Entries("disable.convert")[0].details, "and the note names what the sum is made of: the line is not in it");
+            Assert.Equal(1, flags.GetInt(SettlementMarks.LineClosed), "the closing is marked, so the line stays closed after the switch-on");
+        }
+
+        [Test]
+        public void Settle_ALineThatWasNeverOpened_IsLeftAsItIs()
+        {
+            // a line in the state "none" is not a line yet: there is nothing to close, and the part may still open it later
+            RecoveryRig rig = SettlementKit.OneBridgeRig();
+            Assert.Equal(CreditLineData.StateNone, rig.State.creditLine.state);
+            var flags = new FakeSettlementFlags();
+
+            SettleResult result = Engine(rig, flags).Settle();
+
+            Assert.Equal(SettleStatus.Done, result.Status);
+            Assert.False(result.LineClosed);
+            Assert.Equal(CreditLineData.StateNone, rig.State.creditLine.state);
+            Assert.Equal(0, flags.GetInt(SettlementMarks.LineClosed));
+        }
+
+        [Test]
+        public void Settle_AContractThatOnlyRuns_ClosesAnOpenLineToo()
+        {
+            // the contract at its ceiling owes nothing, but it is something to settle (it is closed), and what is settled takes the line with it
+            var rig = new RecoveryRig();
+            rig.State.creditLine = new CreditLineData { state = CreditLineData.StateOpen, opensOn = "1975-01-01", closesOn = "1978-01-01", drawn = 0.0 };
+            rig.State.investorShare = new InvestorShareData { active = true, amount = 1000000.0, share = 0.3, monthsLeft = 10, paid = 3000000.0, cap = 3000000.0 };
+
+            SettleResult result = Engine(rig).Settle();
+
+            Assert.True(result.InvestorClosed);
+            Assert.True(result.LineClosed);
+            Assert.Equal(CreditLineData.StateClosed, rig.State.creditLine.state);
+        }
+
+        [Test]
         public void Settle_TheLineThatWasClosedBefore_KeepsItsReason()
         {
             RecoveryRig rig = SettlementKit.OneBridgeRig();

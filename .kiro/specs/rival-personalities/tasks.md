@@ -18,7 +18,7 @@
 Порядок такой: сначала чистая логика и контент (тестируются без игры), потом патчи поведения ИИ, потом отношение и триггеры, потом реакции через `event-system`, в конце UI, API и надёжность. Каждая задача — 2–4 часа, оставляет сборку зелёной и не ломает игру при выключенной фиче. Задачи TSK-028…TSK-030 добавлены в v0.2 (видимость характеров, туманность, осторожность ИИ), их номера идут после TSK-027, чтобы не менять существующую нумерацию.
 
 ### Implementation Strategy
-- Чистые классы (`*Math`, `ShareCalculator`, `CharacterVisibility`, `IntelFog`, `CautionMath`, валидатор) — без `UnityEngine`, в `mod/src/PTMod/Features/RivalPersonalities/Logic/`. Тесты — мини-раннер .NET Framework 4.8 в `mod/tests/PTMod.Tests/RivalPersonalities/` (`python mod/build.py --tests`, атрибуты `[Test]`, `[Covers(typeof(X))]`); каждый публичный тип `Logic` указан в `[Covers]`. Код `Logic` — общее подмножество API .NET Framework 4.8 и mscorlib Unity (без `init`, `record`, `Index`, `Range`).
+- Чистые классы (`*Math`, `ShareCalculator`, `CharacterVisibility`, `IntelFog`, `CautionMath`, валидатор) — без `UnityEngine`, в `mod/src/PTMod/Features/RivalPersonalities/Logic/`. Тесты — мини-раннер .NET Framework 4.8 в `mod/tests/PTMod.Tests/Features/RivalPersonalities/` (`python mod/build.py --tests`, атрибуты `[Test]`, `[Covers(typeof(X))]`); каждый публичный тип `Logic` указан в `[Covers]`. Код `Logic` — общее подмножество API .NET Framework 4.8 и mscorlib Unity (без `init`, `record`, `Index`, `Range`).
 - Патчи — только через `ModHooks`, тело под `ModHooks.Guard`. Каждую цель задача добавляет в самопроверку. **Патчей на `Company.AddCpu` и `AICompany.AddCpu` нет** (ядро отклонит): выпуск CPU берётся из `ModEvents.CpuReleased`. Своего классификатора сегмента и счётчиков ошибок нет.
 - Числа баланса — только в `mod/src/PTMod/Content/rival-personalities/*.json`.
 - До готовности `event-system` реакции отключены флагом (`GateResult.NoEventSystem`). Поведение, отношение и панель работают раньше.
@@ -35,7 +35,7 @@
   - **Requirement**: FR-10
   - **Deliverables**:
     - `mod/src/PTMod/Features/RivalPersonalities/RivalPersonalitiesFeature.cs`
-    - `mod/src/PTMod/Features/RivalPersonalities/State/RivalState.cs`
+    - `mod/src/PTMod/Features/RivalPersonalities/Logic/State/RivalState.cs`
     - `mod/src/PTMod/Features/RivalPersonalities/State/RivalSaveAdapter.cs` (`IModSaveParticipant`)
   - **Acceptance**:
     - `[ModFeature] sealed class RivalPersonalitiesFeature : IModFeature`: `Id` = `rival-personalities`, `NameKey`/`DescriptionKey` (`rival.feature.name`/`rival.feature.desc`), `DependsOn` пуст (мягкие связи не включаются), `EnabledByDefault` и `SupportsHotToggle` = true. Всё остальное идёт через `FeatureContext` (`ctx.Patch`, `ctx.OnTick`, `ctx.SaveParticipant`, `ctx.Param`, `ctx.HubPage`); прямых подписок на `DateController`, `Player.OnNewGame` и `SaveHandler` нет.
@@ -47,9 +47,9 @@
 - [x] **TSK-002**: DTO контента и валидатор (авто 2026-10-10)
   - **Requirement**: FR-1, FR-2
   - **Deliverables**:
-    - `mod/src/PTMod/Features/RivalPersonalities/Content/ArchetypeModels.cs`
-    - `mod/src/PTMod/Features/RivalPersonalities/Content/ArchetypeCatalog.cs`
-    - `mod/tests/PTMod.Tests/RivalPersonalities/ContentValidationTests.cs`
+    - `mod/src/PTMod/Features/RivalPersonalities/Logic/Content/ArchetypeModels.cs`
+    - `mod/src/PTMod/Features/RivalPersonalities/Logic/Content/ArchetypeCatalog.cs`
+    - `mod/tests/PTMod.Tests/Features/RivalPersonalities/ContentValidationTests.cs`
   - **Acceptance**:
     - `ArchetypeCatalog.Validate` пропускает запись без `id`, клипует `approvalBias`/`researchFundingMult`/`launchPriceMult` к диапазонам 0.8–1.3 / 0.7–1.3 / 0.85–1.15 с предупреждением, отбрасывает неизвестные типы реакций и триггеров, принимает `negotiationDiscount` (bool) и `flawResponseBias` (каждый 0.5–2.0).
     - Назначение на несуществующий архетип даёт `conservative`; запись назначения без `key` — предупреждение.
@@ -72,7 +72,7 @@
   - **Requirement**: FR-4
   - **Deliverables**:
     - `mod/src/PTMod/Features/RivalPersonalities/Logic/AttitudeMath.cs`
-    - `mod/tests/PTMod.Tests/RivalPersonalities/AttitudeMathTests.cs`
+    - `mod/tests/PTMod.Tests/Features/RivalPersonalities/AttitudeMathTests.cs`
   - **Acceptance**: тесты покрывают:
     - клип ±100;
     - дрейф 10 % (−40 → −36);
@@ -86,7 +86,7 @@
   - **Requirement**: FR-6
   - **Deliverables**:
     - `mod/src/PTMod/Features/RivalPersonalities/Logic/ReactionMath.cs`
-    - `mod/tests/PTMod.Tests/RivalPersonalities/ReactionMathTests.cs`
+    - `mod/tests/PTMod.Tests/Features/RivalPersonalities/ReactionMathTests.cs`
   - **Acceptance**:
     - `Chance(0.40, −50, сложность 2)` = 0.60; клип 0.9; множители сложности [0.4…1.6].
     - Тест на каждый `GateResult` (`GracePeriod`, `Cooldown`, `ConcurrentCap`, `YearlyCap`, `AttitudeTooHigh`, `SameTypeActive`, `Bankrupt`, `Dormant`, `NoEventSystem`), включая `anyAttitude`.
@@ -96,7 +96,7 @@
   - **Requirement**: FR-5
   - **Deliverables**:
     - `mod/src/PTMod/Features/RivalPersonalities/Logic/ShareCalculator.cs`
-    - `mod/tests/PTMod.Tests/RivalPersonalities/ShareCalculatorTests.cs`
+    - `mod/tests/PTMod.Tests/Features/RivalPersonalities/ShareCalculatorTests.cs`
   - **Acceptance**:
     - Пустой месяц даёт доли 0 без деления на ноль.
     - Сумма долей по сегменту = 1 ± 1e-5; индекс сегмента массива = `(int)Segment`.
@@ -139,8 +139,8 @@
     - `mod/src/PTMod/Features/RivalPersonalities/Behaviour/MarketPatches.cs` (prefix/postfix `AIBehaviourMarket.OnTick`)
     - `mod/src/PTMod/Features/RivalPersonalities/Behaviour/PriceBook.cs`
     - `mod/src/PTMod/Features/RivalPersonalities/Logic/PriceCutMath.cs`
-    - `mod/tests/PTMod.Tests/RivalPersonalities/PriceCutMathTests.cs`
-    - `mod/tests/PTMod.Tests/RivalPersonalities/PriceBookTests.cs`
+    - `mod/tests/PTMod.Tests/Features/RivalPersonalities/PriceCutMathTests.cs`
+    - `mod/tests/PTMod.Tests/Features/RivalPersonalities/PriceBookTests.cs`
   - **Acceptance**:
     - Новый CPU ИИ получает `TargetPrice = Price = max(TP × launchPriceMult, RealUnitCost × 1.05)`.
     - `PriceCutMath`: 239/120/0.15/0.08 → 203.15.
@@ -155,7 +155,7 @@
 - [x] **TSK-010**: Учёт отношения (авто 2026-10-10)
   - **Requirement**: FR-4, FR-10
   - **Deliverables**:
-    - `mod/src/PTMod/Features/RivalPersonalities/Attitude/AttitudeLedger.cs`
+    - `mod/src/PTMod/Features/RivalPersonalities/Logic/Attitude/AttitudeLedger.cs`
   - **Acceptance**:
     - Начальное значение = baseline архетипа.
     - `Change` применяет sensitivity и клип, хранит 20 последних записей, поднимает `LevelChanged` и `ModNotify` при смене уровня.
@@ -234,7 +234,7 @@
     - `mod/src/PTMod/Features/RivalPersonalities/Reactions/Effects/RivalPoachCounterOfferHandler.cs`
     - `mod/src/PTMod/Features/RivalPersonalities/Reactions/Effects/RivalResearchBoostHandler.cs`
     - `mod/src/PTMod/Features/RivalPersonalities/Logic/PoachMath.cs`
-    - `mod/tests/PTMod.Tests/RivalPersonalities/PoachMathTests.cs`
+    - `mod/tests/PTMod.Tests/Features/RivalPersonalities/PoachMathTests.cs`
     - событие `rival.smear` в `events.json` и текст письма `rival.mail.intel.smear`
   - **Acceptance**:
     - `rival.oemPush` (цель `ai:N`) даёт сопернику `contract.signChance` × 1.5 на 365 дней (стандартный `ModifierTimed`, `scope: Target`, причина `rival.reason.oemPush`).
@@ -258,7 +258,7 @@
   - **Requirement**: FR-11 (п. 2–4)
   - **Deliverables**:
     - `mod/src/PTMod/Features/RivalPersonalities/Logic/CharacterVisibility.cs`
-    - `mod/tests/PTMod.Tests/RivalPersonalities/CharacterVisibilityTests.cs`
+    - `mod/tests/PTMod.Tests/Features/RivalPersonalities/CharacterVisibilityTests.cs`
     - правки `PersonalityRegistry.cs` (`IsRevealed`, `Reveal`) и `RivalState.revealed`
   - **Acceptance**:
     - `IsVisible`: режим «Скрытые» выключен → виден; включён → скрыт без реакции и при отношении < 20; виден после первой начатой реакции или при отношении ≥ 20.
@@ -275,7 +275,7 @@
       - prefix + finalizer `ContractNegotiationWindow.UpdateScores`;
       - постфиксы `AIMath.GetProviderScores` и `AIMath.GetClientScores`.
     - `mod/src/PTMod/Features/RivalPersonalities/Negotiation/NegotiationScope.cs`
-    - `mod/tests/PTMod.Tests/RivalPersonalities/NegotiationScopeTests.cs`
+    - `mod/tests/PTMod.Tests/Features/RivalPersonalities/NegotiationScopeTests.cs`
   - **Acceptance**:
     - Вне scope очки не меняются (ИИ-ИИ сделки ванильные).
     - В scope `Interest` ИИ-стороны += `round(a/5)`; −1000 сохраняется.
@@ -300,7 +300,7 @@
   - **Requirement**: FR-16, FR-9
   - **Deliverables**:
     - `mod/src/PTMod/Features/RivalPersonalities/Logic/IntelFog.cs`
-    - `mod/tests/PTMod.Tests/RivalPersonalities/IntelFogTests.cs`
+    - `mod/tests/PTMod.Tests/Features/RivalPersonalities/IntelFogTests.cs`
     - правки `IntelWindow.cs` (параметр `intelFog`, строка «Осторожен после брака до …»)
   - **Acceptance**:
     - При включённой туманности доля округлена до 5 п. п. («≈ 15 %» для 17.3 %), `Ips` — до двух значащих цифр («≈ 120» для 123); при выключенной — точные значения.
@@ -312,8 +312,8 @@
 - [x] **TSK-019**: Строки ru/en (авто 2026-10-10)
   - **Requirement**: NFR-4, FR-7, FR-9
   - **Deliverables**:
-    - `mod/src/PTMod/L10n/ru.json` (ключи `rival.*`)
-    - `mod/src/PTMod/L10n/en.json` (ключи `rival.*`)
+    - `mod/src/PTMod/L10n/ru/rival-personalities.json` (ключи `rival.*`)
+    - `mod/src/PTMod/L10n/en/rival-personalities.json` (ключи `rival.*`)
   - **Acceptance**:
     - Все ключи из design.md и кода есть в обоих файлах (включая `rival.feature.*`, `rival.window.unknownCharacter`, `rival.notify.revealed`, `rival.mail.intel.smear`, `rival.reason.*`).
     - Тест сверяет набор ключей `rival.*` в ru и en и находит ключи, используемые в коде и контенте, но отсутствующие в таблицах; ключи начинаются с `rival.` (`ModIds.IsL10nKeyAllowed`).
@@ -326,10 +326,10 @@
   - **Deliverables**:
     - `mod/src/PTMod/Features/RivalPersonalities/Api/IRivalPersonalitiesApi.cs`
     - `mod/src/PTMod/Features/RivalPersonalities/Api/RivalPersonalitiesApi.cs`
-    - `mod/src/PTMod/Features/RivalPersonalities/Api/RivalConditions.cs`
-    - `mod/src/PTMod/Features/RivalPersonalities/Api/FlawResponseBias.cs`
+    - `mod/src/PTMod/Features/RivalPersonalities/Integration/RivalConditions.cs`
+    - `mod/src/PTMod/Features/RivalPersonalities/Integration/FlawResponseBias.cs`
     - `mod/src/PTMod/Features/RivalPersonalities/Integration/FlawLink.cs` (регистрация множителей)
-    - `mod/tests/PTMod.Tests/RivalPersonalities/FlawBiasTests.cs`
+    - `mod/tests/PTMod.Tests/Features/RivalPersonalities/FlawBiasTests.cs`
   - **Acceptance**:
     - `GetAttitude`/`GetArchetypeId` возвращают `null` для игрока.
     - `SetDormant(true)` снимает модификации поведения, возвращает цены под ударами и отменяет запланированные реакции компании.
@@ -341,8 +341,8 @@
 - [x] **TSK-021**: Случайные назначения характеров (авто 2026-10-10)
   - **Requirement**: FR-11 (п. 1, Could)
   - **Deliverables**:
-    - `mod/src/PTMod/Features/RivalPersonalities/Behaviour/RandomAssignment.cs`
-    - `mod/tests/PTMod.Tests/RivalPersonalities/RandomAssignmentTests.cs`
+    - `mod/src/PTMod/Features/RivalPersonalities/Logic/Behaviour/RandomAssignment.cs`
+    - `mod/tests/PTMod.Tests/Features/RivalPersonalities/RandomAssignmentTests.cs`
   - **Acceptance**:
     - В режиме «Случайные» (`randomCharacters`) назначение выполняется на `TickPhase.FastForwardEnded`: литейщики — `foundry_partner`, остальные архетипы — не более чем у 3 компаний; результат детерминирован `ModRandom` (поток `rival-personalities/assign`) и сохраняется.
     - Смена режима посреди партии назначений не перераспределяет.
@@ -361,7 +361,7 @@
   - **Deliverables**:
     - `mod/src/PTMod/Features/RivalPersonalities/Events/RivalEventChooser.cs`
     - поле `eventStyle` в `archetypes.json`
-    - `mod/tests/PTMod.Tests/RivalPersonalities/EventChooserTests.cs`
+    - `mod/tests/PTMod.Tests/Features/RivalPersonalities/EventChooserTests.cs`
   - **Acceptance**:
     - `EventAi.AddChooser(chooser, 100)` вызывается при регистрации, если `event-system` доступна; `Choose(..., IModRng rng)`.
     - Для игрока и `neutral` — `null` (решает следующий выбирающий или политика по умолчанию).
@@ -374,7 +374,7 @@
   - **Requirement**: FR-15
   - **Deliverables**:
     - `mod/src/PTMod/Features/RivalPersonalities/Integration/AcquisitionLink.cs`
-    - `mod/tests/PTMod.Tests/RivalPersonalities/AcquisitionLinkTests.cs`
+    - `mod/tests/PTMod.Tests/Features/RivalPersonalities/AcquisitionLinkTests.cs`
   - **Acceptance**:
     - Провайдер канала `acquisition.price` (`1 + max(0, −a)/200`, причина `rival.reason.acquisitionPrice`) регистрируется один раз в `Register` (ленивое связывание, порядок с `rival-acquisitions` не важен) и не пересоздаётся при `OnEnabled`/`OnDisabled`.
     - Подписка на `RivalAcquisitionsApi.DealCompleted` ставится на `GameReady` при активной `rival-acquisitions`: сделка с `DealRecord.type` = `Hostile` даёт −10 × sensitivity остальным соперникам, выведенная или переданная цель (`targetUniqueId`) — `SetDormant(true)`.
@@ -388,7 +388,7 @@
     - `mod/src/PTMod/Features/RivalPersonalities/Behaviour/CautionPatch.cs` (постфикс `AIBehaviourCreation.AcceptableFailureRate`, `Optional`)
     - `mod/src/PTMod/Features/RivalPersonalities/Logic/CautionMath.cs`
     - `mod/src/PTMod/Features/RivalPersonalities/Integration/FlawLink.cs` (подписка на `FlawRegistry.OnFlawStateChanged`, расширение TSK-020)
-    - `mod/tests/PTMod.Tests/RivalPersonalities/CautionMathTests.cs`
+    - `mod/tests/PTMod.Tests/Features/RivalPersonalities/CautionMathTests.cs`
   - **Acceptance**:
     - Публичный брак `Major`/`Critical` у ИИ-компании создаёт запись `cautions {uid, flawId, until}` на `flawCaution.months` (24) месяцев один раз на запись брака.
     - Пока запись действует, `AcceptableFailureRate` этой компании × `flawCaution.factor` (0.85); без записи, при выключенной `design-flaw-recalls`, банкротстве, спящем режиме и в перемотке — исходное значение.
@@ -401,8 +401,8 @@
 - [x] **TSK-023**: Выключение посреди партии, старые сейвы, миграция (авто 2026-10-10)
   - **Requirement**: FR-10, NFR-3
   - **Deliverables**:
-    - `mod/src/PTMod/Features/RivalPersonalities/State/RivalStateMigrations.cs`
-    - `mod/tests/PTMod.Tests/RivalPersonalities/RivalStateSerializationTests.cs`
+    - `mod/src/PTMod/Features/RivalPersonalities/Logic/State/RivalStateMigrations.cs`
+    - `mod/tests/PTMod.Tests/Features/RivalPersonalities/RivalStateSerializationTests.cs`
   - **Acceptance**:
     - `OnDisabled` возвращает цены и параметры дизайнеров, снимает бусты поведения и `FlawLink`; записи `ModModifiers` не удаляются и не пересоздаются (ядро хранит, но не применяет; срок сохраняется).
     - Повторное включение продолжает состояние.

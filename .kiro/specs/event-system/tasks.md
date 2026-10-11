@@ -15,7 +15,7 @@
 
 ## Implementation Overview
 
-Сначала строится чистая логика без Unity: модель контента, планировщик, эффекты, таймеры, сохранение. Она покрывается тестами в `mod/tests/PTMod.Tests/EventSystem/` (свой мини-раннер .NET Framework 4.8, `python mod/build.py --tests`). Затем подключаются сервисы `PTMod.Core` (`ModTicks`, `ModSave`, `ModModifiers`, `ModMail`, `ModUI`, `ModConditions`, `ModCompanies`, `ModCredit`) и UI. В конце — стартовый контент, самопроверка, замер производительности и ручная проверка владельцем.
+Сначала строится чистая логика без Unity: модель контента, планировщик, эффекты, таймеры, сохранение. Она покрывается тестами в `mod/tests/PTMod.Tests/Features/EventSystem/` (свой мини-раннер .NET Framework 4.8, `python mod/build.py --tests`). Затем подключаются сервисы `PTMod.Core` (`ModTicks`, `ModSave`, `ModModifiers`, `ModMail`, `ModUI`, `ModConditions`, `ModCompanies`, `ModCredit`) и UI. В конце — стартовый контент, самопроверка, замер производительности и ручная проверка владельцем.
 
 ### Implementation Strategy
 
@@ -37,18 +37,18 @@
 - [x] **TSK-001**: Модель контента и адаптер параметров (авто 2026-10-10)
   - **Requirement**: FR-1, FR-6
   - **Deliverables**:
-    - `mod/src/PTMod/Features/EventSystem/Model/EventDefinition.cs`: `EventDefinition` (`IContentRecord`), `EventTrigger`, `EventTargetSpec`, `EventChoice`, `EventEffect`, перечисления;
-    - `mod/src/PTMod/Features/EventSystem/Model/EffectParams.cs`: `IEffectParams`, `FloatRange`, адаптер над `JsonObject`;
-    - `mod/src/PTMod/Features/EventSystem/Model/DefinitionMapper.cs`: `JsonObject` → `EventDefinition`, условия через `ModConditions.Parse`.
+    - `mod/src/PTMod/Features/EventSystem/Api/Model/EventDefinition.cs`: `EventDefinition` (`IContentRecord`), `EventTrigger`, `EventTargetSpec`, `EventChoice`, `EventEffect`, перечисления;
+    - `mod/src/PTMod/Features/EventSystem/Logic/Model/EffectParams.cs`: `IEffectParams`, `FloatRange`, адаптер над `JsonObject`;
+    - `mod/src/PTMod/Features/EventSystem/Logic/Model/DefinitionMapper.cs`: `JsonObject` → `EventDefinition`, условия через `ModConditions.Parse`.
   - **Acceptance**: типы компилируются `csc` (общее подмножество API .NET Framework 4.8 в `Logic`); `IEffectParams.GetRange` принимает число и пару `[lo, hi]`; тексты — `PTMod.Core.LocText`; имена соответствуют контракту из `design.md`
   - **Depends**: mod-framework/TSK-009, mod-framework/TSK-010 (`ModJson`), mod-framework/TSK-019 (`ModConditions.Parse`), mod-framework/TSK-067 (мини-раннер тестов)
 
-- [ ] **TSK-002**: Реестр паков и валидатор контента
+- [x] **TSK-002**: Реестр паков и валидатор контента (авто 2026-10-11)
   - **Requirement**: FR-1, NFR-2
   - **Deliverables**:
-    - `mod/src/PTMod/Features/EventSystem/Content/EventRegistry.cs` (`RegisterPack`, `Get`, `All`, индекс категорий; `PackOptions` с `SettingsFeatureId`, `Frequency`, `Severity`, `EventsFile`, `RivalNewsTopN`);
-    - `mod/src/PTMod/Features/EventSystem/Content/ContentValidator.cs` (в том числе `ModIds.IsEventIdAllowed` для префикса пака);
-    - `mod/src/PTMod/Features/EventSystem/Content/EventConfig.cs` (`config.json` каждого пака через `ModContent.LoadConfig`: категории, `channelLimits`, `maxPendingChoices`, `logLimit`; слияние пределов — самый узкий).
+    - `mod/src/PTMod/Features/EventSystem/Api/EventRegistry.cs` (`RegisterPack`, `Get`, `All`, индекс категорий; `PackOptions` с `SettingsFeatureId`, `Frequency`, `Severity`, `EventsFile`, `RivalNewsTopN`);
+    - `mod/src/PTMod/Features/EventSystem/Logic/Content/ContentValidator.cs` (в том числе `ModIds.IsEventIdAllowed` для префикса пака);
+    - `mod/src/PTMod/Features/EventSystem/Logic/Content/EventConfig.cs` (`config.json` каждого пака через `ModContent.LoadConfig`: категории, `channelLimits`, `maxPendingChoices`, `logLimit`; слияние пределов — самый узкий).
   - **Acceptance**:
     - записи грузятся через `ModContent.LoadRecords` один раз, на первом `ModTicks.GameReady` после `Register` всех фич; файл событий пака — `PackOptions.EventsFile` (по умолчанию `events`);
     - битая запись пропускается с `ModLog.Warn` «skip '<id>': <причина>»;
@@ -57,15 +57,11 @@
     - переопределение из `PTMod/content/<pack>/` подхватывается;
     - категории и пределы из конфигов нескольких паков сливаются.
   - **Depends**: TSK-001; mod-framework/TSK-015, mod-framework/TSK-021 (`ModContent`, `ModLog`), mod-framework/TSK-043 (`core.json`, таблица префиксов), mod-framework/TSK-066 (`ModIds`)
-  - **Частично** (авто 2026-10-10, кусок 1; задача не закрыта, потому что класса `EventSystemFeature` ещё нет — это TSK-006): хранилище паков, загрузка, валидатор и `config.json` готовы и проверены тестами
-    (`PackCatalog`, `ContentValidator`, `StandardEffectRules`, `EventConfig`; склейка с `ModContent`, `ModConditions` и `ModModifiers` — `Content/CoreContentSource`, `CoreContentEnvironment`, `GamePackCatalog`).
-    **Осталось подключить** в `EventSystemFeature.Register` (TSK-006) и в реализации `IEventSystemApi` (TSK-014): `GamePackCatalog.Create(…)` → `new PackLoader(catalog)`; подписать `loader.OnGameReady` на
-    `ModTicks.GameReady`, вызывать `loader.EnsureLoaded()` из `OnEnabled`; `IEventSystemApi.RegisterPack` / `GetDefinition` / `GetDefinitions` отдать `catalog.RegisterPack` / `Get` / `All`
-    (категории для планировщика — `catalog.InCategory(id)`, темп и пределы каналов — `catalog.Config`).
+  - **Закрыто** (авто 2026-10-11): склейка сделана в TSK-006 и TSK-014. `EventEngine` создаёт `GamePackCatalog.Create(…)` и `PackLoader`; `EventSystemFeature.SubscribeCoreEvents` подписывает `EventEngine.OnGameReady` на `ModTicks.GameReady`, `LoadPacks` (`PackLoader.EnsureLoaded`) вызывается из `OnEnabled`; `IEventSystemApi.RegisterPack` / `GetDefinition` / `GetDefinitions` делегируются через `EventEngine` в `PackCatalog` (`Api/EventSystemApi.cs`).
 
 - [x] **TSK-003**: Тесты загрузчика и валидатора (авто 2026-10-10)
   - **Requirement**: FR-1
-  - **Deliverables**: `mod/tests/PTMod.Tests/EventSystem/ContentValidatorTests.cs`, фикстуры `mod/tests/PTMod.Tests/EventSystem/Fixtures/*.json`
+  - **Deliverables**: `mod/tests/PTMod.Tests/Features/EventSystem/ContentValidatorTests.cs`, фикстуры `mod/tests/PTMod.Tests/Features/EventSystem/Fixtures/*.json`
   - **Acceptance**: AC-1.1, AC-1.2, AC-1.4 воспроизведены тестами; дубликат `id`, неизвестный канал, `defaultChoice` с `requires`, Σ шансов группы > 1, предикат без префикса — каждый случай отдельным тестом, все зелёные; публичные типы указаны в `[Covers]`
   - **Depends**: TSK-002; mod-framework/TSK-067
 
@@ -74,7 +70,7 @@
 - [x] **TSK-004**: Игровой фасад и каталог компаний (авто 2026-10-10)
   - **Requirement**: FR-3, NFR-1
   - **Deliverables**:
-    - `mod/src/PTMod/Features/EventSystem/Game/IGameFacade.cs`;
+    - `mod/src/PTMod/Features/EventSystem/Api/EventContext.cs`;
     - `mod/src/PTMod/Features/EventSystem/Game/GameFacade.cs` (`InflationHandler.Instance.Inflation`, `CompanyFinance.QuarterlyRevenue` с защитой `Reports.Count < 3`, `MarketDataProvider.MarketShare` и `IsTopByMarketShare`, `CpuDataProvider.GetAllCpus`, `ResearchSector.TechnologyAsResearch`, `ModTicks.Today` → номер дня, `ModCredit.ThresholdOf` → `DefaultThreshold`, `ModTicks.IsBatchRun` → `InBatch`);
     - `mod/src/PTMod/Features/EventSystem/Game/CompanyDirectory.cs` (обёртка над `ModCompanies.All` / `KeyOf` / `Resolve`).
   - **Acceptance**: фасад не бросает при `Reports.Count < 3` (возвращает 0); каталог исключает банкротов; нет вызовов `DataFinder.FindAllCompanies`; `IsTopByMarketShare` считает только ИИ (игрок не входит в рейтинг)
@@ -82,13 +78,13 @@
 
 - [x] **TSK-005**: Условия событий (авто 2026-10-10)
   - **Requirement**: FR-2, FR-6
-  - **Deliverables**: `mod/src/PTMod/Features/EventSystem/Conditions/EventConditions.cs` (фасад `Register` / `Parse` / `Evaluate` над `ModConditions`), `BuiltinPredicates.cs` (`es.eventFired`, `es.choiceMade`, `es.eventFlag`, `es.activeInCategory` со `scope` = `subject` | `any`, `es.hasRevenueHistory`, `es.hasFab`)
+  - **Deliverables**: `mod/src/PTMod/Features/EventSystem/Api/EventConditions.cs` (фасад `Register` / `Parse` / `Evaluate` над `ModConditions`), `mod/src/PTMod/Features/EventSystem/Logic/Conditions/BuiltinPredicates.cs` (`es.eventFired`, `es.choiceMade`, `es.eventFlag`, `es.activeInCategory` со `scope` = `subject` | `any`, `es.hasRevenueHistory`, `es.hasFab`)
   - **Acceptance**: предикаты регистрируются в `ModConditions` с владельцем `event-system` и именами `es.*`; подлежащее — компания-цель; `es.activeInCategory` с `scope: "any"` видит ожидающие выборы и активные эффекты любой компании и глобальные эффекты категории (AC-6.5); синтаксис `all` / `any` / `not` работает в `conditions`, `filter`, `requires`; неизвестный тип — ошибка валидации записи; регистрация без префикса отклоняется
   - **Depends**: TSK-004; mod-framework/TSK-019, mod-framework/TSK-032 (`ModConditions`), mod-framework/TSK-066 (`ModIds`)
 
 - [x] **TSK-006**: Фича, планировщик дня и триггеры (авто 2026-10-10)
   - **Requirement**: FR-1, FR-2
-  - **Deliverables**: `mod/src/PTMod/Features/EventSystem/EventSystemFeature.cs` (`[ModFeature]`, `Id = "event-system"`, `NameKey` / `DescriptionKey`, `DependsOn` пуст, `EnabledByDefault = true`, `SupportsHotToggle = true`, `Register(FeatureContext)` по списку из `design.md`: `ctx.SaveParticipant`, `ctx.OnTick(TickPhase.DayPassed, …)`, `ctx.Param`, `ctx.HubPage`, регистрация API, подписки на `ModTicks.GameReady`, `ModTicks.BatchEnded`, `ModMail.Delivered`, `ModFeatures.StateChanged`), `mod/src/PTMod/Features/EventSystem/Scheduling/EventScheduler.cs`, `Pacing.cs`
+  - **Deliverables**: `mod/src/PTMod/Features/EventSystem/EventSystemFeature.cs` (`[ModFeature]`, `Id = "event-system"`, `NameKey` / `DescriptionKey`, `DependsOn` пуст, `EnabledByDefault = true`, `SupportsHotToggle = true`, `Register(FeatureContext)` по списку из `design.md`: `ctx.SaveParticipant`, `ctx.OnTick(TickPhase.DayPassed, …)`, `ctx.Param`, `ctx.HubPage`, регистрация API, подписки на `ModTicks.GameReady`, `ModTicks.BatchEnded`, `ModMail.Delivered`, `ModFeatures.StateChanged`), `mod/src/PTMod/Features/EventSystem/Logic/Scheduling/EventScheduler.cs`, `Pacing.cs`
   - **Acceptance**:
     - порядок шагов дня — как в FR-2.1;
     - `Date` с `graceDays`, `Condition` (уровень, фронт, `checkEvery`), `Manual`;
@@ -100,19 +96,19 @@
 
 - [x] **TSK-007**: Выбор целей и групп (авто 2026-10-10)
   - **Requirement**: FR-3
-  - **Deliverables**: `mod/src/PTMod/Features/EventSystem/Scheduling/TargetSelector.cs`
+  - **Deliverables**: `mod/src/PTMod/Features/EventSystem/Logic/Scheduling/TargetSelector.cs`
   - **Acceptance**: `Player`, `RandomAI`, `RandomCompany`, `AllCompanies` (одна группа, глобальные эффекты один раз), `Specific` (пропуск без расхода отката); веса `Uniform` / `FactoryCapacity` / `MarketShare` / `QuarterlyRevenue` по формулам `design.md`; правила одинаковы для игрока и ИИ
   - **Depends**: TSK-004, TSK-005
 
 - [x] **TSK-008**: Детерминированные потоки ГСЧ (авто 2026-10-10)
   - **Requirement**: FR-9
-  - **Deliverables**: `mod/src/PTMod/Features/EventSystem/Scheduling/EventRandom.cs` (дневной поток `ModRandom.Stream("event-system/daily")`; `DerivedRng : IModRng` — xoshiro128** с сидом `hash32(ModRandom.WorldSeed, ключ)`)
+  - **Deliverables**: `mod/src/PTMod/Features/EventSystem/Logic/Scheduling/EventRandom.cs` (дневной поток `ModRandom.Stream("event-system/daily")`; `DerivedRng : IModRng` — xoshiro128** с сидом `hash32(ModRandom.WorldSeed, ключ)`)
   - **Acceptance**: лотерея категории всегда берёт 3 числа; производные генераторы с одним сидом дают одну последовательность; в коде фичи нет `UnityEngine.Random` и `System.Random` (проверка в TSK-026)
   - **Depends**: mod-framework/TSK-012, mod-framework/TSK-025 (`ModRandom`)
 
 - [x] **TSK-009**: Тесты планировщика, целей и детерминизма (авто 2026-10-10)
   - **Requirement**: FR-2, FR-3, FR-9
-  - **Deliverables**: `mod/tests/PTMod.Tests/EventSystem/CategoryLotteryTests.cs`, `TriggerTests.cs`, `TargetSelectorTests.cs`, `DeterminismTests.cs`, `PredicateTests.cs`
+  - **Deliverables**: `mod/tests/PTMod.Tests/Features/EventSystem/CategoryLotteryTests.cs`, `TriggerTests.cs`, `TargetSelectorTests.cs`, `DeterminismTests.cs`, `PredicateTests.cs`
   - **Acceptance**: AC-2.1 (401 ± 60 на 36 500 дней), AC-2.2, AC-2.3, AC-3.1 (20 % ± 2 %), AC-3.2, AC-9.2, AC-6.5 — зелёные
   - **Depends**: TSK-006, TSK-007, TSK-008; mod-framework/TSK-067
 
@@ -120,7 +116,7 @@
 
 - [x] **TSK-010**: Резолвер и жизненный цикл эффектов (авто 2026-10-10)
   - **Requirement**: FR-5, NFR-5
-  - **Deliverables**: `mod/src/PTMod/Features/EventSystem/Effects/IEventEffectHandler.cs`, `AppliedEffect.cs`, `EffectResolver.cs`, `InstanceFactory.cs`
+  - **Deliverables**: `mod/src/PTMod/Features/EventSystem/Api/EventEffectHandlers.cs`, `mod/src/PTMod/Features/EventSystem/Api/Model/EventInstanceDto.cs` (в нём `AppliedEffect`), `mod/src/PTMod/Features/EventSystem/Logic/Effects/EffectResolver.cs`, `mod/src/PTMod/Features/EventSystem/Logic/Effects/InstanceFactory.cs`
   - **Acceptance**:
     - `Resolve` вызывается один раз на эффект при создании экземпляра (все варианты + `common`);
     - шанс и эксклюзивные группы — по формулам `design.md`;
@@ -131,7 +127,7 @@
 
 - [x] **TSK-011**: Агрегатор модификаторов и временные эффекты (авто 2026-10-10)
   - **Requirement**: FR-5, NFR-8
-  - **Deliverables**: `mod/src/PTMod/Features/EventSystem/Effects/ModifierAggregator.cs`, `Handlers/ModifierTimedEffect.cs`, `Handlers/FactoryOutputEffect.cs`, `Handlers/MarketDemandEffect.cs`
+  - **Deliverables**: `mod/src/PTMod/Features/EventSystem/Logic/Effects/ModifierAggregator.cs`, `Handlers/ModifierTimedEffect.cs`, `Handlers/FactoryOutputEffect.cs`, `Handlers/MarketDemandEffect.cs`
   - **Acceptance**:
     - `ModifierAggregator` реализует публичный `IEffectModifiers` (`Set` / `Clear` / `WasClamped` / `LimitMin` / `LimitMax`) для обработчиков паков;
     - по одному провайдеру `ModModifiers.RegisterReasonedProvider("event-system", channel, …)` на используемый канал, регистрация один раз, причина `es.reason.events` с названиями активных событий для `ModModifiers.Explain`;
@@ -143,7 +139,7 @@
 
 - [x] **TSK-012**: Разовые эффекты: деньги, популярность, репутация, исследование (авто 2026-10-10)
   - **Requirement**: FR-5, FR-12
-  - **Deliverables**: `mod/src/PTMod/Features/EventSystem/Effects/Handlers/MoneyEffect.cs`, `PopularityEffect.cs`, `ReputationEffect.cs`, `ResearchProgressEffect.cs`
+  - **Deliverables**: `mod/src/PTMod/Features/EventSystem/Logic/Effects/Handlers/MoneyEffect.cs`, `PopularityEffect.cs`, `ReputationEffect.cs`, `ResearchProgressEffect.cs`
   - **Acceptance**:
     - `Money`: формула `round_to_1000(clamp(f × QR, min × I, max × I) × s)`, вызов `ICompany.SpendMoney` / `ICompany.EarnMoney` с `origin` из параметров; `Earn` без `origin` — `RevenueOrigin.Interest`;
     - `Popularity`: ограничение [0,05; 1,0];
@@ -153,19 +149,19 @@
 
 - [x] **TSK-013**: Письма-эффекты, цепочки и флаги (авто 2026-10-10)
   - **Requirement**: FR-5, FR-6
-  - **Deliverables**: `mod/src/PTMod/Features/EventSystem/Effects/Handlers/SendMailEffect.cs`, `FireEventEffect.cs`, `mod/src/PTMod/Features/EventSystem/Scheduling/ScheduledFires.cs`, `ChainFlags.cs`
+  - **Deliverables**: `mod/src/PTMod/Features/EventSystem/Logic/Effects/Handlers/SendMailEffect.cs`, `FireEventEffect.cs`, `mod/src/PTMod/Features/EventSystem/Logic/Scheduling/ScheduledFires.cs`, `ChainFlags.cs`
   - **Acceptance**: `FireEvent` ставит срабатывание на `today + delay`; `target: Same/Player/Definition`; глубина цепочки ≤ 8; самовызов с задержкой 0 отклоняется валидатором; `SendMail` — `ModMail.Send` без вариантов, тег `es:<…>`, приоритет `Normal`
   - **Depends**: TSK-010, TSK-006; mod-framework/TSK-037, mod-framework/TSK-062 (`ModMail`)
 
 - [x] **TSK-014**: Публичный API: EventBus, EventEffects, EventAi (авто 2026-10-10)
   - **Requirement**: FR-6, NFR-6
-  - **Deliverables**: `mod/src/PTMod/Features/EventSystem/Api/EventBus.cs`, `EventEffects.cs` (вкл. `ApplyDirect`, `ICurveEffectHandler`), `EventAi.cs` (`AddChooser`, `RemoveChooser`, `IEventAiChooserFilter`), `PackOptions.cs`
+  - **Deliverables**: `mod/src/PTMod/Features/EventSystem/Api/EventBus.cs`, `EventEffects.cs` (вкл. `ApplyDirect`, `ICurveEffectHandler`), `EventAi.cs` (`AddChooser`, `RemoveChooser`, `IEventAiChooserFilter`), `mod/src/PTMod/Features/EventSystem/Api/Model/PackOptions.cs`
   - **Acceptance**: `EventBus.Fire` возвращает `Fired` / `Scheduled` / `Skipped` / `UnknownEvent` / `Disabled`; подписчики `OnEventFired`, `OnChoiceResolved`, `OnEffectExpired` изолированы `try/catch` (AC-6.2); повторная регистрация типа — предупреждение, первая остаётся; `ApplyDirect` создаёт экземпляр `Direct`, эффект сохраняется и истекает как обычный (AC-6.3); `EventAi.AddChooser` ведёт список по убыванию приоритета, первый ненулевой ответ побеждает, исключение chooser'а = `null` (AC-6.4)
   - **Depends**: TSK-006, TSK-010
 
 - [x] **TSK-015**: Тесты эффектов (авто 2026-10-10)
   - **Requirement**: FR-5, FR-6
-  - **Deliverables**: `mod/tests/PTMod.Tests/EventSystem/MoneyEffectTests.cs`, `ModifierAggregatorTests.cs`, `ChanceGroupTests.cs`, `ChainTests.cs`
+  - **Deliverables**: `mod/tests/PTMod.Tests/Features/EventSystem/MoneyEffectTests.cs`, `ModifierAggregatorTests.cs`, `ChanceGroupTests.cs`, `ChainTests.cs`
   - **Acceptance**: AC-5.1 (сумма в письме = сумма в `SpendMoney`), AC-5.2, AC-5.3, AC-5.4, AC-5.5, AC-6.1 (регистрация тестового типа), AC-6.3 (`ApplyDirect` на логике) — зелёные; пример из `design.md` (1990, QR $20M, f = 0,052 → −$1 040 000) воспроизводится; `Invalidate` вызывается на каждое изменение вклада
   - **Depends**: TSK-011, TSK-012, TSK-013, TSK-014; mod-framework/TSK-067
 
@@ -173,7 +169,7 @@
 
 - [x] **TSK-016**: Выборы, таймеры и решения ИИ (авто 2026-10-10)
   - **Requirement**: FR-4
-  - **Deliverables**: `mod/src/PTMod/Features/EventSystem/Choices/ChoiceController.cs`, `DefaultAiChooser.cs`, `ChoiceAvailability.cs` (требования варианта, порог дефолта)
+  - **Deliverables**: `mod/src/PTMod/Features/EventSystem/Logic/Choices/ChoiceController.cs`, `DefaultAiChooser.cs`, `ChoiceAvailability.cs` (требования варианта, порог дефолта)
   - **Acceptance**:
     - дедлайн от доставки письма (`max(firedDay, deliveredDay) + timerDays`, только вперёд), экземпляр с недоставленным письмом не истекает; `defaultChoice` (AC-4.1, AC-4.5);
     - предупреждение о минусе без блокировки (AC-4.2); блокировка варианта, если списание опустило бы баланс ниже `ModCredit.ThresholdOf`, `defaultChoice` не блокируется (AC-4.6);
@@ -184,7 +180,7 @@
 
 - [x] **TSK-017**: Письмо с вариантами, строка таймера, уведомления, напоминание (авто 2026-10-10)
   - **Requirement**: FR-7
-  - **Deliverables**: `mod/src/PTMod/Features/EventSystem/UI/EventUiController.cs`, `EventMailFormatter.cs`
+  - **Deliverables**: `mod/src/PTMod/Features/EventSystem/Logic/UI/EventUiController.cs`, `EventMailFormatter.cs`
   - **Acceptance**:
     - письмо: `ModMail.Send` с `Tag = "es:<instanceId>"`, `Priority` (`Critical` — выбор для игрока, `Normal` — событие без выбора, `Low` — новость об ИИ), `TimeoutDays = 0`, заголовком, причиной, вариантами с эффектами;
     - по `ModMail.Delivered` (поиск экземпляра по `Tag`, не по `mailId`): дедлайн от дня доставки и `ModMail.SetStatusLine` «Ответить до …»; затем ежедневно «Осталось N из M дн.» (AC-7.2);
@@ -206,13 +202,13 @@
 
 - [x] **TSK-019**: Журнал событий и окно журнала (авто 2026-10-10)
   - **Requirement**: FR-8
-  - **Deliverables**: `mod/src/PTMod/Features/EventSystem/Log/EventLog.cs`, `mod/src/PTMod/Features/EventSystem/UI/EventLogWindow.cs`
+  - **Deliverables**: `mod/src/PTMod/Features/EventSystem/Api/EventLog.cs`, `mod/src/PTMod/Features/EventSystem/UI/EventLogWindow.cs`
   - **Acceptance**: окно `WindowTemplate.Panel`; вкладки «История» / «Активные эффекты»; фильтр «Только моя компания»; лимит 400 (AC-8.2); перерисовка по `ModL10n.LanguageChanged`; строка из AC-8.1 совпадает по формату
   - **Depends**: TSK-010, TSK-016; mod-framework/TSK-035, mod-framework/TSK-036 (`ModUI`), mod-framework/TSK-013 (`ModL10n`)
 
 - [x] **TSK-020**: Тесты выборов и текстов (авто 2026-10-10)
   - **Requirement**: FR-4, FR-6, FR-8, NFR-5
-  - **Deliverables**: `mod/tests/PTMod.Tests/EventSystem/ChoiceTimerTests.cs`, `AiChooserTests.cs`, `DescribeTests.cs`
+  - **Deliverables**: `mod/tests/PTMod.Tests/Features/EventSystem/ChoiceTimerTests.cs`, `AiChooserTests.cs`, `DescribeTests.cs`
   - **Acceptance**: AC-4.1–AC-4.6, AC-6.4 (два chooser'а), AC-8.2, AC-13.2 (пакетный прогон не уменьшает таймер) — зелёные; дедлайн от доставки и недоставленное письмо; смена языка не меняет числа в описаниях
   - **Depends**: TSK-016, TSK-019; mod-framework/TSK-067
 
@@ -220,7 +216,7 @@
 
 - [x] **TSK-021**: Сохранение и загрузка состояния (авто 2026-10-10)
   - **Requirement**: FR-10, NFR-3
-  - **Deliverables**: `mod/src/PTMod/Features/EventSystem/Persistence/EventSystemSaveDto.cs`, `EventPersistence.cs` (`IModSaveParticipant`, `SectionId = "event-system"`, `SchemaVersion = 1`; без собственного поля версии в данных), `mod/src/PTMod/Features/EventSystem/EventRuntime.cs` (`AfterLoad`, `ResetForNewGame` по `ModTicks.GameReady`)
+  - **Deliverables**: `mod/src/PTMod/Features/EventSystem/Logic/Persistence/EventSystemSaveDto.cs`, `mod/src/PTMod/Features/EventSystem/Persistence/EventPersistence.cs` (`IModSaveParticipant`, `SectionId = "event-system"`, `SchemaVersion = 1`; без собственного поля версии в данных), `mod/src/PTMod/Features/EventSystem/Logic/Runtime/EventRuntime.cs` (`AfterLoad`, `ResetForNewGame` по `ModTicks.GameReady`)
   - **Acceptance**:
     - секция `event-system` по примеру `design.md` (без `_schema`: его пишет ядро);
     - `Read` разбирает и проверяет DTO и сбрасывает вклады прошлого сейва; в `GameReady(Loaded)`: отмена неизвестных событий (`ModMail.Resolve`, журнал) → `Restore` активных → связь с письмами по `Tag` (`ModMail.Find`) → пересчёт `SetChoiceState` / `SetStatusLine` (AC-10.3);
@@ -230,7 +226,7 @@
 
 - [x] **TSK-022**: Защиты времени и пакетный прогон (авто 2026-10-10)
   - **Requirement**: FR-13
-  - **Deliverables**: `mod/src/PTMod/Features/EventSystem/Runtime/BatchGuard.cs` (чтение `ModTicks.IsBatchRun`, сдвиг дедлайнов игрока на +1 за день прогона, очередь окон до `ModTicks.BatchEnded`), правки `ChoiceController`. Файла патча на `DateController.NextMonth` нет
+  - **Deliverables**: `mod/src/PTMod/Features/EventSystem/Logic/Runtime/BatchGuard.cs` (чтение `ModTicks.IsBatchRun`, сдвиг дедлайнов игрока на +1 за день прогона, очередь окон до `ModTicks.BatchEnded`), правки `ChoiceController`. Файла патча на `DateController.NextMonth` нет
   - **Acceptance**:
     - в перемотке и загрузке дни не обрабатываются (`ModTicks`);
     - во время `NextMonth` (`IsBatchRun`) таймеры игрока не убывают, окна откладываются до `BatchEnded`, экземпляры с недоставленным письмом не истекают;
@@ -241,7 +237,7 @@
 
 - [x] **TSK-023**: Настройки, выключение посреди игры, отладочный запуск (авто 2026-10-10)
   - **Requirement**: FR-11
-  - **Deliverables**: `mod/src/PTMod/Features/EventSystem/Settings/EventSettings.cs` (`ParamSpec`: `frequency`, `pauseAllChoices`, `rivalNews`), `mod/src/PTMod/Features/EventSystem/UI/EventSettingsPage.cs` (`FeatureContext.HubPage`), `EventRuntime.OnFeatureStateChanged`
+  - **Deliverables**: `mod/src/PTMod/Features/EventSystem/Logic/Settings/EventSettings.cs` (`ParamSpec`: `frequency`, `pauseAllChoices`, `rivalNews`), `mod/src/PTMod/Features/EventSystem/UI/EventSettingsPage.cs` (`FeatureContext.HubPage`), `EventRuntime.OnFeatureStateChanged`
   - **Acceptance**:
     - параметры из FR-11.1 в хабе «Моды», кнопка «Журнал событий»;
     - `OnDisabled` — заморозка (провайдеры и вклады не удаляются и не пересоздаются, таймеры стоят), `OnEnabled` — неистёкшие эффекты возвращаются, дедлайны выборов игрока сдвигаются на длительность выключения (AC-11.1, AC-11.3);
@@ -251,7 +247,7 @@
 
 - [x] **TSK-024**: Тесты сохранения и совместимости (авто 2026-10-10)
   - **Requirement**: FR-10, NFR-3, NFR-7
-  - **Deliverables**: `mod/tests/PTMod.Tests/EventSystem/PersistenceTests.cs`
+  - **Deliverables**: `mod/tests/PTMod.Tests/Features/EventSystem/PersistenceTests.cs`
   - **Acceptance**: сериализация туда-обратно без потерь (`ModJson`); в данных секции нет поля версии; пустая секция; неизвестное событие отменяется с записью в журнале; вручную испорченные числа (множитель 50, отрицательная длительность) отбрасываются (NFR-7); AC-10.1 на уровне логики (дедлайн и вклад восстановлены)
   - **Depends**: TSK-021; mod-framework/TSK-067
 
@@ -262,14 +258,14 @@
   - **Deliverables**:
     - `mod/src/PTMod/Content/event-system/config.json` (в том числе `channelLimits` с `popularity.gain` [0,7; 1,6]);
     - `mod/src/PTMod/Content/event-system/events.json` — 10 записей из таблицы баланса `design.md`;
-    - ключи `es.*` в `mod/src/PTMod/L10n/ru.json` и `mod/src/PTMod/L10n/en.json`;
-    - `mod/tests/PTMod.Tests/EventSystem/StarterContentTests.cs`.
+    - ключи `es.*` в `mod/src/PTMod/L10n/ru/event-system.json` и `mod/src/PTMod/L10n/en/event-system.json`;
+    - `mod/tests/PTMod.Tests/Features/EventSystem/StarterContentTests.cs`.
   - **Acceptance**: контент проходит валидатор; использованы все стандартные типы, кроме `MarketDemand`; есть выбор с таймером, шанс, эксклюзивная группа, `FireEvent`, цели `Player` / `RandomAI` / `RandomCompany`; условия — предикаты каталога ядра (`dateAtLeast`, `cpuOnMarket`, `researchActive`) и движка с префиксом (`es.hasRevenueHistory`, `es.hasFab`); ключи есть в обоих языках и начинаются с `es.`; в `market.rating.cpu` стартовый набор не пишет
   - **Depends**: TSK-002, TSK-005, TSK-011, TSK-012, TSK-013; mod-framework/TSK-066
 
 - [x] **TSK-026**: Самопроверка фичи на старте (авто 2026-10-10)
   - **Requirement**: NFR-2, NFR-4
-  - **Deliverables**: `mod/src/PTMod/Features/EventSystem/SelfCheck/EventSelfCheck.cs` (вклад в `ModSelfCheck`)
+  - **Deliverables**: `mod/src/PTMod/Features/EventSystem/Logic/SelfCheck/EventSelfCheck.cs` (вклад в `ModSelfCheck`)
   - **Acceptance**:
     - проверено: типы эффектов зарегистрированы, каналы объявлены в реестре ядра, `FireEvent` ссылается на существующие события, ID событий и предикаты соответствуют префиксам, ключи L10n есть и с верным префиксом;
     - итог одной строкой `selfcheck OK: N events, M effect types` или список проблем;
@@ -336,7 +332,7 @@ TSK-023, TSK-024, TSK-026, TSK-027 ──> TSK-028
 | Задача | Статус |
 |---|---|
 | TSK-001 Модель контента | Complete (авто 2026-10-10, кусок 1: типы модели лежат в `Api/Model` (их создал автор API: `EventDefinition`, `EventTrigger`, `EventTargetSpec`, `EventChoice`, `EventEffect`, `IEffectParams`, `FloatRange`, перечисления); сделано: `Logic/Model/EffectParams` (адаптер `IEffectParams` над `JsonObject`: пропущенный ключ, JSON null и ключ не того вида дают запасное значение, `GetRange` принимает число и пару `[lo, hi]`, `GetInt` — только целые), `Logic/Model/DefinitionMapper` (`JsonObject` → `EventDefinition`: тексты `LocText` — ключ или `{ru, en}`, условия `conditions` / `targets.filter` / `choices[].requires` через переданный разбор `ModConditions.Parse`, значения по умолчанию контракта, все ошибки записи собираются сразу, неизвестное поле — предупреждение, `disabled` и `_*` не считаются), `Logic/Model/RecordReader` (внутренний читатель полей); имена по `design.md`; `EffectParamsTests` (11), `DefinitionMapperTests` (21), `ApiModelContractTests` (9) зелёные; в тестовой сборке `Api/Model` не видна — рабочий обход `tests/PTMod.Tests/Features/EventSystem/ApiModelShim` (копии 5 файлов + тест на расхождение), см. `mod/requests/event-system.md`, п. 1) |
-| TSK-002 Реестр и валидатор | Частично (авто 2026-10-10, кусок 1: `Logic/Content/PackCatalog` (`RegisterPack` — папка без `content/`, повторный пак и небезопасное имя папки отклоняются с предупреждением, `Get`, `All`, `InCategory`, `Config`; чтение один раз в `LoadPending` в порядке id паков: сначала `config.json` всех паков, затем файлы событий через `ModContent.LoadRecords` с переопределением из `PTMod/content/<папка>/`; имя файла — `PackOptions.EventsFile`, по умолчанию `events`; битая запись пропускается со строкой `skip '<id>': <причина>`; id другого пака — дубликат; события с `FireEvent` на несуществующее событие выпадают цепочкой), `Logic/Content/ContentValidator` (префикс id по `ModIds.IsEventIdAllowed` у владельца пака, неизвестный тип эффекта и канал, категория, `Date`, `Condition`, `Specific`, варианты и таймер, `defaultChoice` не найден или с `requires`, общие параметры `scope`/`chance`/`exclusiveGroup`/`scalable`, Σ шансов группы ≤ 1, `FireEvent` на себя без задержки, ответ `IEventEffectHandler.Validate`), `Logic/Content/StandardEffectRules` (таблица параметров design.md для девяти стандартных типов), `Logic/Content/EventConfig` (`config.json` каждого пака: категории объединяются, пределы каналов — самый узкий: внутри пака побеждает самая точная запись, между паками — наибольший минимум и наименьший максимум; скаляры — наименьшее значение), `Content/event-system/config.json` по примеру design.md; `Content/CoreContentSource`, `CoreContentEnvironment`, `GamePackCatalog`, `PackLoader` (склейка с ядром, в сборке тестов не участвует); `ContentValidatorTests` (42), `StandardEffectRulesTests` (21), `EventConfigTests` (17), `PackCatalogTests` (27) зелёные; не сделано: подписка `PackLoader.OnGameReady` на `ModTicks.GameReady` и делегирование `IEventSystemApi.RegisterPack` / `GetDefinition` / `GetDefinitions` в `PackCatalog` — нужен `EventSystemFeature` (TSK-006, TSK-014); владелец префикса пака — id пака, если у него есть строка таблицы префиксов, иначе фича из `PackOptions.SettingsFeatureId`) |
+| TSK-002 Реестр и валидатор | Complete (авто 2026-10-11, кусок 1; склейка сделана в TSK-006/014: `Logic/Content/PackCatalog` (`RegisterPack` — папка без `content/`, повторный пак и небезопасное имя папки отклоняются с предупреждением, `Get`, `All`, `InCategory`, `Config`; чтение один раз в `LoadPending` в порядке id паков: сначала `config.json` всех паков, затем файлы событий через `ModContent.LoadRecords` с переопределением из `PTMod/content/<папка>/`; имя файла — `PackOptions.EventsFile`, по умолчанию `events`; битая запись пропускается со строкой `skip '<id>': <причина>`; id другого пака — дубликат; события с `FireEvent` на несуществующее событие выпадают цепочкой), `Logic/Content/ContentValidator` (префикс id по `ModIds.IsEventIdAllowed` у владельца пака, неизвестный тип эффекта и канал, категория, `Date`, `Condition`, `Specific`, варианты и таймер, `defaultChoice` не найден или с `requires`, общие параметры `scope`/`chance`/`exclusiveGroup`/`scalable`, Σ шансов группы ≤ 1, `FireEvent` на себя без задержки, ответ `IEventEffectHandler.Validate`), `Logic/Content/StandardEffectRules` (таблица параметров design.md для девяти стандартных типов), `Logic/Content/EventConfig` (`config.json` каждого пака: категории объединяются, пределы каналов — самый узкий: внутри пака побеждает самая точная запись, между паками — наибольший минимум и наименьший максимум; скаляры — наименьшее значение), `Content/event-system/config.json` по примеру design.md; `Content/CoreContentSource`, `CoreContentEnvironment`, `GamePackCatalog`, `PackLoader` (склейка с ядром, в сборке тестов не участвует); `ContentValidatorTests` (42), `StandardEffectRulesTests` (21), `EventConfigTests` (17), `PackCatalogTests` (27) зелёные; подписка `PackLoader.OnGameReady` на `ModTicks.GameReady` и `EnsureLoaded` из `OnEnabled` (`EventSystemFeature`), делегирование `IEventSystemApi.RegisterPack` / `GetDefinition` / `GetDefinitions` в `PackCatalog` через `EventEngine`; владелец префикса пака — id пака, если у него есть строка таблицы префиксов, иначе фича из `PackOptions.SettingsFeatureId`) |
 | TSK-003 Тесты валидатора | Complete (авто 2026-10-10, кусок 1: тесты лежат в `mod/tests/PTMod.Tests/Features/EventSystem/` (не в `EventSystem/` из текста задачи — так требует сборка `build_feature.py`), фикстуры в `Fixtures/`; `ContentValidatorTests` воспроизводит AC-1.1 (10 событий стартового набора грузятся без единой строки в логе), AC-1.2 (запись с `Teleport` пропущена со строкой `skip 'es.teleport': unknown effect type 'Teleport' (effects[0].type)`, остальные загружены), AC-1.3 (файл игрока заменяет встроенную запись, остальные на месте, `Replaced`/`Added` в отчёте) и AC-1.4 (`dfr.x` в паке `market-shocks` отклонён); отдельными тестами: дубликат `id` (в одном файле и между паками), неизвестный канал (в `ModifierTimed` и в типах паков), `defaultChoice` с `requires`, Σ шансов группы > 1 (и ровно 1, и 0,1 + 0,2 + 0,7), предикат без префикса (реестр отклоняет, запись с ним пропущена), множитель вне диапазона; все публичные типы `Logic` и модели указаны в `[Covers]`; `python mod/build_feature.py event-system --tests` — 1263 теста зелёные, из них 149 относятся к event-system) |
 | TSK-004 Фасад и каталог компаний | Complete (авто 2026-10-10, кусок 2: интерфейс `IGameFacade` и `CompanyRef` уже лежали в `Api/EventContext.cs`; сделано: `Game/GameFacade.cs` (`InflationHandler.Instance.Inflation`, `CompanyFinance.QuarterlyRevenue` только при `Reports.Count ≥ 3`, иначе 0, `MarketDataProvider.MarketShare`, `IsTopByMarketShare` — рейтинг только ИИ, `CpuDataProvider.GetAllCpus` с отбором выпущенных, не снятых и продающихся CPU компании, `ResearchSector.TechnologyAsResearch(CurrentResearch())`, `ModCredit.ThresholdOf` → `DefaultThreshold`, `ModTicks.Today` → номер дня от 1971-01-01, `ModTicks.IsBatchRun` → `InBatch`; каждое чтение под try/catch: отказ даёт 0 / null и одну строку в логе), `Game/CompanyDirectory.cs` (обёртка над `ModCompanies.All` / `KeyOf` / `Resolve`, банкроты исключены, список берётся из кеша ядра по номер версии набора компаний в `ModCompanies` (внутренний член); реализует `IEventWorld` для планировщика и предикатов); правила вынесены в чистую логику `Logic/Game/CompanyFacts.cs` (`CompanyFacts`, `MarketRanking`, `CompanyRoster`); `CompanyFactsTests` (5): `Reports.Count < 3` → 0 без исключения, банкроты и компании без ключа не попадают в список, игрок не входит в рейтинг по доле рынка, в исходниках фичи нет `DataFinder.FindAllCompanies` / `FindObjectsByType`) |
 | TSK-005 Условия событий | Complete (авто 2026-10-10, кусок 2: фасад `EventConditions` (`Register` / `Parse` / `Evaluate` над `ModConditions`) уже был в `Api`; сделано: `Logic/Conditions/BuiltinPredicates.cs` — `es.eventFired` (`withinDays`), `es.choiceMade`, `es.eventFlag`, `es.activeInCategory` (`scope` = `subject` по умолчанию | `any`), `es.hasRevenueHistory`, `es.hasFab` регистрируются через `ModConditions.Register` с владельцем `event-system` (в игре — в `Register` фичи), параметры проверяются при разборе условия (лишний или пропущенный параметр — ошибка записи); подлежащее — `ctx.SubjectKey` компании-цели; данные: `Logic/Conditions/EventHistory` (последнее срабатывание события по компании, сделанные выборы, флаги цепочек; сохраняется в секции) и `ActiveEventIndex` (ожидающие выборы и активные эффекты по категориям и компаниям, включая глобальные; его наполняет рантайм экземпляров — TSK-010/016); `PredicateTests` (11): AC-6.5, `es.activeInCategory` с активным и глобальным эффектом, `es.hasRevenueHistory`, `es.hasFab`, история, `all` / `any` / `not` в `conditions`, `targets.filter` и `requires` записи, неизвестный тип — запись отклонена, имя без префикса и с чужим префиксом отклоняется) |

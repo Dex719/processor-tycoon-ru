@@ -963,7 +963,7 @@ stateDiagram-v2
 
 ## Testing Strategy
 
-### Юнит-тесты (мини-раннер, `mod/tests/PTMod.Tests/FirstYearOnboarding/`, без Unity; запуск `python mod/build.py --tests`; каждый публичный тип `Logic` указан в `[Covers]`)
+### Юнит-тесты (мини-раннер, `mod/tests/PTMod.Tests/Features/FirstYearOnboarding/`, без Unity; запуск `python mod/build.py --tests`; каждый публичный тип `Logic` указан в `[Covers]`)
 - `StepCatalogTests`: корректный файл; дубликат `id`; неизвестный трек; неизвестный предикат (фейковый `IStepValidationContext`); отсутствующий ключ строки; `afterDays` вне диапазона; пустой трек → ошибка каталога; `args` вне белого списка; индекс `{n}` вне длины `args`.
 - `OnboardingMachineTests` на `FakeWorld`/`FakeOutput`:
   - полный проход трека `idm` по сценарию фейкового мира (10 писем, порядок);

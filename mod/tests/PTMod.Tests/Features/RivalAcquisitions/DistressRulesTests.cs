@@ -50,7 +50,7 @@ namespace PTMod.Tests.Features.RivalAcquisitions
         [Test]
         public void OpenAuction_RunsForTheDaysOfTheContent_WithTheCpusOfTheSnapshot()
         {
-            // AC-3.1: bankrupt on 1987-05-03, the auction runs until 03.05.1988.
+            // AC-3.1: bankrupt on 1987-05-03, the last day of the auction is the date + 365 calendar days = 1988-05-02 (1988 is a leap year).
             var s = new AcquisitionsState();
 
             AuctionData auction = DistressRules.OpenAuction(s, 7, 355, Today, 365, new[] { 980, 991, 1015, 991, -1 });
@@ -83,7 +83,7 @@ namespace PTMod.Tests.Features.RivalAcquisitions
         [Test]
         public void CloseExpired_ClosesTheDayAfterTheLastDay_AsTheStatusDoes()
         {
-            // AC-3.3: on 1988-05-04 the auction until 1988-05-03 is over; on the last day itself it is still open.
+            // The day after the last day the auction is over; on the last day itself it is still open (AC-3.1 and AC-3.3 with their own dates are in the next test).
             var s = new AcquisitionsState();
             AuctionData auction = DistressRules.OpenAuction(s, 7, 355, new DateTime(1987, 5, 4), 365, null);   // until 1988-05-03
 
@@ -96,6 +96,35 @@ namespace PTMod.Tests.Features.RivalAcquisitions
             Assert.False(CompanyStatusRules.IsAuctionOpen(auction, 355, new DateTime(1988, 5, 4)));
             Assert.Equal(0, DistressRules.CloseExpired(s, new DateTime(1990, 1, 1)), "closed once");
             Assert.Equal(0, DistressRules.CloseExpired(s, default(DateTime)), "no clock: nothing");
+        }
+
+        [Test]
+        public void Ac31AndAc33_TheTermIsTheDatePlus365CalendarDays_TheLastDayIncluded()
+        {
+            // AC-3.1: a rival goes bankrupt on 1987-05-03 -> the table says "аукцион до 02.05.1988" and "Buy assets" is open on that day;
+            // AC-3.3: on 1988-05-03 (the day after) it is plain "Bankrupt" and there are no deals. The year 1988 has 366 days, so the same
+            // calendar date (03.05.1988) is one day past the 365th.
+            var s = new AcquisitionsState();
+            DateTime bankruptOn = new DateTime(1987, 5, 3);
+            AuctionData auction = DistressRules.OpenAuction(s, 3, 412, bankruptOn, 365, null);
+
+            Assert.Equal("1988-05-02", auction.until);
+            Assert.Equal(365.0, (new DateTime(1988, 5, 2) - bankruptOn).TotalDays, "exactly 365 calendar days after the bankruptcy");
+
+            var company = UiTestData.Company(3, "Auction Inc", CompanyStatus.BankruptAuction);
+            company.SaveId = 412;
+            PlayerSnapshot player = RivalTestData.Player();
+            player.Today = new DateTime(1987, 6, 1);
+            CompanyRow row = UiTestData.Rows(new List<CompanySnapshot> { company }, player, s)[0];
+            Assert.Equal(UiKeys.StatusAuction, row.StatusKey);
+            Assert.Equal("02.05.1988", row.StatusArg, "AC-3.1: the table shows the last day, dd.MM.yyyy");
+
+            Assert.Equal(CompanyStatus.BankruptAuction, CompanyStatusRules.Resolve(true, false, false, auction, 412, new DateTime(1988, 5, 2)), "the last day: the auction is open");
+            Assert.Equal(CompanyStatus.Bankrupt, CompanyStatusRules.Resolve(true, false, false, auction, 412, new DateTime(1988, 5, 3)), "AC-3.3: the day after: no deals");
+            Assert.Equal(CompanyStatus.Bankrupt, CompanyStatusRules.Resolve(true, false, false, auction, 412, new DateTime(1988, 5, 4)));
+
+            // In a span without a 29th of February the last day is the same calendar date of the next year.
+            Assert.Equal("1987-05-03", DistressRules.Until(new DateTime(1986, 5, 3), 365));
         }
 
         [Test]

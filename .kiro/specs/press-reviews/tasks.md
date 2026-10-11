@@ -25,7 +25,7 @@
 Каждая задача — 2–4 часа и оставляет игру рабочей при выключенной фиче. Задача TSK-023 (дайджест) добавлена в v0.2 и стоит после TSK-022, чтобы не менять нумерацию.
 
 ### Implementation Strategy
-- Математика (`ReviewMath`, `OutletPanel`, `EffectMath`, `DigestBuilder`, `MarketTrends`) — без `UnityEngine`, в `mod/src/PTMod/Features/PressReviews/Logic/`. Тесты — мини-раннер .NET Framework 4.8 в `mod/tests/PTMod.Tests/PressReviews/` (`python mod/build.py --tests`, атрибуты `[Test]`, `[Covers(typeof(X))]`); каждый публичный тип `Logic` указан в `[Covers]`. Код `Logic` — общее подмножество API .NET Framework 4.8 и mscorlib Unity (без `init`, `record`, `Index`, `Range`).
+- Математика (`ReviewMath`, `OutletPanel`, `EffectMath`, `DigestBuilder`, `MarketTrends`) — без `UnityEngine`, в `mod/src/PTMod/Features/PressReviews/Logic/`. Тесты — мини-раннер .NET Framework 4.8 в `mod/tests/PTMod.Tests/Features/PressReviews/` (`python mod/build.py --tests`, атрибуты `[Test]`, `[Covers(typeof(X))]`); каждый публичный тип `Logic` указан в `[Covers]`. Код `Logic` — общее подмножество API .NET Framework 4.8 и mscorlib Unity (без `init`, `record`, `Index`, `Range`).
 - Формулы рынка не патчим. Эффекты — только провайдеры каналов (единый патч рынка в `mod-framework`). **Патчей на `Company.AddCpu` и `AICompany.AddCpu` нет** (ядро отклонит): выпуск CPU берётся из `ModEvents.CpuReleased`. Своего классификатора сегмента нет — `ModSegments`. Дрейфа репутации нет — его ведёт ядро.
 - Числа — в `mod/src/PTMod/Content/press-reviews/*.json`.
 - Если в ядре недоступен канал `popularity.gain` (сбой P5) или `ModReputation`, соответствующий эффект отключается с предупреждением. Обзоры и письма работают.
@@ -42,7 +42,7 @@
   - **Requirement**: FR-12
   - **Deliverables**:
     - `mod/src/PTMod/Features/PressReviews/PressReviewsFeature.cs`
-    - `mod/src/PTMod/Features/PressReviews/State/PressState.cs`
+    - `mod/src/PTMod/Features/PressReviews/Logic/PressState.cs`
     - `mod/src/PTMod/Features/PressReviews/State/PressSaveAdapter.cs` (`IModSaveParticipant`)
   - **Acceptance**:
     - `[ModFeature] sealed class PressReviewsFeature : IModFeature`: `Id` = `press-reviews`, `NameKey`/`DescriptionKey` (`press.feature.name`/`press.feature.desc`), `DependsOn` пуст (мягкие связи не включаются), `EnabledByDefault` и `SupportsHotToggle` = true. Тики, параметры и страница хаба — через `FeatureContext` (`ctx.OnTick`, `ctx.SaveParticipant`, `ctx.Param`, `ctx.HubPage`); прямых подписок на `DateController`, `Player.OnNewGame` и `SaveHandler` нет.
@@ -54,9 +54,9 @@
 - [x] **TSK-002**: DTO контента и валидатор (авто 2026-10-10)
   - **Requirement**: FR-3, FR-10
   - **Deliverables**:
-    - `mod/src/PTMod/Features/PressReviews/Content/PressContentModels.cs`
+    - `mod/src/PTMod/Features/PressReviews/Logic/PressContentModels.cs`
     - `mod/src/PTMod/Features/PressReviews/Content/PressContent.cs`
-    - `mod/tests/PTMod.Tests/PressReviews/ContentValidationTests.cs`
+    - `mod/tests/PTMod.Tests/Features/PressReviews/ContentValidationTests.cs`
   - **Acceptance**:
     - Битое издание пропускается.
     - Отрицательные веса клипуются, веса нормируются.
@@ -83,7 +83,7 @@
   - **Deliverables**:
     - `mod/src/PTMod/Features/PressReviews/Logic/ReviewMath.cs`
     - `mod/src/PTMod/Features/PressReviews/Logic/CpuSnapshot.cs`
-    - `mod/tests/PTMod.Tests/PressReviews/ReviewMathTests.cs`
+    - `mod/tests/PTMod.Tests/Features/PressReviews/ReviewMathTests.cs`
   - **Acceptance**: тесты проходят:
     - `AxisFromRatio`: 1.0 → 65, 1.5 → 100, 0.8 → 45.7, 0.5 → 5.2; строгость 1.25 → 45.7 при r = 1.
     - `TrendFactor(1, 1.45, 0.6)` = 1.2497.
@@ -100,7 +100,7 @@
   - **Deliverables**:
     - `mod/src/PTMod/Features/PressReviews/Logic/OutletPanel.cs`
     - `mod/src/PTMod/Features/PressReviews/Logic/IRandomSource.cs`
-    - `mod/tests/PTMod.Tests/PressReviews/OutletPanelTests.cs`
+    - `mod/tests/PTMod.Tests/Features/PressReviews/OutletPanelTests.cs`
   - **Acceptance**:
     - 1990 High End → 3 издания.
     - Fallback для года без покрытия.
@@ -115,7 +115,7 @@
   - **Deliverables**:
     - `mod/src/PTMod/Features/PressReviews/Game/PeerSelector.cs`
     - `mod/src/PTMod/Features/PressReviews/Game/CpuSnapshotFactory.cs`
-    - `mod/tests/PTMod.Tests/PressReviews/PeerSelectionLogicTests.cs` (чистая часть фильтра)
+    - `mod/tests/PTMod.Tests/Features/PressReviews/PeerSelectionLogicTests.cs` (чистая часть фильтра)
   - **Acceptance**:
     - Сегмент CPU игрока — `ModSegments.FromSales` по накопленным продажам, при `Segment.Any` или в мгновенном режиме — `ModSegments.Classify(cpu)`; сегмент CPU ИИ — `Strategy.TargetMarket`. Типов `SegmentInference` и собственного классификатора нет (тест архитектуры); значения 312/311/187/186/99/98 проверяются в `SegmentRuleTests` ядра.
     - `PeerSelector` берёт `MarketDataProvider.Instance.MostSoldCpus(15, 3, …)` и фильтрует: другая компания, не на пенсии, продажи сегмента за 3 полных месяца > 0. Отдаёт до 5 эталонов.
@@ -144,7 +144,7 @@
   - **Deliverables**:
     - `mod/src/PTMod/Features/PressReviews/Effects/ReviewEffects.cs` (репутационная часть + `Provide`)
     - `mod/src/PTMod/Features/PressReviews/Logic/EffectMath.cs`
-    - `mod/tests/PTMod.Tests/PressReviews/EffectMathTests.cs`
+    - `mod/tests/PTMod.Tests/Features/PressReviews/EffectMathTests.cs`
   - **Acceptance**:
     - После обзора `ModReputation.Add(company, clamp(round((M−65)/5), −6, 6), "press.review:<id>")`.
     - `ModModifiers.RegisterReasonedProvider("press-reviews", "popularity.gain", …)` зарегистрирован один раз в `Register` и не пересоздаётся при `OnEnabled`/`OnDisabled`. Для компании провайдер возвращает `R = 1 + 0.3 × (rep − 50)/50` (кэш на день, сброс по `ModReputation.Changed` + `ModModifiers.Invalidate`), для ИИ — по параметру `reputationAffectsAI`; причина `press.review`.
@@ -217,7 +217,7 @@
   - **Requirement**: FR-8
   - **Deliverables**:
     - `mod/src/PTMod/Features/PressReviews/Game/AwardsService.cs`
-    - `mod/tests/PTMod.Tests/PressReviews/AwardsTests.cs`
+    - `mod/tests/PTMod.Tests/Features/PressReviews/AwardsTests.cs`
   - **Acceptance**:
     - В фазе `TickPhase.LateYearPassed`:
       - «Процессор года» по сегментам (≥ 75);
@@ -234,7 +234,7 @@
   - **Deliverables**:
     - `mod/src/PTMod/Features/PressReviews/Logic/MarketTrends.cs`
     - `mod/src/PTMod/Features/PressReviews/Game/PressNotesService.cs`
-    - `mod/tests/PTMod.Tests/PressReviews/MarketTrendsTests.cs`
+    - `mod/tests/PTMod.Tests/Features/PressReviews/MarketTrendsTests.cs`
   - **Acceptance**:
     - Годовой снимок лидера и медианы цен по сегментам.
     - В месяцы 1/4/7/10 — до 2 заметок по условиям и кулдаунам; письмо `Low`, `Tag` = `press:notes:<yyyy-MM>`.
@@ -249,7 +249,7 @@
     - `mod/src/PTMod/Features/PressReviews/Api/IReviewAdjuster.cs`
     - `mod/src/PTMod/Features/PressReviews/Api/PressArticle.cs`
     - `mod/src/PTMod/Features/PressReviews/Game/FlawBridge.cs`
-    - `mod/tests/PTMod.Tests/PressReviews/AdjusterPipelineTests.cs`
+    - `mod/tests/PTMod.Tests/Features/PressReviews/AdjusterPipelineTests.cs`
   - **Acceptance**:
     - Событие `ReviewPublished` поднимается после сохранения записи.
     - `PublishArticle` даёт письмо (`Normal`, `Tag` = `press:article:<n>`) и запись во вкладке «Статьи».
@@ -262,8 +262,8 @@
 - [x] **TSK-017**: Строки ru/en (авто 2026-10-10)
   - **Requirement**: NFR-4
   - **Deliverables**:
-    - `mod/src/PTMod/L10n/ru.json` (ключи `press.*`)
-    - `mod/src/PTMod/L10n/en.json` (ключи `press.*`)
+    - `mod/src/PTMod/L10n/ru/press-reviews.json` (ключи `press.*`)
+    - `mod/src/PTMod/L10n/en/press-reviews.json` (ключи `press.*`)
   - **Acceptance**:
     - Все ключи из design.md, контента и кода есть в обоих файлах (включая `press.feature.*`, `press.mail.digest.*`, `press.review`).
     - Тест сверки наборов ключей `press.*` зелёный; ключи и теги начинаются с `press.` / `press:` (`ModIds`).
@@ -274,8 +274,8 @@
 - [x] **TSK-018**: Сохранение, загрузка, выключение, миграция (авто 2026-10-10)
   - **Requirement**: FR-12, NFR-3
   - **Deliverables**:
-    - `mod/src/PTMod/Features/PressReviews/State/PressStateMigrations.cs`
-    - `mod/tests/PTMod.Tests/PressReviews/PressStateSerializationTests.cs`
+    - `mod/src/PTMod/Features/PressReviews/Logic/PressStateMigrations.cs`
+    - `mod/tests/PTMod.Tests/Features/PressReviews/PressStateSerializationTests.cs`
   - **Acceptance**:
     - Round-trip секции без потерь; в данных нет поля версии (`_schema` пишет ядро).
     - Клипы и лимиты при чтении.
@@ -310,7 +310,7 @@
 - [x] **TSK-021**: Калибровочный тест распределения оценок (авто 2026-10-10)
   - **Requirement**: FR-2 (Acceptance Metrics)
   - **Deliverables**:
-    - `mod/tests/PTMod.Tests/PressReviews/CalibrationTests.cs`
+    - `mod/tests/PTMod.Tests/Features/PressReviews/CalibrationTests.cs`
   - **Acceptance**:
     - Синтетический рынок: 5000 CPU с лог-нормальным разбросом ±25 % по осям относительно эталонов, возраст эталонов 0–2 года, Normal.
     - Результат: медиана 55–70, доля ≥ 85 ≤ 15 %, доля < 40 ≤ 15 %.
@@ -331,7 +331,7 @@
   - **Deliverables**:
     - `mod/src/PTMod/Features/PressReviews/Logic/DigestBuilder.cs`
     - `mod/src/PTMod/Features/PressReviews/Game/DigestService.cs`
-    - `mod/tests/PTMod.Tests/PressReviews/DigestTests.cs`
+    - `mod/tests/PTMod.Tests/Features/PressReviews/DigestTests.cs`
   - **Acceptance**:
     - В фазе `TickPhase.MonthPassed` (1-е число) при включённом параметре `rivalDigest` отправляется одно письмо «Пресса: обзоры соперников» (`ModMail.Send`, `Low`, `Tag` = `press:digest:<yyyy-MM>`) с обзорами CPU ИИ за прошлый месяц.
     - В письме до 10 строк в порядке убывания |M − 65|: обзоры с M ≥ 85 или ≤ 40 и обзоры в сегментах, где у игрока есть продаваемый CPU; остальные — «и ещё N обзоров в архиве». Нет подходящих — письма нет.
@@ -384,7 +384,7 @@ TSK-018/026/027/029/059 ──> TSK-008; TSK-061/062/038 ──> TSK-010, TSK-02
 | TSK-013 Окно «Пресса»: репутация, итоги, статьи | Complete (авто 2026-10-10, кусок 3: `UI/ReputationTab` (таблица, игрок первым: значение, уровень, изменение за 12 месяцев, эффект «×1.12», 3 причины из `ModReputation.History`, без дрейфа), `UI/AwardsTab` и `UI/ArticlesTab` читают `PressState`; чистые `ReputationTable`, `ReputationReasons` (`press.review`, `press.award`, `dfr.*`, `rec.*`, `acq.*`, `event:<id>`, остальное «прочее»), `ReputationLevels`, `PressTabViews`; AC-7.1 («68 Уважаемый, +8 за год, ×1.11») и уровни 80/65/36/21 в `ReputationTableTests`; строка «Репутация: N — уровень» на странице фичи в хабе; `PressReviewsApi.FormatReputation` и `GetReputationLevelKey` в `Api/PressReviewsApi.cs` (`partial`, остальное API допишет TSK-016); отклонения: `event:<id>` показывается как «событие», строка репутации живёт на странице фичи; см. `mod/requests/press-reviews.md`, п. 7–8) |
 | TSK-014 Годовые итоги | Complete (авто 2026-10-10, кусок 4: `Logic/AwardsCalculator` (CPU года по сегментам ≥ 75, компания года при ≥ 2 обзорах, разочарование < 45; ничья — раньше вышедший обзор, затем меньший `SaveID`; выплаты +4 / +3 / −3 с причинами `press.award:cpu:<год>:<сегмент>`, `press.award:company:<год>`, `press.award:flop:<год>`), `Logic/AwardsMailText`, `Game/AwardsService` (`TickPhase.LateYearPassed`: запись в `PressState.awards`, `ModReputation.Add`, письмо `PressMail.SendAwards`: `Normal`, `Tag` = `press:awards:<год>`, действие «Открыть итоги» открывает вкладку «Итоги года»; год без наград и год с готовыми итогами пропускаются); тесты `AwardsTests` (AC-8.1: 88 в High End → «Процессор года», +4 игроку; пороги 75/45, ничьи, выплаты, пустой год, круг через `PressStateCodec`, письмо ru/en); итоги не досчитываются за год, когда фича была выключена; см. `mod/requests/press-reviews.md`, п. 12.6) |
 | TSK-015 Квартальные заметки | Complete (авто 2026-10-10, кусок 4: `Logic/MarketTrends` (рост лидера и изменение медианы цен, `Qualitative`: 0.42 → «около +40 %», округление до десятков процентов, слова «растут / падают / почти не меняются»), `MarketStatsBook` (годовые снимки `yearStats` на 3 года × 4 сегмента, факты, новая компания), `Logic/PressNotes` (`NoteEvaluator` — все 6 типов условий, `NoteSelection` — до 2 заметок по весам без возвращения, `NoteCooldowns`, `NoteRenderer`, `NotesMailText`), `Game/PressNotesService` (`MonthPassed` в месяцы 1/4/7/10: письмо `Low`, `Tag` = `press:notes:<yyyy-MM>`; `LateYearPassed`: снимок рынка; январская заметка сама снимает снимок прошлого года), `MarketSampler` (лидеры сегмента по `MostSoldCpus`); тесты `MarketTrendsTests` (AC-10.1, округление, условия, кулдауны, выбор, тексты всех заметок контента ru/en без коэффициентов); условия вычисляет фича, не `ModConditions`; PGA — по `MarketEventHandler`; см. `mod/requests/press-reviews.md`, п. 12.7) |
-| TSK-016 Публичный API | Complete (авто 2026-10-10, кусок 4: `Api/PressReviewsApi` (фасад: `IsEnabled`, `ReviewPublished`, `PublishArticle`, `RegisterAdjuster`/`UnregisterAdjuster`, `GetReview`; при выключенной фиче вызовы — no-op; ошибки хранилища ловятся и засчитываются), `Api/IReviewAdjuster`, `Api/PressArticle`, `Api/IPressApiBackend`, `Api/Model/ReviewModel` (`Axis`, `ReviewDraft`, `OutletLine`, `ReviewRecord` перенесены из `Logic/` в `Api/Model`, чтобы потребители собирались с одной папкой `Api`; для тестовой сборки есть зеркало `Logic/ApiModelMirror.cs`, тест следит за совпадением); `Logic/AdjusterPipeline` (±30 на ось и ±20 на итог на каждого корректировщика и в сумме, исключение корректировщика — его поправка пропущена, обзор опубликован), `AdjusterBook`, `ArticleLog` (письмо `Normal`, `Tag` = `press:article:<n>`, журнал 200 статей), `ReviewRecordCopy`; `Game/PressApiBackend`, `Game/FlawBridge` (бросок `flawReveal.chance` → `FlawRegistry.TryReveal(id, DiscoverySource.External)`; статья и примечание при публичном браке; подключается на `ModTicks.GameReady` и при `ModFeatures.StateChanged`, не в `Register`); тесты `AdjusterPipelineTests` (AC-11.1: −15 → метаоценка ниже на 15), `PressApiLogicTests`, `PressApiSourceTests`; без `design-flaw-recalls` мост не подключается; реальное взаимодействие с той фичей и письмо статьи проверяются в игре; см. `mod/requests/press-reviews.md`, п. 11–12) |
+| TSK-016 Публичный API | Complete (авто 2026-10-10, кусок 4: `Api/PressReviewsApi` (фасад: `IsEnabled`, `ReviewPublished`, `PublishArticle`, `RegisterAdjuster`/`UnregisterAdjuster`, `GetReview`; при выключенной фиче вызовы — no-op; ошибки хранилища ловятся и засчитываются), `Api/IReviewAdjuster`, `Api/PressArticle`, `Api/IPressApiBackend`, `Api/Model/ReviewModel` (`Axis`, `ReviewDraft`, `OutletLine`, `ReviewRecord` перенесены из `Logic/` в `Api/Model`, чтобы потребители собирались с одной папкой `Api`; сборка тестов берёт `Api/Model` напрямую (`build.py`, `build_feature.py`), поэтому зеркала в `Logic/` нет); `Logic/AdjusterPipeline` (±30 на ось и ±20 на итог на каждого корректировщика и в сумме, исключение корректировщика — его поправка пропущена, обзор опубликован), `AdjusterBook`, `ArticleLog` (письмо `Normal`, `Tag` = `press:article:<n>`, журнал 200 статей), `ReviewRecordCopy`; `Game/PressApiBackend`, `Game/FlawBridge` (бросок `flawReveal.chance` → `FlawRegistry.TryReveal(id, DiscoverySource.External)`; статья и примечание при публичном браке; подключается на `ModTicks.GameReady` и при `ModFeatures.StateChanged`, не в `Register`); тесты `AdjusterPipelineTests` (AC-11.1: −15 → метаоценка ниже на 15), `PressApiLogicTests`, `PressApiSourceTests`; без `design-flaw-recalls` мост не подключается; реальное взаимодействие с той фичей и письмо статьи проверяются в игре; см. `mod/requests/press-reviews.md`, п. 11–12) |
 | TSK-017 Строки ru/en | Complete (авто 2026-10-10, кусок 4: в `L10n/ru/press-reviews.json` и `L10n/en/press-reviews.json` по 184 ключа (добавлено 20: итоги года, заметки, статья о браке, `press.note.knownFlaw`, `press.note.flawPublic`, `press.mail.digest.*` для TSK-023); `PressLocalizationTests`: наборы ключей и аргументов ru/en совпадают, все ключи с префиксом `press.` по таблице идентификаторов ядра (`ModIds`), теги писем начинаются с `press:`, ключи design.md, контента и кода есть в обоих языках; отклонения: строки лежат в файлах фичи, а не в общих `ru.json`/`en.json`; `press.effects.hype` разбит на `.up/.down/.none`; см. `mod/requests/press-reviews.md`, п. 12.8) |
 | TSK-018 Сохранение, загрузка, выключение | Complete (авто 2026-10-10, кусок 5: `Logic/PressStateHolder` (чистый `ISideFileParticipant`: `State`, `ResetToDefaults`, `Read`, `Write`, поля версии нет), `State/PressSaveAdapter` стал тонкой обёрткой над ним; `Logic/PressStateMigrations` (шаги «версия N → N+1» внутри `Read(section, schema)` на копии секции, ядровой объект не меняется; шагов пока нет, `SectionVersion` = 1, тест `MigrationsCoverEveryVersionOfTheSection` краснеет, если версию подняли без шага; `PressStateCodec.Read` вызывает миграцию первой); `PressStateSerializationTests` идут через настоящую `SideFileModel` ядра: круг без потерь, `_schema` пишет ядро, очередь возвращается с теми же датами (AC-12.1), сейв без секции и секция без `_schema`, секция новее мода (фича получает значения по умолчанию, исходная секция записывается как была), секция выключенной фичи не меняется, клипы и лимиты со строками `save: …` в журнале, ажиотаж после повторного включения кончается в тот же день, провайдер `popularity.gain` регистрируется ровно один раз в `Register` и не затрагивается ни `AfterRead`, ни `OnEnabled`/`OnDisabled`; отклонения: миграции и холдер лежат в `Logic/` (тестовая сборка берёт только эту папку), тесты — в `Features/PressReviews/`; выключение/включение и загрузка в живой игре — сценарии 8-10 владельца) |
 | TSK-019 Самопроверка и замеры | Complete (авто 2026-10-10, кусок 5: `Diagnostics/PressSelfCheck` (на `ModTicks.GameReady` и при включении фичи посреди игры) пишет `self-check OK (0 patches, 6 outlets, 12 notes, channels OK, reputation OK)` и по строке на каждую находку: патчи фичи (только `HardwareWindow.ShowMarket` при включённой колонке, ничего на `AddCpu`/`UpdatePopularities`), контент (издания, заметки, ошибки, дыры покрытия), канал `popularity.gain` объявлен и с провайдером, патчи ядра P5 и P20 применены, `ModReputation`, теги `press:` по `ModIds`, строки в таблицах; чистые `Logic/SelfCheckReport` и `SelfCheckRules`; `Diagnostics/PressTimings` (только при `debug.verbose`: среднее и худший день раз в месяц, годовая сводка медианы, доли ≥ 85 и доли < 40 с пометкой «вне целей») поверх `Logic/TimingBook` и `Logic/ScoreDistribution`; исключение в провайдере логируется не чаще раза в день и пробрасывается, ядро засчитывает ×1 и ошибку фичи (тест на движке каналов ядра), собственных счётчиков ошибок нет (тест); `PressDiagnosticsTests`; сама строка и замер в живой игре — у владельца) |

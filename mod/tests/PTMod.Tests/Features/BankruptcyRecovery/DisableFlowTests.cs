@@ -147,6 +147,31 @@ namespace PTMod.Tests.Features.BankruptcyRecovery
         }
 
         [Test]
+        public void AC_12_6_AnUndrawnLine_GoesWithTheLoan_AndDoesNotOpenAgainAfterTheSwitchOn()
+        {
+            // a bridge loan and a line the player never drew on, inside its three years: FR-12 item 4 closes both, the switch-on opens neither
+            var game = new Game();
+            game.Finance.MoneyValue = 2000000.0;
+            game.Finance.DebtLimit = 8400000.0;
+            game.State.loans.Add(new LoanData
+            {
+                id = "bridge-1", kind = LoanData.KindBridge, principal = 8400000.0, outstanding = 5000000.0, annualRate = 0.30,
+                monthsTotal = 12, monthsLeft = 7, payment = 818892.0, openedOn = "1977-01-01",
+            });
+            game.State.nextLoanSeq = 2;
+            game.State.creditLine = new CreditLineData { state = CreditLineData.StateOpen, opensOn = "1975-01-01", closesOn = "1978-01-01", drawn = 0.0 };
+
+            SettleResult result = game.Disable();
+            game.Enable();
+
+            Assert.True(result.LineClosed);
+            Assert.Equal(CreditLineData.StateClosed, game.State.creditLine.state);
+            Assert.Equal(CreditLineData.ReasonDisabled, game.State.creditLine.closedReason);
+            Assert.False(new CreditLineEngine(game.Env, new LoanBook(game.Env)).EnsureOpened(), "a line closed by the switch-off is never opened again");
+            Assert.Equal(CreditLineData.StateClosed, game.State.creditLine.state);
+        }
+
+        [Test]
         public void SwitchOffAndOn_TheJournalKeepsTheRecordOfTheConversion()
         {
             var game = new Game();

@@ -70,7 +70,9 @@
   "rec.loans.col.months": "Months",
   "rec.loans.col.action": "Repayment",
   "rec.loans.rate": "{0}%",
-  "rec.loans.prepay": "Pay back early",
+  "rec.loans.prepay": "Pay back {0}",
+  "rec.loans.prepay.share": "Early repayment, % of the debt",
+  "rec.loans.prepay.tooSmall": "This share of the debt is less than one dollar",
   "rec.loans.prepay.noMoney": "Not enough money: balance {0}, need {1}",
   "rec.loans.investor": "Investor contract: {0}% of profit, {1} months left, paid {2} of {3}",
 
@@ -142,6 +144,8 @@
   "rec.journal.op.stock.sell": "Stock sale",
   "rec.journal.op.cpu.retire": "CPU retired",
   "rec.journal.op.disable.convert": "Converted to ordinary debt",
+  "rec.journal.op.debug.balance": "Debug: balance",
+  "rec.journal.op.debug.days": "Debug: days in default",
 
   "rec.confirm.title": "Confirm the operation",
   "rec.confirm.after": "Balance after: {0}",
@@ -202,5 +206,15 @@
   "rec.disable.confirm": "Outstanding obligations ({0}) will become ordinary bank debt. Balance after: {1}.{2}",
   "rec.disable.defaultRisk": "The balance will fall below the default threshold.",
   "rec.disable.confirmLabel": "Disable and convert to debt",
-  "rec.notify.converted": "Obligations converted to ordinary debt: {0}"
+  "rec.notify.converted": "Obligations converted to ordinary debt: {0}",
+
+  "rec.debug.heading": "Debug (debug build only)",
+  "rec.debug.hint": "The block is shown because the flag {0} is on. The buttons change the balance and the default counter of the player for the manual scenarios; every press is written to the journal with the mark debug. For a real default first switch off \"Auto-draw near default threshold\" (recovery options, tab Loans): with it on, the open credit line lifts the balance to -0.6 × D before the game checks for bankruptcy.",
+  "rec.debug.threshold": "Now: threshold D = {0}, base of the limits D_L = {1}, inflation {2}, date {3}.",
+  "rec.debug.balance": "Balance = {0} × D",
+  "rec.debug.days": "DaysInDefault = {0}",
+  "rec.debug.done.balance": "Done: balance {0} -> {1}",
+  "rec.debug.done.days": "Done: DaysInDefault {0} -> {1}",
+  "rec.debug.unavailable": "No player's company or money journal: nothing was changed.",
+  "rec.debug.rejected": "Rejected ({0}): nothing was changed."
 }

@@ -65,7 +65,7 @@ namespace PTMod.Features.BankruptcyRecovery.Logic
         /// <summary>How many loans were closed.</summary>
         public int LoansClosed;
 
-        /// <summary>The credit line had a debt and was closed.</summary>
+        /// <summary>The credit line was open and was closed (FR-12 item 4: whenever something is settled; nothing may have been drawn on it).</summary>
         public bool LineClosed;
 
         /// <summary>An investor contract was running and was closed.</summary>
@@ -78,9 +78,14 @@ namespace PTMod.Features.BankruptcyRecovery.Logic
     /// <summary>
     /// The safe switch-off without the game (FR-12, design.md D9 and "DisableSettlementService"): <see cref="Quote"/> says what the player is asked before the
     /// feature goes off, <see cref="Settle"/> turns what is owed into ordinary debt of the balance. One operation <c>CapitalOut(total)</c> with the code
-    /// <c>disable.convert</c> (the ledger writes the journal record), then the loans, the credit line and the investor contract are closed, the pause of the bridge loan
+    /// <c>disable.convert</c> (the ledger writes the journal record), then the loans, the credit line (an open one, drawn on or not) and the investor contract are closed, the pause of the bridge loan
     /// starts if a bridge loan was among them, and the marks of <see cref="SettlementMarks"/> are written. The counter of the rescues and the date of the last bridge
     /// loan are kept, and the credit line that was closed never opens again: switching off and on gives no new money (D9).
+    /// <para>
+    /// The line is closed whenever something is settled (FR-12 item 4: "close the loans, the line and the contract"), even when nothing is drawn on it: closed by the switch-off it
+    /// never opens again (AC-12.6), so a line does not outlive a switch-off that took a loan. When nothing at all is owed there is no settlement and nothing
+    /// is closed: a line that was never used stays open, and a switch-off without a debt takes nothing away (the question of the hub is not asked either).
+    /// </para>
     /// <para>
     /// <see cref="Settle"/> repeats safely: after it nothing is owed and the second call does nothing. It does not look at whether the feature is active (it runs
     /// from <c>OnDisabled</c>, when it already is not) and asks for no confirmation (a switch from code never asks). Player only: it works on the player's finances.
@@ -133,6 +138,7 @@ namespace PTMod.Features.BankruptcyRecovery.Logic
             if (state.investorShare == null) state.investorShare = new InvestorShareData();
             CreditLineData line = state.creditLine;
             bool lineOwes = DrawnOf(line) > 0.0;
+            bool lineOpen = string.Equals(line.state, CreditLineData.StateOpen, StringComparison.Ordinal);
             bool investorRuns = state.investorShare.active;
             bool owes = state.loans.Count > 0 || lineOwes || investorRuns;
 
@@ -162,7 +168,7 @@ namespace PTMod.Features.BankruptcyRecovery.Logic
             state.loans.Clear();
             if (bridge) state.lastBridgeClosedOn = RecoveryDates.ToText(_env.Finance.Today);
 
-            if (lineOwes)
+            if (lineOpen)
             {
                 line.state = CreditLineData.StateClosed;
                 line.closedReason = CreditLineData.ReasonDisabled;

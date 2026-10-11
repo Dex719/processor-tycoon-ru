@@ -344,7 +344,7 @@ internal static class MemoryDescriptionPatch
   "schema": 1,
   "categories": [
     { "id": "ms.supply",   "dailyChance": 0.0045, "minGapDays": 60,  "maxActive": 2 },
-    { "id": "ms.industry", "dailyChance": 0.0018, "minGapDays": 365, "maxActive": 1 },
+    { "id": "ms.industry", "dailyChance": 0.0035, "minGapDays": 365, "maxActive": 1 },
     { "id": "ms.price",    "dailyChance": 0.006,  "minGapDays": 240, "maxActive": 1 },
     { "id": "ms.demand",   "dailyChance": 0.003,  "minGapDays": 540, "maxActive": 1 },
     { "id": "ms.trade",    "dailyChance": 0.004,  "minGapDays": 90,  "maxActive": 2 },
@@ -502,7 +502,7 @@ rate_year ≈ 365 / (1 / (dailyChance · F) + minGapDays)
 | Категория | dailyChance | minGapDays | ≈ в год | Ограничения сверху |
 |---|---|---|---|---|
 | `ms.supply` | 0,0045 | 60 | 1,29 | откаты на компанию 730–1095 не ограничивают (много компаний) |
-| `ms.industry` | 0,0018 | 365 | 0,40 | откаты 2190–3650 (Σ ≈ 0,6/год) |
+| `ms.industry` | 0,0035 | 365 | 0,56 → ≈ 0,34 после откатов | откаты 2190–3650 (Σ ≈ 0,6/год) |
 | `ms.price` | 0,006 | 240 | 0,90 → ≈ 0,7 после откатов | откаты 1095/1095/1095/2190 (Σ ≈ 1,2/год) |
 | `ms.demand` | 0,003 | 540 | 0,42 → ≈ 0,4 | откаты 2555/2920×3 (Σ ≈ 0,5/год), годы бумов |
 | `ms.trade` | 0,004 | 90 | 1,07 | только при наличии подходящей цели |
@@ -739,7 +739,7 @@ sequenceDiagram
 
 ## Testing Strategy
 
-### Unit Testing (`mod/tests/PTMod.Tests/MarketShocks/`, свой мини-раннер .NET Framework 4.8, без Unity)
+### Unit Testing (`mod/tests/PTMod.Tests/Features/MarketShocks/`, свой мини-раннер .NET Framework 4.8, без Unity)
 
 Тесты — методы с `[Test]`, покрытие типов — `[Covers(typeof(X))]` (каждый публичный тип `Logic` пака указан в `[Covers]`), запуск `python mod/build.py --tests`. Эффекты в тестах учитывают общий балансовый диапазон ядра [0,5; 2,0] на CPU для `popularity.gain`.
 

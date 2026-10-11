@@ -49,7 +49,7 @@ namespace PTMod.Features.BankruptcyRecovery.Logic
 
         private const string OpPrefix = "rec.journal.op.";
 
-        /// <summary>The operation codes the feature writes (and <c>disable.convert</c> of the switch-off). Each has a name <c>rec.journal.op.&lt;code&gt;</c> in the string tables.</summary>
+        /// <summary>The operation codes the feature writes (and <c>disable.convert</c> of the switch-off; in a debug build also the two codes of the debug actions). Each has a name <c>rec.journal.op.&lt;code&gt;</c> in the string tables.</summary>
         public static readonly IReadOnlyList<string> KnownOps = new[]
         {
             "bridge.open", "bridge.fee",
@@ -58,6 +58,9 @@ namespace PTMod.Features.BankruptcyRecovery.Logic
             "bailout.loan", "bailout.investor", "investor.payment",
             "lines.sell", "stock.sell", "cpu.retire",
             "disable.convert",
+#if PTMOD_DEBUG
+            "debug.balance", "debug.days",   // the debug actions of the hub page (TSK-019); only a debug build writes them
+#endif
         };
 
         /// <summary>The key of the name of a known operation; null for a code that is not in <see cref="KnownOps"/>.</summary>

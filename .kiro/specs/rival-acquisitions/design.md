@@ -3,10 +3,10 @@
 ## Document Information
 
 - **Feature Name**: rival-acquisitions (I06)
-- **Version**: 0.2
-- **Date**: 2026-10-10
+- **Version**: 0.3
+- **Date**: 2026-10-11
 - **Author**: Dex719
-- **Status**: Draft v0.2 — одобрено к реализации владельцем 2026-10-10
+- **Status**: Draft v0.3 — одобрено к реализации владельцем 2026-10-10; правки по итогам QA 2026-10-11: срок аукциона (AC-3.1), результаты спайков (статическая проверка), отладочные действия и спайк-код, отступления реализации, открытые вопросы владельца
 - **Reviewers**: владелец проекта; автор `mod-framework` (сигнатуры Core, канал `acquisition.price`, `ModEvents`, `ModCredit`); автор `bankruptcy-recovery` (`CapitalLedger`, общий патч `TriggerDefault`); автор `rival-personalities` (события сделок); авторы `cpu-architectures` и `gpu-product-line` (передача состояния)
 - **Related Documents**: `requirements.md`, `tasks.md` этой спеки; `.kiro/specs/bankruptcy-recovery/design.md`; `.kiro/specs/mod-framework/design.md`; `.kiro/steering/context.md`; `.kiro/steering/owner-decisions.md`; решения `0002`, `0003`, `0004`, `0005`, `0006`; `pt-modding/CODEMAP.md` (CompanySystem, Bank, Production, Save)
 
@@ -208,7 +208,7 @@ graph LR
 
 ## Components and Interfaces
 
-Пространство имён: `PTMod.Features.RivalAcquisitions` (чистая логика — `….Logic`). Каталог: `mod/src/PTMod/Features/RivalAcquisitions/` (логика — `…/Logic/`). Тесты — `mod/tests/PTMod.Tests/RivalAcquisitions/`. Все типы `Logic` публичные и перечислены в `[Covers]`.
+Пространство имён: `PTMod.Features.RivalAcquisitions` (чистая логика — `….Logic`). Каталог: `mod/src/PTMod/Features/RivalAcquisitions/` (логика — `…/Logic/`). Тесты — `mod/tests/PTMod.Tests/Features/RivalAcquisitions/`. Все типы `Logic` публичные и перечислены в `[Covers]`.
 
 ### RivalAcquisitionsFeature
 
@@ -391,7 +391,7 @@ internal sealed class AcquisitionExecutor
 
 1. **Перепроверка**: цель найдена `DataFinder.FindCompany(SaveId)`, `UniqueID` совпадает, статус не изменился, баланс игрока ≥ требуемого (`money + NetCash ≥ minCashAfter`). Иначе — отмена без изменений.
 2. `ExecutingTarget = target`.
-3. **Технологии**: `ResearchSector.temporarilySupressPopup = true` у игрока (рефлексия); для `TechUnlockIds` — `TechnologyAsResearch(t).Progress = 1`; для `TechProgress` — `Progress = max(игрок, цель)`; цикл `ResearchSector.Update(true)` до стабилизации (≤ 20 проходов, т. к. `UpdateResearchCompletion` пропускает заблокированные зависимостями); флаг возвращается.
+3. **Технологии**: `ResearchSector.temporarilySupressPopup = true` у игрока (рефлексия); `TechUnlocks` идут по возрастанию глубины зависимостей (внутри уровня по `Id`): для каждой технологии `TechnologyAsResearch(t).Progress = 1`, после каждого уровня — `ResearchSector.Update(true)` (один проход открывает один уровень зависимостей, цепочки до 26, см. «Результаты спайков»); затем не более `techUnlockMaxPasses` добивочных проходов (предохранитель, если данные удивили); для `TechProgress` — `Progress = max(игрок, цель)`, строго меньше 1; флаг возвращается.
 4. **Опыт техпроцессов**: `Company.OptimizeNode(узел, опыт_цели − опыт_игрока)` для общих узлов.
 5. **Отделение CPU от ИИ** (до банкротства цели, иначе `AICompany.TriggerBankruptcy` их снимет): по семействам — `Owner.GetCpus().Remove`, `GetBaseCpus().Remove`, `CpusOrderedByProfit().Remove`.
 6. **Линии**: для каждой пластины цели `AICompany.RemoveProductionLines(N, W)`; затем `Company.ExpandFactory(N, 0, waferIdTo)` (если `KeepLines`) или `CapitalLedger.Revenue("rival-acquisitions", SaleCost, Sales, …)`; в конце `CompanyTypeUpdater.Instance.TriggerUpdate(true)`.
@@ -479,6 +479,7 @@ internal sealed class RivalDistressMonitor
     public string lastHostileOn = "";
     public bool backfillDone;
     public int nextDealId = 1;
+    // не поле секции (приватный сеттер, ModJson его не видит): public bool OffersClosed { get; private set; } — сейв записан более новой версией мода, сделок не предлагается (NFR-3)
 }
 
 [Serializable] public sealed class DealRecord
@@ -495,7 +496,7 @@ internal sealed class RivalDistressMonitor
 [Serializable] public sealed class WaferLines { public int waferId; public int lines; }
 
 [Serializable] public sealed class StakeData
-{ public int targetUniqueId; public int targetSaveId; public double share; public double invested; public double dividendsPaid; public string since; }
+{ public int targetUniqueId; public int targetSaveId; public double share; public double invested; public double dividendsPaid; public double lastDividend; public string since; }
 
 [Serializable] public sealed class AuctionData
 { public int targetUniqueId; public int targetSaveId; public string bankruptOn; public string until; public List<int> snapshotCpuSaveIds = new List<int>(); public bool closed; }
@@ -527,10 +528,10 @@ internal sealed class RivalDistressMonitor
       ],
       "stakes": [
         { "targetUniqueId": 10, "targetSaveId": 388, "share": 0.25, "invested": 116150000.0,
-          "dividendsPaid": 3000000.0, "since": "1986-01-01" }
+          "dividendsPaid": 3000000.0, "lastDividend": 1000000.0, "since": "1986-01-01" }
       ],
       "auctions": [
-        { "targetUniqueId": 7, "targetSaveId": 355, "bankruptOn": "1987-05-03", "until": "1988-05-03",
+        { "targetUniqueId": 7, "targetSaveId": 355, "bankruptOn": "1987-05-03", "until": "1988-05-02",
           "snapshotCpuSaveIds": [ 980, 991, 1015 ], "closed": false }
       ],
       "rescueOrders": [ { "targetUniqueId": 10, "targetSaveId": 388, "maxAmount": 100000000.0, "active": true } ],
@@ -608,7 +609,7 @@ internal sealed class RivalDistressMonitor
 
 ### Цены сделок (`DealRules`)
 
-- Банкрот: `P = ceil1000(max(E_min, 0,4 × E) × Ch)`; остаток цели не принимается (`NetCash = −P`).
+- Банкрот: `P = ceil1000(max(E_min, 0,4 × E) × Ch)`; остаток цели не принимается (`NetCash = −P`). **Срок аукциона:** `until = дата банкротства + auctionDays` календарных дней (`DateTime.AddDays`), последний день включительно (аукцион открыт, пока сегодня ≤ `until`; `DistressRules.Until`, `CompanyStatusRules.IsAuctionOpen`). Банкротство 1987-05-03 → `until = 1988-05-02` (между датами 29 февраля 1988), в обычный год — та же дата следующего года.
 - Дефолт: `P_f = max(E_min, 0,7 × (E + C⁺)) × Ch × (1 − σ_p)`; `P = ceil1000(max(P_f, C⁺ + E_min))`; принимается `C`.
 - Враждебное: `m = s_цели > s_игрока ? 1,75 : 1,5`; `P_f = max(E_min, m × (E + C⁺)) × Ch × (1 − σ_p)`; `P = ceil1000(max(P_f, C⁺ + E_min))`; принимается `C`; доступно, если с `lastHostileOn` прошло ≥ 365 дней.
 - Итог для баланса: `NetCash = −P + (assumeCash ? C : 0)`; доступно, если `money + NetCash ≥ minCashAfter` (0) и игрок не в дефолте.
@@ -872,9 +873,49 @@ stateDiagram-v2
 | Открытие окна | 13 снимков: CPU (≤ 60 × 12 месяцев), технологии (≤ 250 × 2 проверки), контракты | ≤ 50 мс |
 | Исполнение сделки | разовое; `Update(true)` ≤ 20 проходов | ≤ 200 мс, игра на паузе |
 
+## Результаты спайков (TSK-003, TSK-004)
+
+**Статус.** Игру агент не запускает, поэтому спайки идут в два этапа. (1) **Статическая проверка по декомпилированному коду игры** (`pt-modding/code`) — сделана, итоги ниже; они не заменяют прогон в игре. (2) **Прогон в игре на копии сейва** — за владельцем. Инструмент прогона — спайк-код `Debug/SpikeCpuTransfer.cs` (TSK-003) и `Debug/SpikeAssets.cs` (TSK-004): отладочная сборка, флаги `acqActions` и `acqSpikes` в разделе `debug` файла `ptmod_settings.json`, кнопки в блоке «Отладка» на странице фичи в хабе, результаты — в `Player.log` строками `debug: spike 003: …` и `debug: spike 004: …`. Спайк-код написан отдельно от исполнителя (простые вызовы шагов design, без сделки вокруг), чтобы ответ был про игру, а не про наш код; после спайков владелец удаляет эти два файла и вносит итоги в таблицу ниже. Задачи TSK-003 и TSK-004 остаются открытыми до прогона.
+
+**Совпало с design (по коду):**
+
+- *Технологии без окон.* `ResearchSector.UpdateResearchCompletion` вызывает `company.AddTechnology(tech, showPopup)`, где `showPopup = company.IsPlayer && !isInitializing && !temporarilySupressPopup`; `temporarilySupressPopup` — `private bool`. Ванильный `UnlockNodeTechnology` делает то же самое (флаг, `Research.Progress = 1`, `Update(true)`, флаг обратно).
+- *Банкротство ИИ снимает CPU.* `AICompany.TriggerBankruptcy` вызывает `Cpu.TriggerRetirement()` для всех `GetCpus()` (`IsRetired = true`, `ContractManager.BreakAllContracts`, `StorageMath.SellStock`), поэтому семейства отделяются ДО банкротства (шаг 5 раньше шага 11).
+- *Контракты.* `BusinessContractManager.CheckForExpiredContracts` ежедневно удаляет контракты с `!IsActive`; `IsActive` включает `!Provider.IsBankrupt && !Client.IsBankrupt`, поэтому контракты цели переназначаются до `TriggerBankruptcy` (шаг 7 раньше шага 11). `BusinessContract.Initialize(provider, client)` публичный и ставит `ProviderID`/`ClientID` и ссылки.
+- *Сейв CPU.* `DataConverter.CpuToSaveObject` пишет `CompanyID = cpu.Company.SaveID` и `BaseID`; при загрузке `Base = DataFinder.FindCpu(BaseID)` ищет по `GetCpus()` всех владельцев в момент чтения, поэтому в списке игрока база стоит перед вариантами, а база семейства переходит вместе с ним.
+- *Кеши CPU.* `Cpu.manufacturer` и `Cpu.currentContract` — private-поля; геттер `Manufacturer` кеширует (`OutsourcedID != -1` → `FindCompany(OutsourcedID)`, иначе `Company`), поэтому при смене владельца кеши сбрасываются рефлексией; `MarkupPrice` у чужого (outsourced) CPU без активного контракта литейных услуг даёт 2,0.
+- *`Company.AddCpu` игрока* = `Player.AddCpu` + `OnNewCpu` + `OnNewHardware` + `ProductionWindow.AddCpu` + `MarketEventHandler.TriggerPgaEvent`; шаг 8 (отдельные вызовы) обходит PGA-событие и патч ядра P20 на `AddCpu` (`CpuReleased`).
+- *Оповещение о банкротстве.* `BankruptcyHandler.OnCompanyWentBankrupt` — полевое событие, вызвать его можно только рефлексией; единственный ванильный подписчик — `LicenseHelper` (для Intel и AMD ставит `X86LicenseHasBeenRevoked` и поднимает `OnX86LicenseRevoked` → `AIBehaviourController.ReformCyrux(true)` → «Cyrux no longer has patent issues!», не при загрузке и перемотке). Баннер банкротства ИИ рисует приватный `BankruptcyHandler.Bankrupt`, которого наш путь не вызывает.
+- *P3.* `AICompany.BankruptcyWarning(float, bool)` первой строкой выходит, если `MoneyAmount > negativeBalanceLimit`; без этого выхода идут `TriggerSolarFoundriesSpinOff` (только EMD+IDM), `ConsiderGoingFabless`, `SellProductionLinesToAvoidBankruptcy`. `TickBankruptcies` вызывает его на последний день дефолта и, если `MoneyAmount >= лимит`, затем `CancelDefault`. Цель не зарезервирована ядром (заняты `TickBankruptcies` — P10 и `UpdateUI` — P11).
+
+**Находки, изменившие реализацию:**
+
+1. *Проходов `Update(true)` может не хватить.* Один проход открывает один уровень зависимостей; в сцене 97 технологий, самая длинная цепочка — 26 (процессы 10 µm → 1 nm). Поэтому разблокировка идёт по уровням глубины с `Update(true)` после каждого уровня, а `techUnlockMaxPasses` (20) — только предохранитель добивочных проходов (шаг 3).
+2. *`Company.ExpandFactory(int, float, int waferId)`* берёт пластину через `Where(ID == waferId).First()` и бросает `InvalidOperationException`, если у игрока нет такой пластины, причём `ProductionCapacity` к этому моменту уже увеличена; `operatingCostIncrease` игнорируется. `Factory.AddLinesToWafer` молча ничего не делает без группы линий. План отображает отсутствующую пластину на наибольшую меньшую известную, а исполнитель сверяет `Factory.AmountOfLines` до и после (расхождение → `partial`).
+3. *`Divisions.FoundryServices`* читают только выбор литейщика (`CompanyDataProvider.GetFoundryCompanies`, `HardwareSelectorWindow`) и ИИ; в путях производства игрока флаг не читается. Контракт поставщика, перенесённый на игрока, по коду работает и без флага; флаг нужен, чтобы игрока выбирали литейщиком. `ProductionWindow.SetFoundryServicesToggle(true)` включает флаг.
+4. *`ContractValues[2]`* — число линий в абсолютном виде; `LinesPercentage()` пересчитывается от мощности поставщика сама, абсолютное число исполнитель не «поправляет».
+5. *Чужие (outsourced) CPU* AI-завод производит только при существующем контракте литейных услуг (`GetFoundryServicesContract(this, cpu.Company)`): CPU клиента без контракта у литейщика-цели не производился бы.
+
+**Прогон в игре (заполняет владелец; копия сейва, кнопки спайков):**
+
+| Пункт Acceptance | Кнопка спайка | Результат |
+|---|---|---|
+| TSK-003: семейство (база + вариант) от ИИ к игроку по шагам 5 и 8: CPU в окне производства, продаётся, OEM-контракты платят игроку | «Перенести семейство игроку» | не проверено |
+| TSK-003: `CpuTransferred` на каждый CPU, `CpuReleased` ни одного | строка `events:` того же итога | не проверено |
+| TSK-003: сохранить → загрузить: CPU у игрока, `Cpu.Base` найден, ошибок в `Player.log` нет | «Проверить CPU игрока (после загрузки)» | не проверено |
+| TSK-003: CPU, производившийся у литейщика без контракта | строки `after:` (наценка `markup`) | не проверено |
+| TSK-003: контракт цели-клиента на игрока, CPU производится по контракту | «Контракт цели-клиента → игроку», затем окно производства через день | не проверено |
+| TSK-003: сброс `Cpu.manufacturer`/`currentContract` рефлексией работает | строки `before:` и `after:` (`maker`, `markup`) | не проверено |
+| TSK-003: вывод для FR-8 — «как в design» или «снятие с компенсацией» (решение владельца) | — | не принято |
+| TSK-004: 5+ технологий с зависимостями без окон «Исследование завершено» | «Открыть N технологий цели» (N ≥ 5) | не проверено |
+| TSK-004: `ExpandFactory` на известной пластине добавляет линии; на неизвестной бросает исключение | «ExpandFactory: известная / неизвестная пластина» | не проверено |
+| TSK-004: контракт поставщика на игрока производит CPU клиента — с флагом литейных услуг и без | «Контракт поставщика цели → игроку», «Флаг … включить / выключить», «Отчёт: CPU клиентов на заводе игрока» (через день) | не проверено |
+| TSK-004: `OnCompanyWentBankrupt` для Intel даёт «У Cyrix больше нет проблем с патентами!» | «Вызвать OnCompanyWentBankrupt для цели» | не проверено |
+| TSK-004: prefix P3 в живом `TickBankruptcies` (выход без fabless, продажи линий и spin-off) | отдельной кнопки нет: сценарий M5 с действиями «Цель: баланс…», «Цель: DaysInDefault…» | не проверено |
+
 ## Testing Strategy
 
-### Юнит-тесты (`mod/tests/PTMod.Tests/RivalAcquisitions/`; мини-раннер ядра, `python mod/build.py --tests`)
+### Юнит-тесты (`mod/tests/PTMod.Tests/Features/RivalAcquisitions/`; мини-раннер ядра, `python mod/build.py --tests`, для одной фичи `python mod/build_feature.py rival-acquisitions --tests`)
 
 Атрибуты `[Test]`, `[Covers(typeof(X))]`, проверки `Assert.True/False/Equal/NotEqual/Near/InRange/Throws<T>/Fail`; каждый публичный тип `Logic` указан в `[Covers]`.
 
@@ -883,6 +924,8 @@ stateDiagram-v2
 - `AcquisitionPlanBuilderTests`: семейства CPU (база первой, снятая база включена); «Продать линии» → CPU, сделанные у цели, в `RetireCpuIds`; обязательное «Забрать линии», если цель делает CPU игрока; игрок-литейщик → CPU не переносятся; отображение пластины, которой нет у игрока, на меньшую; последствия для `UniqueID` 0, 1, 8; `OpexDeltaPerMonth`; контракты клиента цели: переход, конфликт эксклюзивности → в расторгаемые, игрок-литейщик → не переносятся; `EnableFoundryServices` только при `KeepLines` и флаге у цели.
 - `StakeMathTests`: цена доли (здорова/дефолт); дивиденд 0 при убытке и при нехватке денег у цели; поручение: пример `J = 94,5 млн`, `σ ≈ 35 %`, баланс цели после строго выше порога; отказ при превышении 49 %, лимита или денег игрока; `rescueTargetDebtLimitShare` вне (−1; 0] отклоняется валидатором.
 - `AcquisitionsBalanceTests`, `AcquisitionsStateSerializationTests`: валидация, round-trip DTO ↔ `JsonObject` без поля версии, устаревшие записи; случаи `_schema` проверяет ядро (mod-framework/TSK-016).
+- `DistressRulesTests`: письмо дефолта раз за эпизод; аукцион `дата + 365 дней` с последним днём включительно (AC-3.1: 1987-05-03 → 1988-05-02, AC-3.3: 1988-05-03 уже «Банкрот»); бэкфилл.
+- `AcqDebugMathTests` (только отладочная сборка), `DebugActionsSourceTests` (отладочный код целиком под `PTMOD_DEBUG`, список действий, журнал `debug:` у успешного действия и у отказа, спайки не трогают книги и исполнитель).
 
 ### Самопроверка на старте
 
@@ -890,11 +933,11 @@ stateDiagram-v2
 
 ### Ручные сценарии в игре (выполняет владелец)
 
-Подготовка: флаг отладки фичи в `ptmod_settings.json` → на странице фичи в хабе отладочные действия (TSK-021): «Дать игроку N млн», «Цель: баланс = k × D», «Цель: DaysInDefault = N», «Цель: обанкротить».
+Подготовка: отладочная сборка (обычный `python mod/build.py`; в `--release` отладочного кода нет) и флаг `"acqActions": true` в разделе `debug` файла `ptmod_settings.json` (`ModSettings.Debug("debug.acqActions")`). Тогда на странице фичи в хабе под кнопкой «Сделки» появляется блок «Отладка» (TSK-021, `Debug/AcquisitionsDebugActions.cs`): ползунок и кнопка «Дать игроку N млн» (100…5000, по умолчанию 2000); выпадающий список цели (все соперники, статус и дни дефолта в подписи) и строка с её балансом, лимитом `D` и днями в дефолте; «Цель: баланс = k × D» (ползунок `k` от −2 до 2, по умолчанию −1,2; `D = ModCredit.DebtLimitOf`); «Цель: DaysInDefault = N» (0…119, по умолчанию 119); «Цель: обанкротить» (ванильный путь: баланс −100 × D и 119 дней в дефолте, банкротство объявит сама игра на следующий день; −1,2 × D было бы мало: на последний день дефолта ИИ с заводом продаёт линии по одной, пока баланс не вернётся к −0,75 × D (`AIBehaviourController.SellProductionLinesToAvoidBankruptcy`), и выходит из дефолта). Сверх Acceptance два действия для проверок владельца: «Цель: закончить аукцион» (последний день аукциона банкрота становится вчерашним — проверка «после срока сделок нет», не ждать год) и «Сбросить срок между поглощениями» (несколько враждебных поглощений подряд для «10 сделок разных типов»). Каждое действие пишет в `Player.log` строку `[PTMod] [rival-acquisitions] INFO debug: …` и показывает короткое уведомление; отказ (нет цели, лимита `D`, открытого аукциона, игровой даты, денежных операций модов) тоже оставляет строку `debug: refused: …` с причиной — уведомление об отказе отсылает именно к ней; книги фичи меняют только эти два дополнительных действия. Для спайков TSK-003/TSK-004 добавляется флаг `"acqSpikes": true` (кнопки спайков в том же блоке, см. «Результаты спайков»). Действия есть только в отладочной сборке и только при флаге.
 
 - **M1. Враждебное поглощение.** 1) Новая игра «нормально», 1985. 2) Отладка: «Дать игроку 2 000 млн». 3) «Сделки» → самая маленькая здоровая компания → «Поглотить». **Ожидается:** превью с составляющими оценки, ценой, остатком, списком CPU и линий; итог для баланса отрицательный. 4) Подтвердить. **Ожидается:** баланс изменился на «итог»; линии добавились (окно управления линиями); CPU цели — в окне производства игрока; цель в таблице компаний — банкрот; письмо-итог; репутация −5. 5) Сохранить, загрузить. **Ожидается:** всё на месте, `Player.log` без `[PTMod]`-ошибок.
 - **M2. Покупка в дефолте.** 1) Отладка: «Цель: баланс = −1,2 × D». 2) Пройти 1 день. **Ожидается:** письмо «X в дефолте». 3) Действие письма → «Купить компанию (дефолт)». **Ожидается:** в превью отрицательный остаток (долг) и итог. 4) Подтвердить. **Ожидается:** баланс = прежний − цена + долг.
-- **M3. Аукцион банкрота.** 1) Отладка: «Цель: обанкротить» (через ванильный путь — баланс −1,2 × D и `DaysInDefault = 119`). 2) Пройти 1 день. **Ожидается:** ванильный тост банкротства ИИ, письмо об аукционе. 3) «Купить активы». **Ожидается:** CPU, бывшие активными, снова в производстве у игрока; долг банкрота не перешёл.
+- **M3. Аукцион банкрота.** 1) Отладка: «Цель: обанкротить» (через ванильный путь — баланс −100 × D и `DaysInDefault = 119`; при −1,2 × D на последний день дефолта ИИ с заводом продаёт линии по одной, пока баланс не вернётся к −0,75 × D (`AIBehaviourController.SellProductionLinesToAvoidBankruptcy`), и выходит из дефолта). 2) Пройти 1 день. **Ожидается:** ванильный тост банкротства ИИ, письмо об аукционе. 3) «Купить активы». **Ожидается:** CPU, бывшие активными, снова в производстве у игрока; долг банкрота не перешёл.
 - **M4. Доля и дивиденды.** 1) Купить 25 % у прибыльной компании. **Ожидается:** с игрока списано, у цели прибавилось. 2) Промотать до 1-го числа. **Ожидается:** уведомление о дивидендах, в отчёте игрока доход «Проценты».
 - **M5. Поручение на спасение.** 1) Доля 10 % + поручение с лимитом. 2) Отладка: «Цель: баланс = −1,5 × D», «Цель: DaysInDefault = 119». 3) Пройти 1 день. **Ожидается:** цель не обанкротилась, баннер ИИ-банкротства не появился, доля выросла, письмо-итог; линии цели на месте (не проданы), цель не ушла в fabless. 4) Повторить на AMD-IDM (`UniqueID` 1) до 2009 года. **Ожидается:** выделение GlobalFoundries не сработало. 5) Поручение с лимитом ниже нужной суммы. **Ожидается:** письмо «Спасти не удалось», ванильное банкротство.
 - **M6. Intel и x86.** 1) Игра 1990, поглотить Intel. **Ожидается:** в превью блок «Последствия», кнопка активна только после галочки. 2) После сделки — ванильное уведомление «У Cyrix больше нет проблем с патентами!» (`AIBehaviourController.ReformCyrux`).
@@ -905,6 +948,26 @@ stateDiagram-v2
 ### Совместимость сейвов (автоматически)
 
 Round-trip секции, пример из этого документа, устаревшие записи, сохранность чужих секций (через `ModSave`).
+
+## Отступления реализации от первоначального дизайна и открытые вопросы
+
+**Отступления (внесены в это описание; код за ними уже стоит).**
+
+- `StakeData.lastDividend` — последний выплаченный дивиденд для вкладки «Мои доли» (сейв без поля читает 0).
+- Публичные типы `DealType`, `DealRecord`, `WaferLines` лежат в `Api/Contracts/` (их читают другие фичи, а сборка фичи-потребителя берёт только `Api/` зависимостей). Обе сборки тестов (`build.py: build_tests`, `build_feature.py: build_feature_tests`) компилируют `Api/Contracts` рядом с `Logic/` через `build.pure_api_folders` (`PURE_API_FOLDERS = Model, Dto, Contracts`), поэтому `Logic` фичи собирается под тестами с настоящими типами; файла-копии `Logic/Model/ContractStubs.cs` в дереве нет и быть не должно (иначе CS0101). Корневой `Api/RivalAcquisitionsApi.cs` (статический фасад на `ModHooks` и `ModFeatures`) в тестовые сборки не входит. Запрос к интегратору (`mod/requests/rival-acquisitions.md`, п. 1) закрыт.
+- Поля снимков называются `CreditLimit`, а не `DebtLimit`: тест ядра запрещает запись `.DebtLimit` вне классов кредита.
+- В чистую логику вынесены: порядок шагов и частичность (`DealExecution`, `IDealWorld`), правила дефолтов и аукционов (`DistressRules`), книга долей (`StakeBook`), чтение и запись секции (`AcquisitionsSection`: `Read`, `Write`, `IsNewerThanSupported`), модели окон (`Logic/Ui/*`), правила передачи состояния смежных фич (`RelatedStateTransfer`, `RelatedStatePlan`, `IRelatedFeatures`). Игровая сторона шага 9 — `Services/GameRelatedFeatures`: API `cpu-architectures` и `gpu-product-line` вызываются по имени (`Assembly.GetType` + `MethodInfo`), без compile-time ссылок, потому что `feature_deps.json` не знает этих зависимостей; нет типа или метода — вызов пропускается, в журнале сделки пометка, сделка не блокируется; при старте в лог пишется, найдены ли три метода.
+- Сейв новее мода (NFR-3): ядро отдаёт пустую секцию, но не говорит, чья секция новее; на `ModSave.AfterRead` при статусе `Newer` фича читает боковой файл, сверяет `_schema` своей секции и вызывает `AcquisitionsState.CloseOffers()`; `DealRules.Quote` для всех видов сделок отвечает `acq.reason.saveNewer`.
+- Самопроверка целей P1–P3 и членов рефлексии пишет находки в лог фичи (`AcquisitionPatches.CheckTargets`), а не в `ModSelfCheck`: у ядра нет API для строк самопроверки от фич.
+- Блок «Что переходит» превью получил строки о смежных фичах (`acq.preview.relatedArch`, `acq.preview.relatedGpu`) и предупреждение для банкрота (`acq.preview.gpuNotPassed`); ключей в таблицах ru/en теперь 281 (таблица «Ключи строк» выше — подмножество).
+- Заметки `DealRecord.notes` вкладка «История» показывает только у частичных сделок.
+- Отладка (TSK-017, TSK-021 и спайки): `Debug/ApiEventProbe.cs`, `Debug/AcquisitionsDebugActions.cs`, `Debug/SpikeCpuTransfer.cs`, `Debug/SpikeAssets.cs` и `Logic/AcqDebugMath.cs` целиком под `#if PTMOD_DEBUG`; флаги — раздел `debug` файла `ptmod_settings.json`: `acqApiProbe`, `acqApiProbeThrow`, `acqActions`, `acqSpikes`.
+
+**Открытые вопросы владельца (код ведёт себя по design; без решения владельца не менять).**
+
+1. **Арбитраж «Продать линии».** Завод в оценке стоит `kFab × ManufacturingDivisionValue = 2 × SaleCost`, поэтому цена его части — `m × 2 × SaleCost × Ch × (1 − σ_p)`, а продажа линий возвращает игроку `1,0 × SaleCost` отдельно (инвариант `NetCash < 0` её не учитывает). Для аукциона банкрота `0,4 × 2 = 0,8 < 1`: купить завод и сразу продать линии выгодно на `0,2 × SaleCost` (при `Ch = 0,5` — на `0,6`), если нижняя граница `E_min` не выше. При максимальных скидках (`Ch = 0,5`, `σ_p = 0,49`, то есть `Ch × (1 − σ_p) = 0,255`) цена части завода против `1,0 × SaleCost` выручки от продажи линий: дефолт — около `0,36 × SaleCost`, враждебное поглощение — около `0,77 × SaleCost` (около `0,89`, если доля рынка цели больше вашей); без скидок эти две сделки выше `1,0`. Это противоречит смыслу решения «арбитраж закрыт». Варианты: (A) при «Продать линии» поднимать нижнюю границу цены до `C⁺ + SaleIncome + E_min` (план знает `SaleIncome`); (B) оценивать завод для продажи не ниже `SaleCost`; (C) оставить как есть. Подробности и числа — `mod/requests/rival-acquisitions.md`, п. 5 и п. 10.
+2. **Вывод по FR-8/FR-9** после прогона спайков: «как в design» или «снятие CPU с компенсацией».
+3. **`techUnlockMaxPasses`.** Спайк рекомендует 30 при цепочке до 26; сейчас 20, исполнитель открывает технологии по уровням глубины, поэтому параметр — предохранитель. Поднимать ли значение по умолчанию.
 
 ## Migration and Compatibility
 

@@ -10,13 +10,14 @@ using ButtonUI = ProcessorTycoon.UI.ButtonUI;
 namespace PTMod.Features.BankruptcyRecovery
 {
     /// <summary>
-    /// The "Loans" tab of the rescue menu (FR-6, FR-7, FR-10; design.md "UI"): the table of the loans of the feature with "Pay back early", the startup credit line
+    /// The "Loans" tab of the rescue menu (FR-6, FR-7, FR-10; design.md "UI"): the table of the loans of the feature with "Pay back" (all of a loan or a part of it: a slider
+    /// picks the share of the debt, FR-10 item 3), the startup credit line
     /// (the limit, the drawn part, the free part, the closing date, a slider for the sum, "Take", "Pay back" and the switch "Auto draw"), and the bridge loan (a slider from
     /// 25 to 100 percent of the most the player may take, the terms, "Take"). Every operation asks first (<see cref="ConfirmPlanner"/>, <c>ModUI.Confirm</c>) and goes through
     /// the services; a button that cannot work is inactive and says why.
     /// <para>
     /// A slider of the core shows its plain number, so the sum is picked as a share of the limit (the whole limit is 100) and written beside it, on the button
-    /// (<see cref="AmountSteps"/>). The share of the credit line is one for both its buttons.
+    /// (<see cref="AmountSteps"/>). The share of the credit line is one for both its buttons; the share of the early repayment is one for the buttons of all the loans.
     /// </para>
     /// </summary>
     internal static partial class RecoveryWindow
@@ -25,14 +26,16 @@ namespace PTMod.Features.BankruptcyRecovery
         private const float MoneyWidth = 100f;
         private const float RateWidth = 60f;
         private const float MonthsWidth = 70f;
-        private const float PrepayWidth = 190f;
+        private const float PrepayWidth = 210f;
 
         private static int _linePercent = AmountSteps.MaxPercent;
+        private static int _prepayPercent = AmountSteps.MaxPercent;
         private static int _bridgePercent = AmountSteps.MaxPercent;
 
         private static ButtonUI _drawButton;
         private static ButtonUI _repayButton;
         private static ButtonUI _bridgeButton;
+        private static readonly List<KeyValuePair<string, ButtonUI>> PrepayButtons = new List<KeyValuePair<string, ButtonUI>>();   // loan id and its button, to redraw on a new share
         private static TMP_Text _lineReasons;
         private static TMP_Text _bridgeTerms;
 
@@ -42,6 +45,7 @@ namespace PTMod.Features.BankruptcyRecovery
             _drawButton = null;
             _repayButton = null;
             _bridgeButton = null;
+            PrepayButtons.Clear();
             _lineReasons = null;
             _bridgeTerms = null;
         }
@@ -66,6 +70,9 @@ namespace PTMod.Features.BankruptcyRecovery
             }
             else
             {
+                _prepayPercent = AmountSteps.ClampPercent(_prepayPercent, AmountSteps.PrepayMinPercent);
+                ModUI.Slider(_body, L("rec.loans.prepay.share"), AmountSteps.PrepayMinPercent, AmountSteps.MaxPercent, AmountSteps.PercentStep, _prepayPercent, OnPrepayShare);
+
                 RectTransform head = RecoveryUi.Row(_body, 22f, 6f);
                 LoanCell(head, "rec.loans.col.kind", KindWidth, 1f, TextAlignmentOptions.MidlineLeft);
                 LoanCell(head, "rec.loans.col.outstanding", MoneyWidth, 0f, TextAlignmentOptions.MidlineRight);
@@ -102,12 +109,37 @@ namespace PTMod.Features.BankruptcyRecovery
             RecoveryUi.Cell(row, RecoveryViews.Money(loan.Payment), MoneyWidth, 0f, TextAlignmentOptions.MidlineRight);
             RecoveryUi.Cell(row, RecoveryUi.Num(loan.MonthsLeft), MonthsWidth, 0f, TextAlignmentOptions.MidlineRight);
 
-            // FR-10 item 3: the balance has to cover the repayment
-            double balance = feature.Finance.Money;
-            string reason = balance >= loan.Outstanding ? null : L("rec.loans.prepay.noMoney", RecoveryViews.Money(balance), RecoveryViews.Money(loan.Outstanding));
+            // FR-10 item 3: the share of the debt picked on the slider (all of it at 100 percent); the balance has to cover the repayment
+            double amount = AmountSteps.PrepayAmount(loan.Outstanding, _prepayPercent);
             string id = loan.Id;
-            ButtonUI button = RecoveryUi.Button(row, L("rec.loans.prepay"), () => OnPrepay(id), reason, ButtonStyle.Standard, false);
+            ButtonUI button = RecoveryUi.Button(row, L("rec.loans.prepay", RecoveryViews.Money(amount)), () => OnPrepay(id), PrepayReason(feature, amount), ButtonStyle.Standard, false);
             RecoveryUi.SetWidth(button, PrepayWidth, 0f);
+            if (button != null) PrepayButtons.Add(new KeyValuePair<string, ButtonUI>(id, button));
+        }
+
+        // Why the repayment of this sum cannot be made, or null: the share rounds down to nothing (a very small debt), or the balance does not cover it.
+        private static string PrepayReason(BankruptcyRecoveryFeature feature, double amount)
+        {
+            if (!(amount > 0.0)) return L("rec.loans.prepay.tooSmall");
+            double balance = feature.Finance.Money;
+            return balance >= amount ? null : L("rec.loans.prepay.noMoney", RecoveryViews.Money(balance), RecoveryViews.Money(amount));
+        }
+
+        // The slider moved: every button of the table shows the sum of the new share and whether it can be paid.
+        private static void OnPrepayShare(float value)
+        {
+            BankruptcyRecoveryFeature feature = BankruptcyRecoveryFeature.Instance;
+            if (feature == null) return;
+            _prepayPercent = AmountSteps.ClampPercent((int)Math.Round(value), AmountSteps.PrepayMinPercent);
+
+            foreach (KeyValuePair<string, ButtonUI> entry in PrepayButtons)
+            {
+                LoanView loan;
+                if (!FindLoan(feature, entry.Key, out loan)) continue;
+                double amount = AmountSteps.PrepayAmount(loan.Outstanding, _prepayPercent);
+                RecoveryUi.SetCaption(entry.Value, L("rec.loans.prepay", RecoveryViews.Money(amount)));
+                RecoveryUi.SetEnabled(entry.Value, PrepayReason(feature, amount));
+            }
         }
 
         private static void OnPrepay(string loanId)
@@ -117,10 +149,10 @@ namespace PTMod.Features.BankruptcyRecovery
 
             LoanView loan;
             if (!FindLoan(feature, loanId, out loan)) return;
-            double amount = loan.Outstanding;
-            if (!(amount > 0.0) || feature.Finance.Money < amount) return;
+            double amount = AmountSteps.PrepayAmount(loan.Outstanding, _prepayPercent);
+            if (PrepayReason(feature, amount) != null) return;
 
-            Confirmation plan = Planner(feature).Prepay(RecoveryViews.KindName(loan.Kind.ToString()), amount, 0.0);
+            Confirmation plan = Planner(feature).Prepay(RecoveryViews.KindName(loan.Kind.ToString()), amount, loan.Outstanding - amount);
             Ask(plan, () =>
             {
                 BankruptcyRecoveryFeature now = BankruptcyRecoveryFeature.Instance;

@@ -63,7 +63,7 @@
 
 - [x] **TSK-003**: `GenerationCatalog` и `SocketIdentity` (авто 2026-10-10)
   - **Requirement**: FR-1, FR-6
-  - **Deliverables**: `mod/src/PTMod/Features/PlatformGenerations/Logic/GenerationCatalog.cs`, `.../Logic/SocketIdentity.cs`, `mod/tests/PTMod.Tests/PlatformGenerations/GenerationCatalogTests.cs`, `.../SocketIdentityTests.cs`
+  - **Deliverables**: `mod/src/PTMod/Features/PlatformGenerations/Logic/GenerationCatalog.cs`, `.../Logic/SocketIdentity.cs`, `mod/tests/PTMod.Tests/Features/PlatformGenerations/GenerationCatalogTests.cs`, `.../SocketIdentityTests.cs`
   - **Acceptance**:
     - встроенный контент: 10 поколений без ошибок;
     - тесты на дубликат сокета, несуществующий корпус или память, дубликат `order`, выход за диапазон — запись пропущена, ошибка в списке;
@@ -76,7 +76,7 @@
 
 - [x] **TSK-004**: `InstalledBaseLedger` (авто 2026-10-10)
   - **Requirement**: FR-4
-  - **Deliverables**: `mod/src/PTMod/Features/PlatformGenerations/Logic/InstalledBaseLedger.cs`, `mod/tests/PTMod.Tests/PlatformGenerations/InstalledBaseLedgerTests.cs`
+  - **Deliverables**: `mod/src/PTMod/Features/PlatformGenerations/Logic/InstalledBaseLedger.cs`, `mod/tests/PTMod.Tests/Features/PlatformGenerations/InstalledBaseLedgerTests.cs`
   - **Acceptance**:
     - AC-4.1 (≈ 83 120 при допуске 1);
     - `ApplyMonth` × 120 ≡ `RebuildFull` (допуск 0.1 %);
@@ -88,7 +88,7 @@
 
 - [x] **TSK-005**: `PlatformTimeline` — анонсы, запуски, ранние последователи (авто 2026-10-10)
   - **Requirement**: FR-2, FR-3
-  - **Deliverables**: `mod/src/PTMod/Features/PlatformGenerations/Logic/PlatformTimeline.cs`, `mod/tests/PTMod.Tests/PlatformGenerations/PlatformTimelineTests.cs`
+  - **Deliverables**: `mod/src/PTMod/Features/PlatformGenerations/Logic/PlatformTimeline.cs`, `mod/tests/PTMod.Tests/Features/PlatformGenerations/PlatformTimelineTests.cs`
   - **Acceptance**:
     - анонс не дублируется;
     - запуск раньше `announceYear` → анонс и запуск в один день;
@@ -100,7 +100,7 @@
 
 - [x] **TSK-006**: `ChurnDetector` и появления сокетов (авто 2026-10-10)
   - **Requirement**: FR-6
-  - **Deliverables**: `mod/src/PTMod/Features/PlatformGenerations/Logic/ChurnDetector.cs`, расширение `PlatformTimeline.OnCpuReleased`, `mod/tests/PTMod.Tests/PlatformGenerations/ChurnDetectorTests.cs`
+  - **Deliverables**: `mod/src/PTMod/Features/PlatformGenerations/Logic/ChurnDetector.cs`, расширение `PlatformTimeline.OnCpuReleased`, `mod/tests/PTMod.Tests/Features/PlatformGenerations/ChurnDetectorTests.cs`
   - **Acceptance**:
     - AC-6.1 (`severity` 0.667, штраф 6.67 %);
     - возраст ≥ 36 → 0;
@@ -111,7 +111,7 @@
 
 - [x] **TSK-007**: `RatingEffectModel` (авто 2026-10-10)
   - **Requirement**: FR-5
-  - **Deliverables**: `mod/src/PTMod/Features/PlatformGenerations/Logic/RatingEffectModel.cs`, `mod/tests/PTMod.Tests/PlatformGenerations/RatingEffectModelTests.cs`
+  - **Deliverables**: `mod/src/PTMod/Features/PlatformGenerations/Logic/RatingEffectModel.cs`, `mod/tests/PTMod.Tests/Features/PlatformGenerations/RatingEffectModelTests.cs`
   - **Acceptance**:
     - AC-5.1 (1.075 / 1.0375), AC-5.2 (`B_ib` 0.0375);
     - затухание `B_early` (0.048 через 12 мес.) и `P_churn` (0.0333 через 12 мес.);
@@ -121,7 +121,7 @@
 
 - [x] **TSK-008**: `OemAdoptionModel` (с полной платформой), `Roll`, `OemPreferences`, `ContractKeyBuilder` (авто 2026-10-10)
   - **Requirement**: FR-8, NFR-4
-  - **Deliverables**: `mod/src/PTMod/Features/PlatformGenerations/Logic/OemAdoptionModel.cs`, `.../Logic/OemPreferences.cs`, `.../Logic/ContractKeyBuilder.cs`, `mod/tests/PTMod.Tests/PlatformGenerations/OemAdoptionModelTests.cs`
+  - **Deliverables**: `mod/src/PTMod/Features/PlatformGenerations/Logic/OemAdoptionModel.cs`, `.../Logic/OemPreferences.cs`, `.../Logic/ContractKeyBuilder.cs`, `mod/tests/PTMod.Tests/Features/PlatformGenerations/OemAdoptionModelTests.cs`
   - **Acceptance**:
     - AC-8.1 (0.475);
     - незапущенное → 0;
@@ -137,7 +137,7 @@
 
 - [x] **TSK-009**: `PlatformEffectEngine` и `PlatformModifierProvider` — каналы и кэш (авто 2026-10-10)
   - **Requirement**: FR-5, FR-8, FR-10, FR-13, NFR-1, NFR-2, NFR-5, NFR-7
-  - **Deliverables**: `mod/src/PTMod/Features/PlatformGenerations/Logic/PlatformEffectEngine.cs`, `.../PlatformModifierProvider.cs`, `.../GameAdapter.cs`, `mod/tests/PTMod.Tests/PlatformGenerations/PlatformEffectEngineTests.cs`
+  - **Deliverables**: `mod/src/PTMod/Features/PlatformGenerations/Logic/PlatformEffectEngine.cs`, `.../PlatformModifierProvider.cs`, `.../GameAdapter.cs`, `mod/tests/PTMod.Tests/Features/PlatformGenerations/PlatformEffectEngineTests.cs`
   - **Acceptance**:
     - `ModModifiers.RegisterProvider(FeatureId, ModChannels.MarketRatingCpu, Rating, reasonKey: "pg.reason.rating")` и `ModModifiers.RegisterReasonedProvider(FeatureId, ModChannels.ContractSignChance, Chance)` зарегистрированы один раз в `Register`; `OnEnabled`/`OnDisabled` их не пересоздают;
     - `Rating` — поиск в `Dictionary<Cpu, float[2]>` по `ctx.Cpu`/`ctx.Segment` (`Segment.Industries` → индекс 1) без аллокаций (проверка в тест-бенче);
@@ -150,7 +150,7 @@
 
 - [x] **TSK-010**: Обработчики `ModEvents.CpuReleased` и `CpuTransferred` (авто 2026-10-10; вызов `Notifier` — через шов `IPlatformNotifier`, реализация `PlatformNotifier` — TSK-013; самопроверка `IsReserved` — TSK-020)
   - **Requirement**: FR-3, FR-4, FR-6
-  - **Deliverables**: обработчики в `mod/src/PTMod/Features/PlatformGenerations/PlatformGenerationsFeature.cs` (или `.../ReleaseHandlers.cs`), подписка `ModEvents.CpuReleased += …`, `ModEvents.CpuTransferred += …` в `Register`
+  - **Deliverables**: обработчики в `mod/src/PTMod/Features/PlatformGenerations/PlatformGenerationsFeature.cs` (или `.../PlatformReleaseHandlers.cs`), подписка `ModEvents.CpuReleased += …`, `ModEvents.CpuTransferred += …` в `Register`
   - **Acceptance**:
     - при `duringFastForward = true` или `isVariant = true` обработчик выходит сразу;
     - иначе вызывает `Timeline.OnCpuReleased`, `Provider.UpdateCpu`, `ModModifiers.Invalidate` и уведомления (`Notifier`);
@@ -171,7 +171,7 @@
 
 - [x] **TSK-012**: `Reconstruction` — один алгоритм для конца перемотки, старых сейвов и повторного включения (авто 2026-10-10)
   - **Requirement**: FR-12, FR-13, NFR-3
-  - **Deliverables**: `mod/src/PTMod/Features/PlatformGenerations/Logic/Reconstruction.cs`, `mod/tests/PTMod.Tests/PlatformGenerations/ReconstructionTests.cs`
+  - **Deliverables**: `mod/src/PTMod/Features/PlatformGenerations/Logic/Reconstruction.cs`, `mod/tests/PTMod.Tests/Features/PlatformGenerations/ReconstructionTests.cs`
   - **Acceptance**:
     - на синтетическом наборе CPU (год, `SaveID`, компания, корпус): анонсы по `announceYear ≤ года`, запуск — минимальный `Cpu.Year` (1 января), ранние последователи по `(Year, SaveID)` в окне, появления сокетов с `severity` 0;
     - идемпотентность: повторный запуск ничего не меняет; результат один для «конец перемотки», «старый сейв без секции» и «повторное включение»;
@@ -243,7 +243,7 @@
 
 - [x] **TSK-019**: Строки `pg.*` (ru, en) (авто 2026-10-10; `python install.py --check` целиком не запускался (нет модуля `pefile`, скачивать нельзя), проверка исходников мода `mods.check_mod_sources` дала 0 ошибок и 0 предупреждений)
   - **Requirement**: NFR-6
-  - **Deliverables**: `mod/src/PTMod/L10n/ru.json`, `mod/src/PTMod/L10n/en.json` (раздел `pg.*`)
+  - **Deliverables**: `mod/src/PTMod/L10n/ru/platform-generations.json`, `mod/src/PTMod/L10n/en/platform-generations.json` (раздел `pg.*`)
   - **Acceptance**:
     - каждый ключ из кода есть в обоих файлах; `python install.py --check` не находит расхождений ru/en и чужих префиксов;
     - числа через `StringFormatter.FloatToIntString`.
@@ -260,7 +260,7 @@
 
 - [x] **TSK-021**: Тесты совместимости сейвов и детерминизма (авто 2026-10-10)
   - **Requirement**: NFR-3, NFR-4
-  - **Deliverables**: `mod/tests/PTMod.Tests/PlatformGenerations/SaveModelTests.cs`, фикстуры `mod/tests/PTMod.Tests/PlatformGenerations/Fixtures/*.ptmod.json`
+  - **Deliverables**: `mod/tests/PTMod.Tests/Features/PlatformGenerations/SaveModelTests.cs`, фикстуры `mod/tests/PTMod.Tests/Features/PlatformGenerations/Fixtures/*.ptmod.json`
   - **Acceptance**:
     - фикстуры без секции, с `_schema` 1 и 99 грузятся (для `_schema` 99 секцию сохраняет ядро, фича работает с реконструкцией);
     - повторное назначение предпочтений тому же набору контрактов с тем же сидом даёт 100 % совпадение;
@@ -269,7 +269,7 @@
 
 - [x] **TSK-022**: Офлайн-симуляция баланса (авто 2026-10-10)
   - **Requirement**: NFR-5, NFR-7, FR-5, FR-6, FR-8
-  - **Deliverables**: `mod/tests/PTMod.Tests/PlatformGenerations/BalanceSimulationTests.cs`
+  - **Deliverables**: `mod/tests/PTMod.Tests/Features/PlatformGenerations/BalanceSimulationTests.cs`
   - **Acceptance**:
     - 14 синтетических компаний 1971–2030;
     - min/max множителя рейтинга в `[0.85; 1.20]` (практически `[0.90; 1.16]`), шанса — в `[0.40; 1.40]`;
@@ -279,9 +279,9 @@
     - отчёт min/max/среднее печатается в вывод теста (для владельца).
   - **Depends**: TSK-007, TSK-008
 
-- [ ] **TSK-023**: Описание фичи для игроков (Частично: ключи `pg.hub.*` и страница фичи в хабе готовы, Acceptance (числа `balance.json`, пример «30 % базы → +7.5 %») проверяется тестом; раздел «Поколения платформ» лежит в `mod/src/PTMod/Features/PlatformGenerations/README.section.md`, а не в `mod/README.md` — этого файла нет в дереве и он не принадлежит фиче, перенос за интегратором)
+- [x] **TSK-023**: Описание фичи для игроков (авто 2026-10-11)
   - **Requirement**: FR-9, FR-13
-  - **Deliverables**: ключи `pg.hub.*` с описанием в `mod/src/PTMod/L10n/*.json`; раздел «Поколения платформ» в `mod/README.md` (как работает база, ранний переход, смена сокета, OEM, полная платформа; таблица поколений с реальными названиями сокетов)
+  - **Deliverables**: ключи `pg.hub.*` с описанием в `mod/src/PTMod/L10n/{ru,en}/platform-generations.json`; раздел «Поколения платформ» в корневом `README.md` (как работает база, ранний переход, смена сокета, OEM, полная платформа; таблица поколений с реальными названиями сокетов)
   - **Acceptance**: описание совпадает с числами `balance.json` по умолчанию; есть пример «30 % базы → +7.5 %».
   - **Depends**: TSK-019
 
@@ -343,7 +343,7 @@ TSK-001…TSK-023 ──> TSK-024 (владелец)
 | TSK-020 Самопроверка и замеры | Complete (авто 2026-10-10, кусок 5: `Logic/PlatformPerf.cs` (таймеры `ApplyMonth`, `RebuildFull`, `Reconstruction.Run`, `RebuildCache` против бюджетов дизайна, одно предупреждение за сессию, счётчики вызовов провайдеров за день, строка в `ModLog.Debug` при `VerboseLog`), `Logic/PlatformSelfCheckBook.cs` (таблица из 36 членов игры, в т. ч. `ProjectReleaseWindow.Open`, `CustomSocket.CustomHardwareID`, `Cpu.Memory`, `Memory.Name`, `CpuBase.Market`, `DateController.MonthsSinceStart`, `ContractManager.OnNewContracts`), `PlatformSelfCheck.cs` (рефлексия, патч применён и не закреплён ядром, `AddCpu` закреплён ядром, подписки на `CpuReleased`/`CpuTransferred`, провайдеры и каналы); запуск один раз в `OnEnabled`, результат на странице фичи в хабе; тесты `PlatformPerfTests`, `PlatformSelfCheckTests`; в игре не запускалось — TSK-024) |
 | TSK-021 Совместимость сейвов, детерминизм | Complete (авто 2026-10-10, кусок 5: `SaveModelTests` (20 тестов) и три фикстуры `Fixtures/{no-section,schema-1,schema-99}.ptmod.json` на настоящем `SideFileModel`; без секции и `_schema` 99 — реконструкция, результат совпадает с хронологией фикстуры `schema-1`; `_schema` 99 ядро возвращает как прочитало; чужие секции не меняются; предпочтения 400 контрактов с одним сидом совпадают на 100 % в повторном назначении и после сохранения/загрузки) |
 | TSK-022 Офлайн-симуляция баланса | Complete (авто 2026-10-10, кусок 5: `PlatformSimulator` + `BalanceSimulationTests` (19 тестов), 14 компаний 1971–2030 через настоящие модели; рейтинг 0.944…1.159 (Промышленность 0.972…1.080), шанс 0.502…1.375; закрытый сокет с 40 % базы даёт ×1.10; ИИ с переходом раз в 5 лет — 0 штрафов; смесь с множителями других фич идёт через настоящий `ChannelRegistry` ядра, итог в [0.5; 2.0], кламп вклад фичи не повышает; одинаковый результат при другом ключе игрока; отчёт min/max/среднее печатается в вывод теста) |
-| TSK-023 Описание для игроков | Partial (авто 2026-10-10, кусок 5: ключи `pg.hub.guide.*` и `pg.hub.selfcheck.*` в ru и en, `Logic/PlatformGuide.cs` строит пять блоков (база, ранний переход, смена сокета, OEM, полная платформа) и список поколений с числами действующего баланса, страница фичи в хабе их показывает; раздел «Поколения платформ» — `Features/PlatformGenerations/README.section.md`, тест `PlatformGuideTests` требует, чтобы он был ровно описанием баланса по умолчанию и содержал пример «30 % базы → +7.5 %» и таблицу с реальными названиями сокетов; перенос в `mod/README.md` — за интегратором) |
+| TSK-023 Описание для игроков | Complete (авто 2026-10-11, кусок 5: ключи `pg.hub.guide.*` и `pg.hub.selfcheck.*` в ru и en, `Logic/PlatformGuide.cs` строит пять блоков (база, ранний переход, смена сокета, OEM, полная платформа) и список поколений с числами действующего баланса, страница фичи в хабе их показывает; раздел «Поколения платформ» — `Features/PlatformGenerations/README.section.md`, тест `PlatformGuideTests` требует, чтобы он был ровно описанием баланса по умолчанию и содержал пример «30 % базы → +7.5 %» и таблицу с реальными названиями сокетов; раздел перенесён в корневой `README.md`, проверено 2026-10-11, побайтно совпадает с `README.section.md`) |
 | TSK-024 Ручная проверка в игре (владелец) | Pending |
 
 ## Покрытие требований

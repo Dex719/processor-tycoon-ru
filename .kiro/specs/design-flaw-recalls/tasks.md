@@ -18,7 +18,7 @@
 
 ### Implementation Strategy
 
-- Чистая логика без ссылок на Unity и игру — в `mod/src/PTMod/Features/DesignFlawRecalls/Logic/` (общее подмножество API .NET Framework 4.8 и `mscorlib` Unity: без `init`, `record`, `Index`, `Range`); тесты — `mod/tests/PTMod.Tests/DesignFlawRecalls/` (мини-раннер ядра: `[Test]`, `[Covers(typeof(X))]`, `Assert.*`; запуск `python mod/build.py --tests`; каждый публичный тип `Logic/` указан в `[Covers]`).
+- Чистая логика без ссылок на Unity и игру — в `mod/src/PTMod/Features/DesignFlawRecalls/Logic/` (общее подмножество API .NET Framework 4.8 и `mscorlib` Unity: без `init`, `record`, `Index`, `Range`); тесты — `mod/tests/PTMod.Tests/Features/DesignFlawRecalls/` (мини-раннер ядра: `[Test]`, `[Covers(typeof(X))]`, `Assert.*`; запуск `python mod/build.py --tests`; каждый публичный тип `Logic/` указан в `[Covers]`).
 - Сборка — `python mod/build.py --game-dir <папка игры> [--tests]` (Roslyn `csc` из VS Build Tools, результат `mod/build/PTMod.dll`).
 - Адаптеры к игре (`GameCpuView`, подписки на `ModEvents`, тики) — тонкие, с `ModHooks.Guard` на границе. Собственных патчей на `Company.AddCpu` и `AICompany.AddCpu` нет.
 - Все числа — в `mod/src/PTMod/Content/design-flaw-recalls/flaws.json`, тексты — в `mod/src/PTMod/L10n/{ru,en}.json` (ключи `dfr.*`).
@@ -68,7 +68,7 @@
 
 - [x] **TSK-002**: Контент баланса и валидатор (авто 2026-10-10)
   - **Requirement**: FR-2, FR-3, FR-15, FR-20, NFR-7
-  - **Deliverables**: `mod/src/PTMod/Content/design-flaw-recalls/flaws.json`, `mod/src/PTMod/Features/DesignFlawRecalls/Logic/FlawBalance.cs` (DTO), `mod/src/PTMod/Features/DesignFlawRecalls/Logic/FlawContentValidator.cs`, `mod/tests/PTMod.Tests/DesignFlawRecalls/FlawContentValidatorTests.cs`
+  - **Deliverables**: `mod/src/PTMod/Content/design-flaw-recalls/flaws.json`, `mod/src/PTMod/Features/DesignFlawRecalls/Logic/FlawBalance.cs` (DTO), `mod/src/PTMod/Features/DesignFlawRecalls/Logic/FlawContentValidator.cs`, `mod/tests/PTMod.Tests/Features/DesignFlawRecalls/FlawContentValidatorTests.cs`
   - **Acceptance**:
     - `flaws.json` совпадает с примером design (раздел Data Models), включая `risk.kRush`, `rush`, `responses.pendingGraceDays`; блока `aiCaution` нет;
     - валидатор проверяет каждый диапазон из раздела Security (в том числе `kRush`, `rush.timeCut`, `rush.costMultiplier`, `pendingGraceDays`, префикс `dfr.` у `nameKey`) и подставляет значения по умолчанию;
@@ -78,7 +78,7 @@
 
 - [x] **TSK-003**: Секция сохранения (авто 2026-10-10)
   - **Requirement**: FR-16, NFR-3, NFR-7
-  - **Deliverables**: `mod/src/PTMod/Features/DesignFlawRecalls/Save/FlawSaveData.cs`, `mod/src/PTMod/Features/DesignFlawRecalls/Save/FlawSaveSection.cs`, `mod/tests/PTMod.Tests/DesignFlawRecalls/FlawSaveSectionTests.cs`
+  - **Deliverables**: `mod/src/PTMod/Features/DesignFlawRecalls/Logic/Save/FlawSaveData.cs`, `mod/src/PTMod/Features/DesignFlawRecalls/Save/FlawSaveSection.cs`, `mod/tests/PTMod.Tests/Features/DesignFlawRecalls/FlawSaveSectionTests.cs`
   - **Acceptance**:
     - `FlawSaveSection : IModSaveParticipant` (`SectionId = "design-flaw-recalls"`, `SchemaVersion = 1`), регистрация через `ctx.SaveParticipant`; `Read(section, schema)` с шагом миграции, `Write()` возвращает данные БЕЗ `_schema` (версию пишет ядро);
     - в `FlawSaveData` нет поля версии; есть `lastActiveDay`, `rushCpuIds`, `rushProjects`, `publicSinceDay`; блока `aiCaution` нет;
@@ -92,7 +92,7 @@
 
 - [x] **TSK-004**: Модель вероятности брака (авто 2026-10-10)
   - **Requirement**: FR-2
-  - **Deliverables**: `mod/src/PTMod/Features/DesignFlawRecalls/Logic/FlawRiskModel.cs` (`Factors`, `Probability`), `mod/tests/PTMod.Tests/DesignFlawRecalls/FlawRiskModelTests.cs`
+  - **Deliverables**: `mod/src/PTMod/Features/DesignFlawRecalls/Logic/FlawRiskModel.cs` (`Factors`, `Probability`), `mod/tests/PTMod.Tests/Features/DesignFlawRecalls/FlawRiskModelTests.cs`
   - **Acceptance**:
     - 4 примера из таблицы «Формулы и баланс», п. 1, совпадают с точностью 0.001; строка со спешкой (`RS = 1`) даёт 0.118;
     - ограничение `pMax`;
@@ -104,7 +104,7 @@
 
 - [x] **TSK-005**: Выбор тяжести и типа (авто 2026-10-10)
   - **Requirement**: FR-3
-  - **Deliverables**: `FlawRiskModel.PickSeverity`, `FlawRiskModel.PickType`, `mod/tests/PTMod.Tests/DesignFlawRecalls/FlawPickTests.cs`, `mod/tests/PTMod.Tests/DesignFlawRecalls/FakeRng.cs` (детерминированный `IModRng`)
+  - **Deliverables**: `FlawRiskModel.PickSeverity`, `FlawRiskModel.PickType`, `mod/tests/PTMod.Tests/Features/DesignFlawRecalls/FlawPickTests.cs`, `mod/tests/PTMod.Tests/Features/DesignFlawRecalls/FakeRng.cs` (детерминированный `IModRng`)
   - **Acceptance**:
     - при p = 0.233 распределение на 100 000 бросков с фиксированным сидом — [0.49, 0.36, 0.15] ± 0.01;
     - `security` не выпадает для 2010 года;
@@ -115,7 +115,7 @@
 
 - [x] **TSK-006**: Бросок при выпуске (подписка на `ModEvents.CpuReleased`) (авто 2026-10-10)
   - **Requirement**: FR-1
-  - **Deliverables**: `mod/src/PTMod/Features/DesignFlawRecalls/FlawRoller.cs`, `mod/src/PTMod/Features/DesignFlawRecalls/FlawRegistry.cs` (создание, `AttachVariant`, `WasRolled`, `IsRush`), `mod/src/PTMod/Features/DesignFlawRecalls/Game/GameCpuView.cs`, `mod/tests/PTMod.Tests/DesignFlawRecalls/FlawRollerTests.cs`
+  - **Deliverables**: `mod/src/PTMod/Features/DesignFlawRecalls/FlawRoller.cs`, `mod/src/PTMod/Features/DesignFlawRecalls/FlawRegistry.cs` (создание, `AttachVariant`, `WasRolled`, `IsRush`), `mod/src/PTMod/Features/DesignFlawRecalls/Game/GameCpuView.cs`, `mod/tests/PTMod.Tests/Features/DesignFlawRecalls/FlawRollerTests.cs`
   - **Acceptance**:
     - в `Register` подписка `ModEvents.CpuReleased += FlawRoller.OnCpuReleased(owner, cpu, isVariant, duringFastForward)`, тело в `ModHooks.Guard`; патчей на `Company.AddCpu`/`AICompany.AddCpu` нет (самопроверка ядра их отклонила бы);
     - защиты: `duringFastForward` → записи нет; `rolledCpuIds`; `aiFlaws`; загрузку отсекает ядро (тест на фейке события);
@@ -127,7 +127,7 @@
 
 - [x] **TSK-007**: Модель обнаружения (авто 2026-10-10)
   - **Requirement**: FR-4
-  - **Deliverables**: `mod/src/PTMod/Features/DesignFlawRecalls/Logic/DiscoveryModel.cs`, `mod/tests/PTMod.Tests/DesignFlawRecalls/DiscoveryModelTests.cs`
+  - **Deliverables**: `mod/src/PTMod/Features/DesignFlawRecalls/Logic/DiscoveryModel.cs`, `mod/tests/PTMod.Tests/Features/DesignFlawRecalls/DiscoveryModelTests.cs`
   - **Acceptance**:
     - таблица `h` из design (9 значений) совпадает с точностью 0.001;
     - принудительное обнаружение по `maxHiddenMonths`;
@@ -137,7 +137,7 @@
 
 - [x] **TSK-008**: Месячный и дневной монитор (авто 2026-10-10)
   - **Requirement**: FR-4, FR-7, FR-8, FR-9
-  - **Deliverables**: `mod/src/PTMod/Features/DesignFlawRecalls/FlawMonitor.cs`, `mod/src/PTMod/Features/DesignFlawRecalls/Logic/FlawStateMachine.cs`, `mod/tests/PTMod.Tests/DesignFlawRecalls/FlawStateMachineTests.cs`, `mod/tests/PTMod.Tests/DesignFlawRecalls/FlawPauseTests.cs`
+  - **Deliverables**: `mod/src/PTMod/Features/DesignFlawRecalls/FlawMonitor.cs`, `mod/src/PTMod/Features/DesignFlawRecalls/Logic/FlawStateMachine.cs`, `mod/tests/PTMod.Tests/Features/DesignFlawRecalls/FlawStateMachineTests.cs`, `mod/tests/PTMod.Tests/Features/DesignFlawRecalls/FlawPauseTests.cs`
   - **Acceptance**:
     - `OnMonth` и `OnDay` подписаны через `ctx.OnTick(TickPhase.MonthPassed / DayPassed)`; монитор не проверяет `IsBatchRun` и не патчит `DateController.NextMonth`;
     - сроки хранятся датами окончания (дни от 1971-01-01); пропущенные дни ревизии доплачиваются по `lastChargedDay`;
@@ -150,7 +150,7 @@
 
 - [x] **TSK-009**: Калькулятор котировок (авто 2026-10-10)
   - **Requirement**: FR-5, FR-6, FR-7, FR-8, FR-9
-  - **Deliverables**: `mod/src/PTMod/Features/DesignFlawRecalls/Logic/ResponseCostCalculator.cs`, `mod/src/PTMod/Features/DesignFlawRecalls/Logic/FlawQuote.cs`, `mod/tests/PTMod.Tests/DesignFlawRecalls/ResponseCostCalculatorTests.cs`
+  - **Deliverables**: `mod/src/PTMod/Features/DesignFlawRecalls/Logic/ResponseCostCalculator.cs`, `mod/src/PTMod/Features/DesignFlawRecalls/Logic/FlawQuote.cs`, `mod/tests/PTMod.Tests/Features/DesignFlawRecalls/ResponseCostCalculatorTests.cs`
   - **Acceptance**:
     - пример 1994 года из design: `C_recall` = 66 000 000, `C_step` ≈ 21 428 571, `C_patch` ≈ 4 071 429, иск 24 000 000;
     - потолок отзыва 30 % выручки за 12 месяцев ставит `RecallCapped`;
@@ -175,7 +175,7 @@
 
 - [x] **TSK-011**: Эффекты «Отзыв» и «Ревизия» (авто 2026-10-10)
   - **Requirement**: FR-6, FR-7
-  - **Deliverables**: `mod/src/PTMod/Features/DesignFlawRecalls/Effects/FlawRecallEffect.cs`, `mod/src/PTMod/Features/DesignFlawRecalls/Effects/FlawSteppingEffect.cs`, `mod/src/PTMod/Features/DesignFlawRecalls/FlawResponseApplier.cs` (Recall, Stepping, `CompleteStepping`, `OnLeak`), `mod/tests/PTMod.Tests/DesignFlawRecalls/FlawEffectHandlersTests.cs`
+  - **Deliverables**: `mod/src/PTMod/Features/DesignFlawRecalls/Effects/FlawRecallEffect.cs`, `mod/src/PTMod/Features/DesignFlawRecalls/Effects/FlawSteppingEffect.cs`, `mod/src/PTMod/Features/DesignFlawRecalls/FlawResponseApplier.cs` (Recall, Stepping, `CompleteStepping`, `OnLeak`), `mod/tests/PTMod.Tests/Features/DesignFlawRecalls/FlawEffectHandlersTests.cs`
   - **Acceptance**:
     - типы реализуют `IEventEffectHandler` (`Type`, `Validate`, `Resolve`, `Apply`, `Describe`) и зарегистрированы `EventEffects.Register`;
     - `Resolve` берёт сумму из котировки записи (`Args[0]`), `Describe` показывает её под кнопкой;
@@ -201,7 +201,7 @@
 
 - [x] **TSK-013**: Репутация и популярность (авто 2026-10-10)
   - **Requirement**: FR-10
-  - **Deliverables**: дополнения `FlawResponseApplier` (`ApplyReputation`, `ApplyPopularityHit`), `mod/tests/PTMod.Tests/DesignFlawRecalls/ReputationTableTests.cs`
+  - **Deliverables**: дополнения `FlawResponseApplier` (`ApplyReputation`, `ApplyPopularityHit`), `mod/tests/PTMod.Tests/Features/DesignFlawRecalls/ReputationTableTests.cs`
   - **Acceptance**:
     - дельты из таблицы design (п. 7) для всех реакций и тяжестей;
     - `CoverUp` удваивает сумму базовой и ответной дельт;
@@ -211,7 +211,7 @@
 
 - [x] **TSK-014**: Записи каналов (`market.rating.cpu` для CPU, `contract.signChance` для компании) (авто 2026-10-10)
   - **Requirement**: FR-5, FR-8, FR-9, NFR-8
-  - **Deliverables**: `mod/src/PTMod/Features/DesignFlawRecalls/FlawChannels.cs`, `mod/tests/PTMod.Tests/DesignFlawRecalls/FlawChannelsTests.cs`
+  - **Deliverables**: `mod/src/PTMod/Features/DesignFlawRecalls/FlawChannels.cs`, `mod/tests/PTMod.Tests/Features/DesignFlawRecalls/FlawChannelsTests.cs`
   - **Acceptance**:
     - `AddCpuRating` и `AddSignChance` вызывают `ModModifiers.Add` с областями `ModifierScope.Cpu` и `ModifierScope.Company`, сроком в днях и ключом причины; идентификаторы записей (`m-…`) сохраняются в записи брака;
     - `Remove`/`RemoveAllOfRecord`/`RemoveCompanyEntries` снимают записи по идентификаторам;
@@ -224,7 +224,7 @@
 
 - [x] **TSK-015**: Политика выбора ИИ (авто 2026-10-10)
   - **Requirement**: FR-11, FR-17
-  - **Deliverables**: `mod/src/PTMod/Features/DesignFlawRecalls/Logic/AiFlawPolicy.cs`, `mod/src/PTMod/Features/DesignFlawRecalls/IFlawResponseBias.cs`, `mod/tests/PTMod.Tests/DesignFlawRecalls/AiFlawPolicyTests.cs`
+  - **Deliverables**: `mod/src/PTMod/Features/DesignFlawRecalls/Logic/AiFlawPolicy.cs`, `mod/src/PTMod/Features/DesignFlawRecalls/Api/IFlawResponseBias.cs`, `mod/tests/PTMod.Tests/Features/DesignFlawRecalls/AiFlawPolicyTests.cs`
   - **Acceptance**:
     - отзыв отсекается при `CashHeadroom` < 1.5 · `RecallCost`; запас денег = `MoneyAmount − ModCredit.ThresholdOf(company)` (в тестах порог подставляется фейком; `CentralBank.DebtLimit` напрямую не читается);
     - без заплатки её вес 0;
@@ -279,7 +279,7 @@
 
 - [x] **TSK-020**: API `FlawRegistry` для других фич (авто 2026-10-10)
   - **Requirement**: FR-13
-  - **Deliverables**: дополнения `FlawRegistry` (`TryReveal`, `ForceFlaw`, `GetKnownFlaws`, `FindByCpu`, `OnFlawStateChanged`), `mod/tests/PTMod.Tests/DesignFlawRecalls/FlawRegistryApiTests.cs`
+  - **Deliverables**: дополнения `FlawRegistry` (`TryReveal`, `ForceFlaw`, `GetKnownFlaws`, `FindByCpu`, `OnFlawStateChanged`), `mod/tests/PTMod.Tests/Features/DesignFlawRecalls/FlawRegistryApiTests.cs`
   - **Acceptance**:
     - `TryReveal` для CPU без брака → `false` без побочных эффектов;
     - `ForceFlaw` создаёт запись и запускает обнаружение;
@@ -291,7 +291,7 @@
 
 - [x] **TSK-021**: Точка расширения для rival-personalities (`SetResponseBias`, данные для осторожности) (авто 2026-10-10)
   - **Requirement**: FR-17
-  - **Deliverables**: дополнения `FlawRegistry` (`SetResponseBias`), подключение смещения в `AiFlawPolicy`, `mod/tests/PTMod.Tests/DesignFlawRecalls/FlawResponseBiasTests.cs`
+  - **Deliverables**: дополнения `FlawRegistry` (`SetResponseBias`), подключение смещения в `AiFlawPolicy`, `mod/tests/PTMod.Tests/Features/DesignFlawRecalls/FlawResponseBiasTests.cs`
   - **Acceptance**:
     - `FlawRegistry.SetResponseBias(IFlawResponseBias)` — один слот, `null` снимает; смещение подключается в `AiFlawPolicy` (порядок Recall, Stepping, Patch, Ignore);
     - исключение в `Multipliers` → множители 1.0, ошибка засчитывается вызывающей фиче (`ModHooks.Guard`);
@@ -301,7 +301,7 @@
 
 - [x] **TSK-026**: Корректировщик обзоров прессы (авто 2026-10-10)
   - **Requirement**: FR-18
-  - **Deliverables**: `mod/src/PTMod/Features/DesignFlawRecalls/Press/FlawPressAdjuster.cs`, `mod/tests/PTMod.Tests/DesignFlawRecalls/FlawPressAdjusterTests.cs`
+  - **Deliverables**: `mod/src/PTMod/Features/DesignFlawRecalls/Press/FlawPressAdjuster.cs`, `mod/tests/PTMod.Tests/Features/DesignFlawRecalls/FlawPressAdjusterTests.cs`
   - **Acceptance**:
     - при `ModFeatures.IsActive("press-reviews")` регистрируется `PressReviewsApi.RegisterAdjuster` с `Id = "design-flaw-recalls"`, при выключении — `UnregisterAdjuster`;
     - для известного незакрытого брака `OverallAdjustment` уменьшается на `press.overallAdjustment[тяжесть]` (−8 / −15 / −15), добавляется примечание;
@@ -312,7 +312,7 @@
 
 - [x] **TSK-027**: Передача брака при поглощении CPU (авто 2026-10-10)
   - **Requirement**: FR-19
-  - **Deliverables**: `mod/src/PTMod/Features/DesignFlawRecalls/FlawTransferHandler.cs`, дополнения `FlawRegistry` (`MoveOwner`), `FlawChannels` (`RemoveCompanyEntries`), `mod/tests/PTMod.Tests/DesignFlawRecalls/FlawTransferTests.cs`
+  - **Deliverables**: `mod/src/PTMod/Features/DesignFlawRecalls/FlawTransferHandler.cs`, дополнения `FlawRegistry` (`MoveOwner`), `FlawChannels` (`RemoveCompanyEntries`), `mod/tests/PTMod.Tests/Features/DesignFlawRecalls/FlawTransferTests.cs`
   - **Acceptance**:
     - в `Register` подписка `ModEvents.CpuTransferred += FlawTransferHandler.OnCpuTransferred(from, to, cpu)`, тело в `ModHooks.Guard`;
     - запись базового CPU получает владельца `ModCompanies.KeyOf(to)`; записи уровня компании (`contract.signChance`) снимаются, записи уровня CPU остаются; вариант игнорируется;
@@ -324,7 +324,7 @@
 
 - [x] **TSK-028**: Модель спешки (`RushMath`) и учёт в риске (авто 2026-10-10)
   - **Requirement**: FR-20, FR-2
-  - **Deliverables**: `mod/src/PTMod/Features/DesignFlawRecalls/Logic/RushMath.cs` (`ApplyTime`, `ApplyCost`), `mod/tests/PTMod.Tests/DesignFlawRecalls/RushMathTests.cs`
+  - **Deliverables**: `mod/src/PTMod/Features/DesignFlawRecalls/Logic/RushMath.cs` (`ApplyTime`, `ApplyCost`), `mod/tests/PTMod.Tests/Features/DesignFlawRecalls/RushMathTests.cs`
   - **Acceptance**:
     - 400 дней и 80 млн при `timeCut` 0.25 и `costMultiplier` 1.10 → 300 дней и 88 млн; срок не меньше 1 дня;
     - `FlawRiskModel` добавляет `kRush × RS` (AC-2.4: 0.118); для ИИ признак игнорируется;
@@ -346,7 +346,7 @@
 
 - [x] **TSK-022**: Строки ru/en (авто 2026-10-10)
   - **Requirement**: NFR-4
-  - **Deliverables**: `mod/src/PTMod/L10n/ru.json`, `mod/src/PTMod/L10n/en.json` (ключи `dfr.*` из таблицы design, включая `dfr.feature.desc`, `dfr.mail.auto.*`, `dfr.rep.*`, `dfr.mod.*`, `dfr.rush.*`)
+  - **Deliverables**: `mod/src/PTMod/L10n/ru/design-flaw-recalls.json`, `mod/src/PTMod/L10n/en/design-flaw-recalls.json` (ключи `dfr.*` из таблицы design, включая `dfr.feature.desc`, `dfr.mail.auto.*`, `dfr.rep.*`, `dfr.mod.*`, `dfr.rush.*`)
   - **Acceptance**:
     - все ключи из design есть в обоих языках и начинаются с `dfr.` (`ModIds.IsL10nKeyAllowed`);
     - тест на полноту ключей фичи зелёный;
@@ -371,7 +371,7 @@
 
 - [x] **TSK-024**: Тест баланса (Монте-Карло) (авто 2026-10-10)
   - **Requirement**: FR-2, FR-4, NFR-6
-  - **Deliverables**: `mod/tests/PTMod.Tests/DesignFlawRecalls/FlawBalanceSimulationTests.cs`, генератор синтетических дизайнов `mod/tests/PTMod.Tests/DesignFlawRecalls/SyntheticDesigns.cs`
+  - **Deliverables**: `mod/tests/PTMod.Tests/Features/DesignFlawRecalls/FlawBalanceSimulationTests.cs`, генератор синтетических дизайнов `mod/tests/PTMod.Tests/Features/DesignFlawRecalls/SyntheticDesigns.cs`
   - **Acceptance**:
     - на 10 000 дизайнов (сложность 2, без спешки): средняя p в [0.08, 0.15];
     - доля `Critical` ≤ 20 %;

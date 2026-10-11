@@ -130,7 +130,7 @@ graph LR
 | Состояние | `ModSave` (секция `research-tree-ux`, `IModSaveParticipant`), `ModProfile` (вид), `ModSettings` (`ParamSpec`) | решения 0004; версию секции пишет ядро |
 | Контент | `ModContent` (`Content/research-tree-ux/ui.json`) | решение 0006: числа — в JSON |
 | Тексты | `ModL10n` (`ru`, `en`), префикс ключей `rtux.` | конвенция проекта |
-| Тесты | `mod/tests/PTMod.Tests/ResearchTreeUx/` на мини-раннере .NET Framework 4.8 (`[Test]`, `[Covers]`) | `context.md`: автоматически проверяются только тесты чистой логики |
+| Тесты | `mod/tests/PTMod.Tests/Features/ResearchTreeUx/` на мини-раннере .NET Framework 4.8 (`[Test]`, `[Covers]`) | `context.md`: автоматически проверяются только тесты чистой логики |
 
 ### Используемые сервисы PTMod.Core
 
@@ -858,7 +858,7 @@ sequenceDiagram
 
 ## Testing Strategy
 
-### Юнит-тесты чистой логики (`mod/tests/PTMod.Tests/ResearchTreeUx/`, мини-раннер)
+### Юнит-тесты чистой логики (`mod/tests/PTMod.Tests/Features/ResearchTreeUx/`, мини-раннер)
 
 Запуск — `python mod/build.py --tests`; каждый публичный тип `Features/ResearchTreeUx/Logic/**` указан в `[Covers]`.
 

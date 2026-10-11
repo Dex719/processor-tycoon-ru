@@ -41,19 +41,19 @@ XL-фича делится на два этапа с гейтом между н�
 
 - [x] **TSK-001**: Каркас фичи cpu-architectures (авто 2026-10-10)
   - **Requirement**: FR-9, NFR-2, NFR-7
-  - **Deliverables**: `mod/src/PTMod/Features/CpuArchitectures/ArchitecturesFeature.cs` (`[ModFeature] sealed class … : IModFeature`: `Id` = `cpu-architectures`, `NameKey`, `DescriptionKey`, `DependsOn` = пусто, `EnabledByDefault` = true, `SupportsHotToggle` = true, `Register(FeatureContext)`, `OnEnabled`, `OnDisabled`), `ArchParts.cs`, `ArchStage.cs`; параметры `ratingStrength` (Float 0–1,5, шаг 0,05, по умолчанию 1,0) и `notifications` (Bool) через `ctx.Param`; страница хаба `ctx.HubPage` (заглушка); заготовки ключей `arch.*` в `mod/src/PTMod/L10n/ru.json`, `mod/src/PTMod/L10n/en.json`
+  - **Deliverables**: `mod/src/PTMod/Features/CpuArchitectures/ArchitecturesFeature.cs` (`[ModFeature] sealed class … : IModFeature`: `Id` = `cpu-architectures`, `NameKey`, `DescriptionKey`, `DependsOn` = пусто, `EnabledByDefault` = true, `SupportsHotToggle` = true, `Register(FeatureContext)`, `OnEnabled`, `OnDisabled`), `ArchParts.cs`, `ArchStage.cs`; параметры `ratingStrength` (Float 0–1,5, шаг 0,05, по умолчанию 1,0) и `notifications` (Bool) через `ctx.Param`; страница хаба `ctx.HubPage` (заглушка); заготовки ключей `arch.*` в `mod/src/PTMod/L10n/ru/cpu-architectures.json`, `mod/src/PTMod/L10n/en/cpu-architectures.json`
   - **Acceptance**: сборка проходит; ядро находит фичу по `[ModFeature]`, она видна в хабе «Моды» с переключателем и слайдером силы; самопроверка пишет в лог состояние всех целей патчей и приватных полей из `design.md` (пока без самих патчей); `IsNeutralNow` = true при перемотке и выключенной фиче; в коде фичи нет прямых подписок на `DateController`, `Player`, `SaveHandler` и собственных счётчиков ошибок
   - **Depends**: mod-framework/TSK-021 (`ModSettings`, `ModL10n`, `ModContent`), mod-framework/TSK-022 (`IModFeature`, `FeatureContext`), mod-framework/TSK-023 (`ModHooks`), mod-framework/TSK-043 (`core.json`: префикс `arch`)
 
 - [x] **TSK-002**: Контент и валидатор каталога (авто 2026-10-10)
   - **Requirement**: FR-1
-  - **Deliverables**: `mod/src/PTMod/Content/cpu-architectures/architectures.json`, `balance.json` (включая `ai.noInterruptTimeLeftDays` и `x86License`), `ai-preferences.json` (по `uniqueId`) — данные из `design.md`; `mod/src/PTMod/Features/CpuArchitectures/Logic/ArchFamily.cs`, `ArchCatalogValidator.cs`, `BalanceConfig.cs`, `AiPreference.cs`; `Data/ArchCatalog.cs` (загрузка через `ModContent`); `mod/tests/PTMod.Tests/CpuArchitectures/ArchCatalogValidatorTests.cs`, `ContentDefaultsTests.cs`
+  - **Deliverables**: `mod/src/PTMod/Content/cpu-architectures/architectures.json`, `balance.json` (включая `ai.noInterruptTimeLeftDays` и `x86License`), `ai-preferences.json` (по `uniqueId`) — данные из `design.md`; `mod/src/PTMod/Features/CpuArchitectures/Logic/ArchFamily.cs`, `ArchCatalogValidator.cs`, `BalanceConfig.cs`, `AiPreference.cs`; `Data/ArchCatalog.cs` (загрузка через `ModContent`); `mod/tests/PTMod.Tests/Features/CpuArchitectures/ArchCatalogValidatorTests.cs`, `ContentDefaultsTests.cs`
   - **Acceptance**: тесты: повтор `id`, неизвестная зависимость, цикл, диапазоны, отсутствие `proprietary` (фича выключается), ровно одна запись `default` и уникальные `uniqueId` в предпочтениях; встроенные JSON валидны; в логе «7 семейств загружено»; пользовательский файл из `<папка игры>/PTMod/content/cpu-architectures/` переопределяет встроенный; все публичные типы в `[Covers]`
   - **Depends**: TSK-001, mod-framework/TSK-015 (логика `ModContent`), mod-framework/TSK-021, mod-framework/TSK-067 (мини-раннер)
 
 - [x] **TSK-003**: Реестр состояния и секция ModSave (авто 2026-10-10)
   - **Requirement**: FR-5, FR-8, NFR-3
-  - **Deliverables**: `mod/src/PTMod/Features/CpuArchitectures/State/ArchRegistry.cs`, `CompanyArchState.cs`, `FamilyState.cs`, `ArchSaveData.cs` (все поля этапов 1 и 2, без поля версии), `ArchSaveParticipant.cs` (`IModSaveParticipant`, `SchemaVersion` = 1); `mod/tests/PTMod.Tests/CpuArchitectures/SaveDataTests.cs`
+  - **Deliverables**: `mod/src/PTMod/Features/CpuArchitectures/Logic/State/ArchRegistry.cs` (вторая часть `partial class` — `mod/src/PTMod/Features/CpuArchitectures/State/ArchRegistry.cs`), `mod/src/PTMod/Features/CpuArchitectures/Logic/State/CompanyArchState.cs`, `mod/src/PTMod/Features/CpuArchitectures/Logic/State/FamilyState.cs`, `mod/src/PTMod/Features/CpuArchitectures/Logic/State/ArchSaveData.cs` (все поля этапов 1 и 2, без поля версии), `mod/src/PTMod/Features/CpuArchitectures/State/ArchSaveParticipant.cs` (`IModSaveParticipant`, `SchemaVersion` = 1); `mod/tests/PTMod.Tests/Features/CpuArchitectures/SaveDataTests.cs`
   - **Acceptance**: round-trip секции без потерь (`ModJson.From` / `Bind`); отсутствующая секция → `ResetToDefaults` и признак `MigrationNeeded`; значения вне диапазонов и лимиты списков отбрасываются с предупреждением; неизвестные `arch` сохраняются как есть; DTO не содержит поля версии, секция новее мода обрабатывается ядром (значения по умолчанию, исходная секция записывается как есть — проверка в `mod-framework/TSK-016`)
   - **Depends**: TSK-002, mod-framework/TSK-016 (модель бокового файла), mod-framework/TSK-025 (`ModSave`)
 
@@ -61,7 +61,7 @@ XL-фича делится на два этапа с гейтом между н�
 
 - [x] **TSK-004**: Математика исследований архитектур и правила общей лаборатории (авто 2026-10-10)
   - **Requirement**: FR-2, FR-7
-  - **Deliverables**: `mod/src/PTMod/Features/CpuArchitectures/Logic/ArchResearchMath.cs`, `Logic/LabRules.cs` (`Status`, `NeedsConfirmation`, `CanInterruptForAi`, `ResolveConflict`, `AiFunding`, `PlayerFundingLimit`); `mod/tests/PTMod.Tests/CpuArchitectures/ArchResearchMathTests.cs`, `LabRulesTests.cs`
+  - **Deliverables**: `mod/src/PTMod/Features/CpuArchitectures/Logic/ArchResearchMath.cs`, `Logic/LabRules.cs` (`Status`, `NeedsConfirmation`, `CanInterruptForAi`, `ResolveConflict`, `AiFunding`, `PlayerFundingLimit`); `mod/tests/PTMod.Tests/Features/CpuArchitectures/ArchResearchMathTests.cs`, `LabRulesTests.cs`
   - **Acceptance**: тесты: годовой множитель (будущее, прошлое, текущий, предел 0,75) совпадает с формулой `TechnologyTimeUpdater.UpdateTechnologyTimes`; x86 в 1980 году → 194 дня при типе компании IDM; `baseDays` = 0 → мгновенно; стоимость с M4 = 6; ETA при скорости 0 → «∞»; доступность по зависимостям; правила лаборатории: подтверждение только игроку при технологии, ИИ не прерывает технологию с остатком ≤ 30 дней, конфликт (игрок → пауза архитектуры, ИИ → остановка технологии), финансирование ИИ 0,6–1,6, предел слайдера 1,0/5,0
   - **Depends**: TSK-002
 
@@ -73,7 +73,7 @@ XL-фича делится на два этапа с гейтом между н�
 
 - [x] **TSK-006**: Математика рейтинга (авто 2026-10-10)
   - **Requirement**: FR-6, NFR-4
-  - **Deliverables**: `mod/src/PTMod/Features/CpuArchitectures/Logic/ArchRatingMath.cs`, `Logic/RatingConfig.cs`; `mod/tests/PTMod.Tests/CpuArchitectures/ArchRatingMathTests.cs`, `RatingStackingTests.cs`
+  - **Deliverables**: `mod/src/PTMod/Features/CpuArchitectures/Logic/ArchRatingMath.cs`, `Logic/RatingConfig.cs`; `mod/tests/PTMod.Tests/Features/CpuArchitectures/ArchRatingMathTests.cs`, `RatingStackingTests.cs`
   - **Acceptance**: тесты: `fade` в 1984/1990/1996 (1,0 / 0,95 / 0,90), только сегменты `Segment.HighEnd`…`LowEnd`; `f_sup`, `f_eco`, `f_ext` (функции готовы для этапа 2); клэмп [0,80; 1,20] на сетке параметров; `ApplyStrength` при 0 и 1,5; примеры из таблицы «Формулы и баланс» (1,135 / 1,102 / 0,857 / 0,875) с точностью 0,001; вклад 1,30 в произведении с вкладами других фич упирается в балансовый диапазон ядра [0,5; 2,0]
   - **Depends**: TSK-002, mod-framework/TSK-059 (`BalanceRange`)
 
@@ -85,7 +85,7 @@ XL-фича делится на два этапа с гейтом между н�
 
 - [x] **TSK-008**: Отпечатки проектов и привязка CPU (авто 2026-10-10)
   - **Requirement**: FR-5
-  - **Deliverables**: `mod/src/PTMod/Features/CpuArchitectures/Logic/CpuFingerprint.cs`, `Services/CpuArchBinder.cs`, `Patches/BinderPatches.cs` (postfix `Project.SetProjectType(SaveObject.CpuProject)`, postfix `ProjectCompletedHandler.AddCpu`), подписки на `ModEvents.CpuReleased` (ИИ) и `ModEvents.CpuTransferred`; `ArchRegistry.ResolveCpu` с ленивым разрешением (через заглушку `DefaultFor` до TSK-014); `mod/tests/PTMod.Tests/CpuArchitectures/CpuFingerprintTests.cs`
+  - **Deliverables**: `mod/src/PTMod/Features/CpuArchitectures/Logic/CpuFingerprint.cs`, `Services/CpuArchBinder.cs`, `Patches/BinderPatches.cs` (postfix `Project.SetProjectType(SaveObject.CpuProject)`, postfix `ProjectCompletedHandler.AddCpu`), подписки на `ModEvents.CpuReleased` (ИИ) и `ModEvents.CpuTransferred`; `ArchRegistry.ResolveCpu` с ленивым разрешением (через заглушку `DefaultFor` до TSK-014); `mod/tests/PTMod.Tests/Features/CpuArchitectures/CpuFingerprintTests.cs`
   - **Acceptance**: тесты: совпадение после JSON round-trip (допуск 1e-4), FIFO для дублей; в игре сценарий AC-5.1 (сохранение посреди проекта → загрузка → выпуск → верная архитектура); при загрузке сейва привязки не меняются (`CpuReleased` ядро не поднимает); при перемотке события пропускаются; вариант CPU (`cpu.Base` ≠ null) берёт архитектуру базового; патчей на `Company.AddCpu`/`AICompany.AddCpu` нет
   - **Depends**: TSK-003, mod-framework/TSK-023, mod-framework/TSK-056 (`ModEvents`)
 
@@ -123,7 +123,7 @@ XL-фича делится на два этапа с гейтом между н�
 
 - [x] **TSK-014**: Политика посева (авто 2026-10-10)
   - **Requirement**: FR-8, FR-5
-  - **Deliverables**: `mod/src/PTMod/Features/CpuArchitectures/Logic/ArchSeedPolicy.cs` (`SeedAi`, `SeedPlayer`, `DefaultForCpu`); замена заглушки в `ArchRegistry.ResolveCpu`; `mod/tests/PTMod.Tests/CpuArchitectures/ArchSeedPolicyTests.cs`
+  - **Deliverables**: `mod/src/PTMod/Features/CpuArchitectures/Logic/ArchSeedPolicy.cs` (`SeedAi`, `SeedPlayer`, `DefaultForCpu`); замена заглушки в `ArchRegistry.ResolveCpu`; `mod/tests/PTMod.Tests/Features/CpuArchitectures/ArchSeedPolicyTests.cs`
   - **Acceptance**: тесты: игрок с U = 1993 → `proprietary` + x86 (AC-8.1); 2008: Intel (`UniqueID` 0) → активна `x86_64`, Texas Instruments (3) → `arm` (AC-8.2); замыкание зависимостей; запись `default`; CPU игрока 2001 → x86; начальная поддержка по `seed`
   - **Depends**: TSK-002
 
@@ -135,7 +135,7 @@ XL-фича делится на два этапа с гейтом между н�
 
 - [x] **TSK-016**: Политика ИИ (MVP) (авто 2026-10-10)
   - **Requirement**: FR-7
-  - **Deliverables**: `mod/src/PTMod/Features/CpuArchitectures/Logic/ArchAiPolicy.cs` (`Match` по `UniqueId` и `default`, `DecideMvp`), `Logic/AiView.cs`; `mod/tests/PTMod.Tests/CpuArchitectures/ArchAiPolicyTests.cs` (MVP)
+  - **Deliverables**: `mod/src/PTMod/Features/CpuArchitectures/Logic/ArchAiPolicy.cs` (`Match` по `UniqueId` и `default`, `DecideMvp`), `Logic/AiView.cs`; `mod/tests/PTMod.Tests/Features/CpuArchitectures/ArchAiPolicyTests.cs` (MVP)
   - **Acceptance**: тесты: выбор по весу с задержкой, ничьи (год, `id`), резерв 6 месяцев × стоимость × M4, отложенный старт при остатке технологии ≤ 30 дней (`DeferInterrupt`), пауза при отрицательных деньгах, смена активной при завершении (AC-7.1, AC-7.2, AC-7.3); foundry пропускается; решения детерминированы (повторный прогон — тот же результат)
   - **Depends**: TSK-002, TSK-004
 
@@ -153,7 +153,7 @@ XL-фича делится на два этапа с гейтом между н�
 
 - [x] **TSK-019**: Локализация MVP и тест ключей (авто 2026-10-10)
   - **Requirement**: NFR-5
-  - **Deliverables**: все ключи `arch.*` этапа 1 в `mod/src/PTMod/L10n/ru.json` и `mod/src/PTMod/L10n/en.json` (включая `arch.lab.*`, `arch.reason.*`); `mod/tests/PTMod.Tests/CpuArchitectures/L10nKeysTests.cs`
+  - **Deliverables**: все ключи `arch.*` этапа 1 в `mod/src/PTMod/L10n/ru/cpu-architectures.json` и `mod/src/PTMod/L10n/en/cpu-architectures.json` (включая `arch.lab.*`, `arch.reason.*`); `mod/tests/PTMod.Tests/Features/CpuArchitectures/L10nKeysTests.cs`
   - **Acceptance**: тест находит каждый ключ из кода и контента (`nameKey`, `descKey`) в обоих файлах; все ключи с префиксом `arch.`; в игре на `en` нет «сырых» ключей
   - **Depends**: TSK-012, TSK-013, TSK-018, mod-framework/TSK-066 (`ModIds`)
 
@@ -173,7 +173,7 @@ XL-фича делится на два этапа с гейтом между н�
 
 - [x] **TSK-021**: Математика поддержки (авто 2026-10-10)
   - **Requirement**: FR-10
-  - **Deliverables**: `mod/src/PTMod/Features/CpuArchitectures/Logic/SupportMath.cs`; `mod/tests/PTMod.Tests/CpuArchitectures/SupportMathTests.cs`
+  - **Deliverables**: `mod/src/PTMod/Features/CpuArchitectures/Logic/SupportMath.cs`; `mod/tests/PTMod.Tests/Features/CpuArchitectures/SupportMathTests.cs`
   - **Acceptance**: тесты: AC-10.1 (30 → ≈59 за 12 мес. на «обычном»), AC-10.2 (60 → ≈37 на «выкл» при 0,04), `targetCap` 60 для `proprietary`, `eraCost` ARM (1987: 1,3; 1995: ≈1,12; 2010+: 0,6), содержание с инфляцией, прогноз на N месяцев
   - **Depends**: TSK-020
 
@@ -193,7 +193,7 @@ XL-фича делится на два этапа с гейтом между н�
 
 - [x] **TSK-024**: Экосистема архитектур (авто 2026-10-10)
   - **Requirement**: FR-11
-  - **Deliverables**: `mod/src/PTMod/Features/CpuArchitectures/Logic/EcosystemMath.cs`, `Services/EcosystemService.cs` (окно 12 полных месяцев: `CpuBase.MarketData.Sold[i]` + `CpuBase.MarketData.SoldByContracts[i]`, `i` до `Count − 2`); `f_eco` в рейтинге; доля и изменение за год в панели; `mod/tests/PTMod.Tests/CpuArchitectures/EcosystemMathTests.cs`
+  - **Deliverables**: `mod/src/PTMod/Features/CpuArchitectures/Logic/EcosystemMath.cs`, `Services/EcosystemService.cs` (окно 12 полных месяцев: `CpuBase.MarketData.Sold[i]` + `CpuBase.MarketData.SoldByContracts[i]`, `i` до `Count − 2`); `f_eco` в рейтинге; доля и изменение за год в панели; `mod/tests/PTMod.Tests/Features/CpuArchitectures/EcosystemMathTests.cs`
   - **Acceptance**: тесты: AC-11.1 (0,9 → 1,045; 0,1 → 0,982), пустые продажи → `proprietary` = 1; в игре доли в панели суммируются в 100 %; месячный цикл ≤ 3 мс при 300 CPU
   - **Depends**: TSK-022
 
@@ -223,7 +223,7 @@ XL-фича делится на два этапа с гейтом между н�
 
 - [x] **TSK-035**: Роялти за x86 без лицензии (авто 2026-10-10)
   - **Requirement**: FR-16
-  - **Deliverables**: `mod/src/PTMod/Features/CpuArchitectures/Logic/RoyaltyMath.cs`, `Services/RoyaltyService.cs` (вызывается из месячного обработчика; доход `CpuBase.MarketData.Income[Count − 2]` по CPU семейств ISA `x86`; `SpendMoney(…, ExpenseOrigin.Royalties)`; `EarnMoney(…, RevenueOrigin.Royalties)` живым держателям; пропуск при `LicenseHelper.X86LicenseHasBeenRevoked` и при перемотке); строка «Роялти x86» в панели; ключ `arch.royalty.line`; `mod/tests/PTMod.Tests/CpuArchitectures/RoyaltyMathTests.cs`
+  - **Deliverables**: `mod/src/PTMod/Features/CpuArchitectures/Logic/RoyaltyMath.cs`, `Services/RoyaltyService.cs` (вызывается из месячного обработчика; доход `CpuBase.MarketData.Income[Count − 2]` по CPU семейств ISA `x86`; `SpendMoney(…, ExpenseOrigin.Royalties)`; `EarnMoney(…, RevenueOrigin.Royalties)` живым держателям; пропуск при `LicenseHelper.X86LicenseHasBeenRevoked` и при перемотке); строка «Роялти x86» в панели; ключ `arch.royalty.line`; `mod/tests/PTMod.Tests/Features/CpuArchitectures/RoyaltyMathTests.cs`
   - **Acceptance**: тесты: AC-16.1 (10M → 300k, по 150k держателям), нет живых держателей, доход 0, держатель освобождён (AC-16.3); в игре M15 и AC-16.2; правила одинаковы для игрока и ИИ; месячный цикл ≤ 3 мс
   - **Depends**: TSK-022, TSK-008, TSK-020
 
@@ -231,7 +231,7 @@ XL-фича делится на два этапа с гейтом между н�
 
 - [x] **TSK-029**: Балансовая симуляция чистой логики (авто 2026-10-10)
   - **Requirement**: NFR-4, FR-6, FR-14
-  - **Deliverables**: `mod/tests/PTMod.Tests/CpuArchitectures/BalanceSimulationTests.cs` (помесячный прогон 1975–2025, 11 ИИ-проектировщиков, упрощённая модель продаж ∝ m)
+  - **Deliverables**: `mod/tests/PTMod.Tests/Features/CpuArchitectures/BalanceSimulationTests.cs` (помесячный прогон 1975–2025, 11 ИИ-проектировщиков, упрощённая модель продаж ∝ m)
   - **Acceptance**: метрики `requirements.md`: x86 активна у ≥ 3 из 5 «ПК-компаний» (Intel, AMD, Cyrix, VIA, IBM) к 1995; ARM/ARM64 — у ≥ 2 из 3 «встраиваемых» (Texas Instruments, Toshiba, Zilog) к 2015; вклад m ∈ [0,80; 1,20] всегда; до 1985 ни одно семейство не даёт > +20 % к `proprietary`; отчёт симуляции (таблица по годам) прикладывается к PR для владельца
   - **Depends**: TSK-027, TSK-025, TSK-026
 
@@ -243,13 +243,13 @@ XL-фича делится на два этапа с гейтом между н�
 
 - [x] **TSK-031**: Совместимость сейвов (авто 2026-10-10)
   - **Requirement**: NFR-3, FR-8, FR-9
-  - **Deliverables**: расширение `mod/tests/PTMod.Tests/CpuArchitectures/SaveDataTests.cs`: сейв этапа 1 → этап 2; битые записи; неизвестное семейство; `resumeTech` вне диапазона; перенос состояния `ArchitectureApi.TransferCompanyState` (объединение исследованного, максимум поддержки)
+  - **Deliverables**: расширение `mod/tests/PTMod.Tests/Features/CpuArchitectures/SaveDataTests.cs`: сейв этапа 1 → этап 2; битые записи; неизвестное семейство; `resumeTech` вне диапазона; перенос состояния `ArchitectureApi.TransferCompanyState` (объединение исследованного, максимум поддержки)
   - **Acceptance**: все тесты зелёные; ручная часть M8 повторена на версии этапа 2
   - **Depends**: TSK-028
 
 - [x] **TSK-032**: Локализация полной версии (авто 2026-10-10)
   - **Requirement**: NFR-5, NFR-6
-  - **Deliverables**: ключи этапа 2 (`arch.support.*`, `arch.eco.*`, `arch.notify.*`, `arch.mail.*`, `arch.royalty.*`, `arch.designer.immature`, `arch.designer.extWarn`) в `ru.json`/`en.json`; подсказки с формулой эффекта для карточек и строк поддержки
+  - **Deliverables**: ключи этапа 2 (`arch.support.*`, `arch.eco.*`, `arch.notify.*`, `arch.mail.*`, `arch.royalty.*`, `arch.designer.immature`, `arch.designer.extWarn`) в `mod/src/PTMod/L10n/ru/cpu-architectures.json` / `mod/src/PTMod/L10n/en/cpu-architectures.json`; подсказки с формулой эффекта для карточек и строк поддержки
   - **Acceptance**: `L10nKeysTests` зелёный; подсказка карточки показывает разложение «×сродство × поддержка × экосистема = итог»
   - **Depends**: TSK-028, TSK-023, TSK-035
 

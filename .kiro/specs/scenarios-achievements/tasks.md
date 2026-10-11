@@ -22,7 +22,7 @@
 4. Самопроверка, замер производительности, плейтест баланса и ручная проверка владельцем.
 
 ### Implementation Strategy
-- Вся логика решений — за интерфейсами (`IGameMetricsSource`, `IConditionAdapter`, `IValidationContext`) и тестируется без Unity мини-раннером ядра; файлы логики лежат в `mod/src/PTMod/Features/ScenariosAchievements/Logic/`, тесты — в `mod/tests/PTMod.Tests/ScenariosAchievements/`.
+- Вся логика решений — за интерфейсами (`IGameMetricsSource`, `IConditionAdapter`, `IValidationContext`) и тестируется без Unity мини-раннером ядра; файлы логики лежат в `mod/src/PTMod/Features/ScenariosAchievements/Logic/`, тесты — в `mod/tests/PTMod.Tests/Features/ScenariosAchievements/`.
 - Точка входа — `[ModFeature] ScenariosFeature : IModFeature` в пространстве имён `PTMod.Features.ScenariosAchievements`.
 - Источник истины старта — `ModNewGame.BeforeStart`; UI меню — выбор и предпросмотр (секция панели «Моды…»).
 - Собственные патчи — два: `ContractManager.PromoteContractToActive` (postfix) и `GameplaySettingsWindow.ChangeDifficulty` (prefix). Остальное — сервисы ядра (`ModEvents`, `ModTicks`, `ModNewGame`, `ModProfile`, `ModCredit`).
@@ -46,7 +46,7 @@
 
 - [x] **TSK-002**: Модель контента и `ContentValidator` (Logic) (авто 2026-10-10)
   - **Requirement**: FR-1, FR-11 (п. 1), FR-12 (п. 1), NFR-7
-  - **Deliverables**: `mod/src/PTMod/Features/ScenariosAchievements/Logic/Content/{ScenarioDefinition,ChallengeDefinition,AchievementDefinition,CheckSpec,ContentValidator,ContentMapper}.cs`, `mod/src/PTMod/Features/ScenariosAchievements/Content/{ScenarioCatalog,ScenarioRecord,ChallengeRecord,AchievementRecord}.cs` (загрузка через `ModContent.LoadRecords` / `LoadConfig`, обёртки `IContentRecord`), `mod/tests/PTMod.Tests/ScenariosAchievements/ContentValidatorTests.cs`
+  - **Deliverables**: `mod/src/PTMod/Features/ScenariosAchievements/Logic/Content/{ScenarioDefinition,ChallengeDefinition,AchievementDefinition,CheckSpec,ContentValidator,ContentMapper}.cs`, `mod/src/PTMod/Features/ScenariosAchievements/Content/{ScenarioCatalog,ScenarioRecord,ChallengeRecord,AchievementRecord}.cs` (загрузка через `ModContent.LoadRecords` / `LoadConfig`, обёртки `IContentRecord`), `mod/tests/PTMod.Tests/Features/ScenariosAchievements/ContentValidatorTests.cs`
   - **Acceptance**: тесты на каждый пункт «Validation Rules» design.md (год вне набора, деньги вне диапазона, Impossible с не-IDM, `fabless` с линиями > 0, нет обязательных целей, дубликат ID, неизвестная метрика/событие, канал не объявлен в реестре ядра (`IsKnownChannel`), условие `condition` с неизвестным предикатом, пороги медалей не по возрастанию, `by` вне интервала) зелёные; вычисляется `ContentHash`, флаг `IsCustom` для переопределения с другим хешем
   - **Depends**: mod-framework/TSK-015, mod-framework/TSK-019, mod-framework/TSK-059, mod-framework/TSK-067
 
@@ -64,7 +64,7 @@
 
 - [x] **TSK-005**: Тексты ru/en (авто 2026-10-10)
   - **Requirement**: FR-2 (п. 3), NFR-5, NFR-6
-  - **Deliverables**: `mod/src/PTMod/L10n/ru.json`, `mod/src/PTMod/L10n/en.json` (ключи `scn.*`, `chl.*`, `ach.*`)
+  - **Deliverables**: `mod/src/PTMod/L10n/ru/scenarios-achievements.json`, `mod/src/PTMod/L10n/en/scenarios-achievements.json` (ключи `scn.*`, `chl.*`, `ach.*`)
   - **Acceptance**: для каждого сценария — `title`, `desc` (≤ 6 строк), `briefing`, тексты целей; для каждого испытания — `title`, `desc`, `fail`; для каждого достижения — `title`, `desc`; общие строки UI из таблицы ключей design.md (включая `scn.difficulty.locked`, `scn.badge.assisted.feature`, `chl.tight-credit.unavailable`); плейсхолдеры индексные (`{0}`…); самопроверка не находит отсутствующих ключей
   - **Depends**: TSK-003, TSK-004, mod-framework/TSK-043
 
@@ -72,61 +72,61 @@
 
 - [x] **TSK-006**: Метрики: `RollingWindow`, `MetricsState`, `MetricsCalculator`, `MetricsSnapshot` (Logic) (авто 2026-10-10)
   - **Requirement**: FR-5 (п. 1), FR-16 (п. 1)
-  - **Deliverables**: `mod/src/PTMod/Features/ScenariosAchievements/Logic/Metrics/{RollingWindow,MetricsState,MetricsCalculator,MetricsSnapshot,DaySample}.cs`, `mod/tests/PTMod.Tests/ScenariosAchievements/RollingWindowTests.cs`, `mod/tests/PTMod.Tests/ScenariosAchievements/MetricsCalculatorTests.cs`
+  - **Deliverables**: `mod/src/PTMod/Features/ScenariosAchievements/Logic/Metrics/{RollingWindow,MetricsState,MetricsCalculator,MetricsSnapshot,DaySample}.cs`, `mod/tests/PTMod.Tests/Features/ScenariosAchievements/RollingWindowTests.cs`, `mod/tests/PTMod.Tests/Features/ScenariosAchievements/MetricsCalculatorTests.cs`
   - **Acceptance**: все метрики из таблицы design.md вычисляются из `DaySample`/`MonthSample`; окна долей индексируются `Segment` (`[0]` — все сегменты, `[1 + (int)Segment]`); тесты окна (кольцо 30 дней, ноль в знаменателе = 0), серий (прибыль, платёжеспособность, отрицательные дни, без упущенных, лидер IPS), `money.min`, `default.recoveredCount`, `share.minSegment`, исключения перенесённых CPU из метрик характеристик зелёные
   - **Depends**: TSK-002, mod-framework/TSK-017
 
 - [x] **TSK-007**: `GoalEvaluator`: виды целей, `holdDays`, `by`, прогресс (Logic) (авто 2026-10-10)
   - **Requirement**: FR-5
-  - **Deliverables**: `mod/src/PTMod/Features/ScenariosAchievements/Logic/Scenario/{GoalEvaluator,GoalState,IConditionAdapter}.cs`, `mod/tests/PTMod.Tests/ScenariosAchievements/GoalEvaluatorTests.cs`
+  - **Deliverables**: `mod/src/PTMod/Features/ScenariosAchievements/Logic/Scenario/{GoalEvaluator,GoalState,IConditionAdapter}.cs`, `mod/tests/PTMod.Tests/Features/ScenariosAchievements/GoalEvaluatorTests.cs`
   - **Acceptance**: тесты видов `metric` (с `holdDays`), `cpuReleased` (частота, ядра, Вт, SMT, тип компании в момент выпуска, перенесённые CPU не считаются), `event`, `condition` (через фейковый адаптер над `ConditionRef`), `all`; провал по `by`; прогресс 0..1 для `percent`/`money`/`count` зелёные
   - **Depends**: TSK-006
 
 - [x] **TSK-008**: `RaceResolver` (Logic) (авто 2026-10-10)
   - **Requirement**: FR-6
-  - **Deliverables**: `mod/src/PTMod/Features/ScenariosAchievements/Logic/Scenario/{RaceResolver,RaceBook}.cs`, `mod/tests/PTMod.Tests/ScenariosAchievements/RaceResolverTests.cs`
+  - **Deliverables**: `mod/src/PTMod/Features/ScenariosAchievements/Logic/Scenario/{RaceResolver,RaceBook}.cs`, `mod/tests/PTMod.Tests/Features/ScenariosAchievements/RaceResolverTests.cs`
   - **Acceptance**: игрок первым → цель `Done`; ИИ первым → `Failed` с именем и датой, при `failOnLose` — сигнал поражения; выпуски до старта прогона не учитываются; два выпуска в один день — побеждает пришедший первым
   - **Depends**: TSK-007
 
 - [x] **TSK-009**: `FailEvaluator` и `ScenarioRuntime` (победа, поражение, дедлайн) (Logic) (авто 2026-10-10)
   - **Requirement**: FR-5 (п. 2–4), FR-7
-  - **Deliverables**: `mod/src/PTMod/Features/ScenariosAchievements/Logic/Scenario/{FailEvaluator,ScenarioRuntime,ScenarioState}.cs`, `mod/tests/PTMod.Tests/ScenariosAchievements/ScenarioRuntimeTests.cs`
+  - **Deliverables**: `mod/src/PTMod/Features/ScenariosAchievements/Logic/Scenario/{FailEvaluator,ScenarioRuntime,ScenarioState}.cs`, `mod/tests/PTMod.Tests/Features/ScenariosAchievements/ScenarioRuntimeTests.cs`
   - **Acceptance**: победа по обязательным целям до дедлайна; поражение по дедлайну («Время вышло»), по банкротству, по `fail[]` с `holdDays`, по проигранной гонке; после итога статусы не меняются (E8); события «цель выполнена/провалена» для уведомлений
   - **Depends**: TSK-007, TSK-008
 
 - [x] **TSK-010**: `ScoreCalculator` и медали (Logic) (авто 2026-10-10)
   - **Requirement**: FR-8
-  - **Deliverables**: `mod/src/PTMod/Features/ScenariosAchievements/Logic/Scenario/ScoreCalculator.cs`, `mod/tests/PTMod.Tests/ScenariosAchievements/ScoreCalculatorTests.cs`
+  - **Deliverables**: `mod/src/PTMod/Features/ScenariosAchievements/Logic/Scenario/ScoreCalculator.cs`, `mod/tests/PTMod.Tests/Features/ScenariosAchievements/ScoreCalculatorTests.cs`
   - **Acceptance**: пример AC-8.1 даёт 600 и «серебро»; бонус испытаний аддитивный (15% + 10% = ×1,25); поражение = 0; значения на границах порогов получают медаль порога
   - **Depends**: TSK-009
 
 - [x] **TSK-011**: `ChallengeRuntime` (Logic) (авто 2026-10-10)
   - **Requirement**: FR-11 (п. 2–5)
-  - **Deliverables**: `mod/src/PTMod/Features/ScenariosAchievements/Logic/Challenges/{ChallengeRuntime,ChallengeStates}.cs`, `mod/tests/PTMod.Tests/ScenariosAchievements/ChallengeRuntimeTests.cs`
+  - **Deliverables**: `mod/src/PTMod/Features/ScenariosAchievements/Logic/Challenges/{ChallengeRuntime,ChallengeStates}.cs`, `mod/tests/PTMod.Tests/Features/ScenariosAchievements/ChallengeRuntimeTests.cs`
   - **Acceptance**: провал в свободной игре → событие `challenge.failed` и команда снять записи модификаторов по ID; прохождение через `challengeYears` = 10 лет или в 2030 году → `challenge.passed`; несовместимость с типом компании, с `allowedChallenges` и «Жёсткий кредит» при `IsPerCompanyActive == false` отклоняется
   - **Depends**: TSK-006
 
 - [x] **TSK-012**: `AchievementEvaluator` (Logic) (авто 2026-10-10)
   - **Requirement**: FR-12 (п. 2–7)
-  - **Deliverables**: `mod/src/PTMod/Features/ScenariosAchievements/Logic/Achievements/{AchievementEvaluator,EventBook}.cs`, `mod/tests/PTMod.Tests/ScenariosAchievements/AchievementEvaluatorTests.cs`
+  - **Deliverables**: `mod/src/PTMod/Features/ScenariosAchievements/Logic/Achievements/{AchievementEvaluator,EventBook}.cs`, `mod/tests/PTMod.Tests/Features/ScenariosAchievements/AchievementEvaluatorTests.cs`
   - **Acceptance**: каждый вид проверки (`event`, `metric`, `cpuReleased`, `all`, `profile`, `require`) покрыт тестом; уже полученные не проверяются; `countsOnlyNewGames` игнорирует `legacy`-прогоны; при > 3 новых — 3 + «и ещё N»; поглощённая компания не увеличивает `rivals.bankruptCount`
   - **Depends**: TSK-006, TSK-007
 
 - [x] **TSK-013**: `AssistedRegistry` (Logic) (авто 2026-10-10)
   - **Requirement**: FR-15 (п. 1–2, 4, 6–8)
-  - **Deliverables**: `mod/src/PTMod/Features/ScenariosAchievements/Logic/Assisted/AssistedRegistry.cs`, `mod/tests/PTMod.Tests/ScenariosAchievements/AssistedRegistryTests.cs`
+  - **Deliverables**: `mod/src/PTMod/Features/ScenariosAchievements/Logic/Assisted/AssistedRegistry.cs`, `mod/tests/PTMod.Tests/Features/ScenariosAchievements/AssistedRegistryTests.cs`
   - **Acceptance**: флаг «липкий» (снять нельзя); причины без дублей, длина ≤ 64 (`cheats.enabled`, `feature.disabled:<id>`, причины других фич через `Mark`); при `strictAssisted = true` открытие достижений блокируется, иначе они открываются с пометкой; рекорды в assisted-прогоне не обновляются
   - **Depends**: TSK-001, mod-framework/TSK-067
 
 - [x] **TSK-014**: `RunState`, `RunSaveCodec` и участник сейва `RunSaveParticipant` (секция `ModSave`) (авто 2026-10-10)
   - **Requirement**: FR-16, FR-1 (п. 4), NFR-3
-  - **Deliverables**: `mod/src/PTMod/Features/ScenariosAchievements/Logic/Run/{RunState,RunSaveCodec}.cs`, `mod/src/PTMod/Features/ScenariosAchievements/Integration/RunSaveParticipant.cs` (`IModSaveParticipant`), `mod/tests/PTMod.Tests/ScenariosAchievements/RunSaveCodecTests.cs`
+  - **Deliverables**: `mod/src/PTMod/Features/ScenariosAchievements/Logic/Run/{RunState,RunSaveCodec}.cs`, `mod/src/PTMod/Features/ScenariosAchievements/Integration/RunSaveParticipant.cs` (`IModSaveParticipant`), `mod/tests/PTMod.Tests/Features/ScenariosAchievements/RunSaveCodecTests.cs`
   - **Acceptance**: круговая сериализация примера секции design.md без потерь (снимок сценария, окна долей, серии, гонки, флаги, `featuresAtStart`, ID записей модификаторов, `transferredCpuIds`, ID писем); в записанной секции нет поля версии (`_schema` ставит ядро); нет секции или секция новее → `ResetToDefaults()` (прогона нет, `legacy` рождается на `GameReady(Loaded)`); неизвестный статус → значение по умолчанию; `SectionId = scenarios-achievements`, `SchemaVersion = 1`
   - **Depends**: TSK-006, TSK-009, mod-framework/TSK-025, mod-framework/TSK-010
 
 - [x] **TSK-015**: `ProfileModel` над `ModProfile` и адаптер `ProfileGate` (авто 2026-10-10)
   - **Requirement**: FR-13, NFR-4
-  - **Deliverables**: `mod/src/PTMod/Features/ScenariosAchievements/Logic/Profile/ProfileModel.cs`, `mod/src/PTMod/Features/ScenariosAchievements/Integration/ProfileGate.cs`, `mod/tests/PTMod.Tests/ScenariosAchievements/ProfileModelTests.cs`
+  - **Deliverables**: `mod/src/PTMod/Features/ScenariosAchievements/Logic/Profile/ProfileModel.cs`, `mod/src/PTMod/Features/ScenariosAchievements/Integration/ProfileGate.cs`, `mod/tests/PTMod.Tests/Features/ScenariosAchievements/ProfileModelTests.cs`
   - **Acceptance**: `ProfileModel` работает над `JsonObject` секции `ModProfile.Section("scenarios-achievements", 1)`: `Unlock` не открывает повторно, `RecordResult` не обновляет лучший результат для assisted/custom, история обрезается до 50, `Clear` очищает секцию, `Revision` растёт только при изменении; `ProfileGate` вызывает `ModProfile.MarkDirty` после изменений, `ModProfile.Save()` — при показе итогов и сбросе, отдаёт `ModProfile.Status`; своих файлов, `.bak` и троттлинга в фиче нет
   - **Depends**: TSK-001, mod-framework/TSK-014, mod-framework/TSK-021
 
@@ -146,7 +146,7 @@
 
 - [x] **TSK-018**: Запрет понижения сложности и причины assisted (авто 2026-10-10)
   - **Requirement**: FR-15 (п. 1–3, 5)
-  - **Deliverables**: `mod/src/PTMod/Features/ScenariosAchievements/Integration/DifficultyGuard.cs` (prefix `GameplaySettingsWindow.ChangeDifficulty`, `Optional`), `mod/src/PTMod/Features/ScenariosAchievements/Integration/FeatureWatch.cs`, `mod/tests/PTMod.Tests/ScenariosAchievements/DifficultyGuardTests.cs`
+  - **Deliverables**: `mod/src/PTMod/Features/ScenariosAchievements/Integration/DifficultyGuard.cs` (prefix `GameplaySettingsWindow.ChangeDifficulty`, `Optional`), `mod/src/PTMod/Features/ScenariosAchievements/Integration/FeatureWatch.cs`, `mod/tests/PTMod.Tests/Features/ScenariosAchievements/DifficultyGuardTests.cs`
   - **Acceptance**: при активном сценарии понижение сложности откатывается (список и `Player.DifficultyLevel`), показывается `scn.difficulty.locked`, assisted не ставится; повышение и свободная игра не затронуты; `FeatureWatch` по `ModFeatures.StateChanged` ставит `feature.disabled:<id>` для фич из `featuresAtStart` при активном сценарии или испытании (включение фич и `Faulted` не помечаются); читы на старте (`Player.EnableCheats`) → `cheats.enabled`; патчей на `Cheats.AddMoney` и `DateController.NextMonth` нет
   - **Depends**: TSK-013, mod-framework/TSK-023, mod-framework/TSK-022
 
@@ -220,13 +220,13 @@
 
 - [ ] **TSK-030**: Замер производительности (Частично: счётчики, флаг отладки, офлайн-замер и PERF.md готовы; замер на сейве 2010+ и перемотки новой игры в игре - за владельцем, авто 2026-10-10)
   - **Requirement**: NFR-1
-  - **Deliverables**: счётчики времени в `RunDirector.cs` за флагом отладки (`ModSettings.Debug`), результаты в `mod/tests/PTMod.Tests/ScenariosAchievements/PERF.md`
+  - **Deliverables**: счётчики времени в `RunDirector.cs` за флагом отладки (`ModSettings.Debug`), результаты в `mod/tests/PTMod.Tests/Features/ScenariosAchievements/PERF.md`
   - **Acceptance**: на сейве 2010+ года (≥ 300 CPU) среднее время дневной обработки ≤ 0,5 мс, месячной ≤ 2 мс, таблица сравнения ≤ 50 мс; при перемотке новой игры 2000 года — 0 вызовов
   - **Depends**: TSK-019, TSK-025, mod-framework/TSK-024
 
 - [ ] **TSK-031**: Плейтест баланса 8 сценариев (владелец)
   - **Requirement**: FR-2, NFR-8
-  - **Deliverables**: правки чисел в `mod/src/PTMod/Content/scenarios-achievements/scenarios.json`, журнал плейтеста `mod/tests/PTMod.Tests/ScenariosAchievements/BALANCE.md` (сценарий, исход, дата, счёт, что поменяли)
+  - **Deliverables**: правки чисел в `mod/src/PTMod/Content/scenarios-achievements/scenarios.json`, журнал плейтеста `mod/tests/PTMod.Tests/Features/ScenariosAchievements/BALANCE.md` (сценарий, исход, дата, счёт, что поменяли)
   - **Acceptance**: каждый сценарий пройден владельцем хотя бы на бронзу на скорости 4–12; для `comeback-1985`, `power-wall-2000`, `foundry-1990` проверены рискованные пороги (долг −$20 млн, 65 Вт, 3 клиента) и записано решение; пороги медалей пересчитаны по правилу design.md после изменения целей
   - **Depends**: TSK-021, TSK-025, TSK-024
 

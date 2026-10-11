@@ -27,7 +27,7 @@ XL-фича делится на три поставки. Каждая закан
 - Каждая задача 2–4 часа и заканчивается зелёной сборкой и тестами.
 
 ### Development Approach
-- **Testing Strategy**: TDD для `Gpu*Math` и генератора. Тесты — мини-раннер ядра на .NET Framework 4.8 (`[Test]`, `[Covers(typeof(X))]`, `Assert.*`), файлы в `mod/tests/PTMod.Tests/GpuProductLine/`, запуск `python mod/build.py --tests`; каждый публичный тип `Logic` указан в `[Covers]`. Интеграционная симуляция без Unity (`GpuSimulationTests`). Самопроверка на старте. Ручные сценарии владельца из design.md.
+- **Testing Strategy**: TDD для `Gpu*Math` и генератора. Тесты — мини-раннер ядра на .NET Framework 4.8 (`[Test]`, `[Covers(typeof(X))]`, `Assert.*`), файлы в `mod/tests/PTMod.Tests/Features/GpuProductLine/`, запуск `python mod/build.py --tests`; каждый публичный тип `Logic` указан в `[Covers]`. Интеграционная симуляция без Unity (`GpuSimulationTests`). Самопроверка на старте. Ручные сценарии владельца из design.md.
 - **Integration Strategy**: через сервисы `PTMod.Core` из спеки `mod-framework`; зависимости указаны номерами TSK ядра (TSK-022 — `ModFeatures` / `FeatureContext`, TSK-023 — `ModHooks`, TSK-024 — `ModTicks`, TSK-025 — `ModSave`, TSK-027 / TSK-059 — `ModModifiers`, TSK-037 / TSK-038 / TSK-062 — `ModMail`, TSK-039 — хаб и `HubPage`, TSK-058 — `ModCredit`, TSK-065 — `ConfirmBeforeDisable`).
 - **Deployment Strategy**: `install.py --with-mods` (из `mod-framework`, TSK-044 / TSK-068). Фича по умолчанию включена и выключается одним переключателем в хабе «Моды».
 
@@ -35,13 +35,13 @@ XL-фича делится на три поставки. Каждая закан
 
 - [x] **TSK-001**: Скелет фичи `GpuFeature : IModFeature` и регистрация в ядре (авто 2026-10-10)
   - **Requirement**: FR-1, FR-5, FR-9, NFR-2
-  - **Deliverables**: `mod/src/PTMod/Features/GpuProductLine/GpuFeature.cs` (`[ModFeature] sealed class GpuFeature : IModFeature`: `Id` = `gpu-product-line`, `NameKey`, `DescriptionKey`, `DependsOn` пустой, `EnabledByDefault` = true, `SupportsHotToggle` = true, `Register(FeatureContext)`, `OnEnabled`, `OnDisabled`), `GpuCapability.cs`; пять `ParamSpec` через `ctx.Param` (`rivals`, `synergy`, `news`, `consoleOrders` — включены; `cpuPriority` — выключен); страница хаба через `ctx.HubPage` с кнопкой «Видеокарты» (окно пока пустое); ключи `gpu.feature.*`, `gpu.hub.title`, `gpu.settings.*`
+  - **Deliverables**: `mod/src/PTMod/Features/GpuProductLine/GpuFeature.cs` (`[ModFeature] sealed class GpuFeature : IModFeature`: `Id` = `gpu-product-line`, `NameKey`, `DescriptionKey`, `DependsOn` пустой, `EnabledByDefault` = true, `SupportsHotToggle` = true, `Register(FeatureContext)`, `OnEnabled`, `OnDisabled`), `mod/src/PTMod/Features/GpuProductLine/Logic/Game/GpuCapability.cs`; пять `ParamSpec` через `ctx.Param` (`rivals`, `synergy`, `news`, `consoleOrders` — включены; `cpuPriority` — выключен); страница хаба через `ctx.HubPage` с кнопкой «Видеокарты» (окно пока пустое); ключи `gpu.feature.*`, `gpu.hub.title`, `gpu.settings.*`
   - **Acceptance**: при включённой фиче на странице фичи в хабе «Моды» есть кнопка «Видеокарты» и 5 переключателей; при выключенной окно недоступно, `ModTicks` подписчиков не вызывает. Все обработчики вызываются через `GpuFeature.Guard` = `ModHooks.Guard(FeatureId, "gpu/<site>", …)`: исключение пишет `[gpu-product-line]` в лог и засчитывается фиче; собственных счётчиков ошибок и `Trip` нет. Фича не подписана напрямую на `Player.OnNewGame`, `SaveHandler.OnLoaded`, `BankruptcyHandler.OnCompanyWentBankrupt` (проверяется поиском по коду фичи)
   - **Depends**: mod-framework: TSK-022 (`ModFeatures`, `FeatureContext`), TSK-021 (`ModSettings`, `ModLog`), TSK-023 (`ModHooks.Guard`), TSK-024 (`ModTicks`), TSK-039 (хаб, `HubPage`, страница настроек)
 
 - [x] **TSK-002**: DTO контента и `GpuContentDb` с валидацией (авто 2026-10-10)
   - **Requirement**: FR-10, NFR-8
-  - **Deliverables**: `mod/src/PTMod/Features/GpuProductLine/Content/GpuContentDtos.cs` (плоские DTO с `List<T>`, записи реализуют `IContentRecord`), `GpuContentDb.cs`, `IModContentSource` (обёртка над `ModContent.LoadRecords` / `LoadConfig`, в тестах — фикстуры)
+  - **Deliverables**: `mod/src/PTMod/Features/GpuProductLine/Logic/Content/GpuContentDtos.cs` (плоские DTO с `List<T>`, записи реализуют `IContentRecord`), `GpuContentDb.cs`, `IModContentSource` (обёртка над `ModContent.LoadRecords` / `LoadConfig`, в тестах — фикстуры)
   - **Acceptance**: загрузка файлов `{ "schema": 1, "records": [ … ] }` и объектов `balance` / `timeline`; переопределение из `PTMod/content/gpu-product-line/` по `id` (замена, `"disabled": true` удаляет). Правила валидации из design.md «Правила валидации контента» реализованы: дубликаты, ссылки, циклы `requiresNodes`, 7 значений по десятилетиям, диапазоны, формат `bindTo` (`ai:<число>`), записи `consoles`. Битая запись пропускается с логом; `IsUsable == false` при пустых обязательных наборах
   - **Depends**: TSK-001; mod-framework: TSK-010 (`ModJson.Bind`), TSK-015 и TSK-021 (`ModContent`), TSK-066 (`ModIds`)
 
@@ -53,13 +53,13 @@ XL-фича делится на три поставки. Каждая закан
 
 - [x] **TSK-004**: DTO сохранения, `GpuState` и `GpuSaveParticipant` (авто 2026-10-10)
   - **Requirement**: FR-9, NFR-3, NFR-8
-  - **Deliverables**: `mod/src/PTMod/Features/GpuProductLine/State/GpuSaveDtos.cs` (без поля версии), `GpuState.cs` (проверка, лимиты, `Migrate_n_to_n+1`, генератор id), `GpuSaveParticipant.cs` (`IModSaveParticipant`: `SectionId` = `gpu-product-line`, `SchemaVersion` = 1, `ResetToDefaults`, `Read(section, schema)`, `Write()` без `_schema`), регистрация `ctx.SaveParticipant`
+  - **Deliverables**: `mod/src/PTMod/Features/GpuProductLine/Logic/State/GpuSaveDtos.cs` (без поля версии), `mod/src/PTMod/Features/GpuProductLine/Logic/State/GpuState.cs` (проверка, лимиты, `Migrate_n_to_n+1`, генератор id), `mod/src/PTMod/Features/GpuProductLine/State/GpuSaveParticipant.cs` (`IModSaveParticipant`: `SectionId` = `gpu-product-line`, `SchemaVersion` = 1, `ResetToDefaults`, `Read(section, schema)`, `Write()` без `_schema`), регистрация `ctx.SaveParticipant`
   - **Acceptance**: правила проверки при загрузке из design.md («Правила проверки при загрузке») выполнены: NaN → умолчание, клампы, лимиты 500/32/600/32, неизвестные id, ключи компаний `^(player|ai:\d+)?$` (числовой SaveID компании в секцию не пишется). Секция отсутствует → `ResetToDefaults`. `Read(…, schema)` с `schema` меньше текущей мигрирует; секцию «новее» ядро отдаёт как значения по умолчанию с passthrough — фича их не перезаписывает
   - **Depends**: TSK-001; mod-framework: TSK-016 (модель бокового файла), TSK-025 (`ModSave`), TSK-026 (`ModCompanies`), TSK-010
 
 - [x] **TSK-005**: Тесты контента и сохранения (авто 2026-10-10)
   - **Requirement**: FR-9, FR-10, NFR-3
-  - **Deliverables**: `mod/tests/PTMod.Tests/GpuProductLine/GpuContentValidationTests.cs`, `GpuSaveRoundTripTests.cs`, фикстуры `mod/tests/PTMod.Tests/GpuProductLine/fixtures/*.json`
+  - **Deliverables**: `mod/tests/PTMod.Tests/Features/GpuProductLine/GpuContentValidationTests.cs`, `GpuSaveRoundTripTests.cs`, фикстуры `mod/tests/PTMod.Tests/Features/GpuProductLine/fixtures/*.json`
   - **Acceptance**: зелёные тесты: дубликаты id, битые ссылки, цикл узлов, неверная длина массивов, `bindTo` неверного формата; round-trip секции из design.md без потерь и без поля версии; `stock = -5` → 0; `archId` неизвестен → продукт жив по снимку; `Read(section, 0 или 1)` на старой схеме мигрирует; секция без `_schema` читается как версия 1
   - **Depends**: TSK-002, TSK-004; mod-framework: TSK-067 (мини-раннер)
 
@@ -67,31 +67,31 @@ XL-фича делится на три поставки. Каждая закан
 
 - [x] **TSK-006**: `GpuDesignMath` — характеристики (F2–F9) (авто 2026-10-10)
   - **Requirement**: FR-3
-  - **Deliverables**: `mod/src/PTMod/Features/GpuProductLine/Math/GpuDesignMath.cs` (Units, MaxClockMHz, ComputeMops, BandwidthMBs, EffectivePerf, PowerW, TemperatureC, FailureRate); `mod/tests/PTMod.Tests/GpuProductLine/GpuDesignMathTests.cs`
+  - **Deliverables**: `mod/src/PTMod/Features/GpuProductLine/Logic/Math/GpuDesignMath.cs` (Units, MaxClockMHz, ComputeMops, BandwidthMBs, EffectivePerf, PowerW, TemperatureC, FailureRate); `mod/tests/PTMod.Tests/Features/GpuProductLine/GpuDesignMathTests.cs`
   - **Acceptance**: 4 калибровочных примера из design.md (1985, 1997, 2005, 2022) совпадают с допуском 0.5 %; граничные случаи: S ≥ 1, `r` не ниже `bandwidthRatioMin`, `Temp > 95` → член `π·(T−Ts)`, нулевая частота → `Valid = false` без NaN
   - **Depends**: TSK-003; mod-framework: TSK-067
 
 - [x] **TSK-007**: `GpuDesignMath` — стоимость и проект (F1, F10–F14, F27) и порты формул игры (авто 2026-10-10)
   - **Requirement**: FR-3, FR-4, FR-17
-  - **Deliverables**: `GpuDesignMath.UnitCost/ProjectCost/ProjectDays/TransistorsPort/DiesPerWaferPort/RealUnitCostPort`, `Evaluate`; `mod/tests/PTMod.Tests/GpuProductLine/PortEquivalenceTests.cs`
+  - **Deliverables**: `GpuDesignMath.UnitCost/ProjectCost/ProjectDays/TransistorsPort/DiesPerWaferPort/RealUnitCostPort`, `Evaluate`; `mod/tests/PTMod.Tests/Features/GpuProductLine/PortEquivalenceTests.cs`
   - **Acceptance**: порты дают те же значения, что ручной расчёт по `CpuMath.TransistorCount`, `ProductionMath.DiesPerWafer`, `CpuMath.RealUnitCost` (контрольные значения из CODEMAP, например `DPW(300, 300, 1.0) = 197`); удешевление VRAM по F12 (`sgram` 1998: `4 × 0.7^4`); стоимость проекта AC-4.1 = 1.45e8, AC-4.4 ≈ 9.72e7; `coDev` 0.85 применяется только при совпадении техпроцесса и возраста CPU ≤ 2 лет; проект не использует `CpuMath.ProjectCost` и канал `development.cost.design`
   - **Depends**: TSK-006
 
 - [x] **TSK-008**: `GpuResearchMath` (F15–F16) (авто 2026-10-10)
   - **Requirement**: FR-2
-  - **Deliverables**: `mod/src/PTMod/Features/GpuProductLine/Math/GpuResearchMath.cs`; `mod/tests/PTMod.Tests/GpuProductLine/GpuResearchMathTests.cs`
+  - **Deliverables**: `mod/src/PTMod/Features/GpuProductLine/Logic/Math/GpuResearchMath.cs`; `mod/tests/PTMod.Tests/Features/GpuProductLine/GpuResearchMathTests.cs`
   - **Acceptance**: AC-2.1 (`T_eff = 200` на 1 января 1996), AC-2.2 (`≈ 3700` дней для 1995 года в 1990), бонус ограничен 75 %; дневной расход = `monthlyCost × mod / 30 × funding`
   - **Depends**: TSK-003; mod-framework: TSK-067
 
 - [x] **TSK-009**: `GpuMarketMath` — порт формул рынка (F19–F21, F33–F34) (авто 2026-10-10)
   - **Requirement**: FR-6, FR-11
-  - **Deliverables**: `mod/src/PTMod/Features/GpuProductLine/Math/GpuMarketMath.cs` (`MarketItem`, `SegmentRuntime`, YearlySize, DecadeLerp, CalculateRatings, Normalize, Dilute, PotentialBuyers, SellDay, UpdatePopularity, VramFactor, FeatureFactor); `mod/tests/PTMod.Tests/GpuProductLine/GpuMarketMathTests.cs`
+  - **Deliverables**: `mod/src/PTMod/Features/GpuProductLine/Logic/Math/GpuMarketMath.cs` (`MarketItem`, `SegmentRuntime`, YearlySize, DecadeLerp, CalculateRatings, Normalize, Dilute, PotentialBuyers, SellDay, UpdatePopularity, VramFactor, FeatureFactor); `mod/tests/PTMod.Tests/Features/GpuProductLine/GpuMarketMathTests.cs`
   - **Acceptance**: тест «как `Market`» на ручном примере из 3 продуктов совпадает с расчётом по формулам `Market.CalculateRatings`, `Market.NormalizeRatings`, `Market.DiluteRatings`, `Market.CalculatePotentialBuyers`. Покрыты случаи: `price ≥ 3 × budget` → 0; бесконечный запас фона; три прохода; пол и потолок популярности, затухание устаревших, `brandCarry`; `VramFactor` и `FeatureFactor` (0^0 = 1); множители каналов `gpu.demand`, `gpu.rating`, `popularity.gain` приходят числами (математика чистая)
   - **Depends**: TSK-003; mod-framework: TSK-067
 
 - [x] **TSK-010**: `GpuProductionMath` (F17, F18, F28, F28', F29, F31, F32) (авто 2026-10-10)
   - **Requirement**: FR-5, FR-7
-  - **Deliverables**: `mod/src/PTMod/Features/GpuProductLine/Math/GpuProductionMath.cs` (`AvailableLines`, `ScaleLines`, `Produce`, `AutoLines`, `StorageCostPerDay`); `mod/tests/PTMod.Tests/GpuProductLine/GpuProductionMathTests.cs`
+  - **Deliverables**: `mod/src/PTMod/Features/GpuProductLine/Logic/Math/GpuProductionMath.cs` (`AvailableLines`, `ScaleLines`, `Produce`, `AutoLines`, `StorageCostPerDay`); `mod/tests/PTMod.Tests/Features/GpuProductLine/GpuProductionMathTests.cs`
   - **Acceptance**: `Produce` совпадает с формулой `Factory.ProduceWafers` на ручном примере (VRAM, плата и охлаждение только на годные; материал пластины приходит параметром — значение `ProductionMath.WaferMaterialCost`, поэтому шок `production.waferCost` проходит в затраты); `ScaleLines` — метод наибольших остатков, сумма = доступному; `AvailableLines` для режима по умолчанию (F28) и «CPU в приоритете» (F28': AC-5.5, нулевой и отрицательный остаток → 0); `AutoLines` не зацикливается при `DPW = 0` и уважает `autoMaxShare`; хранение и ликвидация по F31/F32; AC-7.1 (400 000)
   - **Depends**: TSK-003; mod-framework: TSK-067
 
@@ -99,7 +99,7 @@ XL-фича делится на три поставки. Каждая закан
 
 - [x] **TSK-011**: `GpuGameAdapter`, `FactoryAccess` и самопроверка (авто 2026-10-10)
   - **Requirement**: FR-3, FR-5, NFR-2
-  - **Deliverables**: `mod/src/PTMod/Features/GpuProductLine/Bridges/GpuGameAdapter.cs` (`IGpuGame` с `KeyOf` / `Resolve` через `ModCompanies`, `DebtThreshold` через `ModCredit.ThresholdOf`, `Channel` через `ModModifiers.Get`; кэш `ProcessNode` по имени через `DataFinder.FindLithography`), `Bridges/FactoryAccess.cs`, `GpuSelfCheck.cs`
+  - **Deliverables**: `mod/src/PTMod/Features/GpuProductLine/Bridges/GpuGameAdapter.cs` (`IGpuGame` с `KeyOf` / `Resolve` через `ModCompanies`, `DebtThreshold` через `ModCredit.ThresholdOf`, `Channel` через `ModModifiers.Get`; кэш `ProcessNode` по имени через `DataFinder.FindLithography`), `Bridges/FactoryAccess.cs`, `mod/src/PTMod/Features/GpuProductLine/GpuSelfCheck.cs`
   - **Acceptance**: самопроверка находит 6 полей, 12 вызываемых членов игры и сверяет порты F1/F10/F11 на 3 наборах; проверяет `CompanyHelper.IsEMD(1)` и `CompanyHelper.IsInlet(0)`. Строка `[gpu-product-line] self-check OK (patches 2/2, fields 6/6, calls 12/12, ports 3/3)` в `Player.log` и на странице фичи в хабе. При отсутствии поля `Factory.totalAllocatedLines` выключается только `GpuCapability.Production`; статус патчей GP1/GP2 берётся из `ModHooks.Report`. Кэш техпроцессов строится на `GameReady` и раз в месяц, в дневных тиках `FindObjectsByType` не вызывается
   - **Depends**: TSK-007; mod-framework: TSK-023 (`ModHooks`: `Report`, `Optional`), TSK-042 (`ModSelfCheck`), TSK-026 (`ModCompanies`), TSK-058 (`ModCredit`)
 
@@ -111,25 +111,25 @@ XL-фича делится на три поставки. Каждая закан
 
 - [x] **TSK-013**: Основание GPU-подразделения (`GpuDivision`) (авто 2026-10-10)
   - **Requirement**: FR-1
-  - **Deliverables**: `mod/src/PTMod/Features/GpuProductLine/Services/GpuDivision.cs` (`Check` с порядком проверок: уже основано → год рынка → чистый литейщик (`ICompany.get_IsCpuCompany`) → кредит по `ModCredit.ThresholdOf`; `Found` — стоимость F30, списание `ExpenseOrigin.Development`, `GpuResearch.UnlockUpToYear`; `FoundFree` для передачи линейки)
+  - **Deliverables**: `mod/src/PTMod/Features/GpuProductLine/Logic/Services/GpuDivision.cs` (`Check` с порядком проверок: уже основано → год рынка → чистый литейщик (`ICompany.get_IsCpuCompany`) → кредит по `ModCredit.ThresholdOf`; `Found` — стоимость F30, списание `ExpenseOrigin.Development`, `GpuResearch.UnlockUpToYear`; `FoundFree` для передачи линейки)
   - **Acceptance**: AC-1.1, AC-1.3, AC-1.4, AC-1.5 на фейковом `IGpuGame`; `CentralBank.DebtLimit` в коде не читается; повторное основание невозможно; дата основания сохраняется
   - **Depends**: TSK-004, TSK-011, TSK-014; mod-framework: TSK-058 (`ModCredit`)
 
 - [x] **TSK-014**: `GpuResearch` — лаборатория GPU (авто 2026-10-10)
   - **Requirement**: FR-2
-  - **Deliverables**: `mod/src/PTMod/Features/GpuProductLine/Services/GpuResearch.cs` (очередь до 5, финансирование 10–100 %, `TickPhase.Tick` через `ctx.OnTick`, расходы `ExpenseOrigin.Research`, `Completed`, `ModNotify`, предпосылки на технологии игры через предикат ядра `techResearched`)
+  - **Deliverables**: `mod/src/PTMod/Features/GpuProductLine/Logic/Services/GpuResearch.cs` (очередь до 5, финансирование 10–100 %, `TickPhase.Tick` через `ctx.OnTick`, расходы `ExpenseOrigin.Research`, `Completed`, `ModNotify`, предпосылки на технологии игры через предикат ядра `techResearched`)
   - **Acceptance**: AC-2.1…AC-2.4 на фейках; `UnlockUpToYear(1992)` открывает ровно 5 узлов этапа 1 (`arch.2d`, `arch.gui`, `vram.dram`, `vram.vram`, `cool.passive`); во время перемотки и загрузки прогресс не растёт (подписчик без `RunDuringFastForward`)
   - **Depends**: TSK-008, TSK-011; mod-framework: TSK-024 (`ModTicks`), TSK-032 (`ModConditions`), TSK-033 (`ModNotify`)
 
 - [x] **TSK-015**: `GpuProjects` — разработка (авто 2026-10-10)
   - **Requirement**: FR-4
-  - **Deliverables**: `mod/src/PTMod/Features/GpuProductLine/Services/GpuProjects.cs`
+  - **Deliverables**: `mod/src/PTMod/Features/GpuProductLine/Logic/Services/GpuProjects.cs`
   - **Acceptance**: AC-4.1, AC-4.2; лимит `maxParallelProjects`; дневное списание по F14 с поправкой на инфляцию (фаза `TickPhase.Tick`); отмена без возврата денег; по завершении — продукт со статусом `ready` и событие `ReadyToRelease`; снимок `stats` сохранён в дизайне; множитель стоимости берётся из `Modifiers.GetModifier(ModifierType.DevelopmentCost, …)`, `CpuMath.ProjectCost` не вызывается
   - **Depends**: TSK-007, TSK-011; mod-framework: TSK-024
 
 - [x] **TSK-016**: `GpuProduction` — резерв линий и выпуск на своей фабрике (авто 2026-10-10)
   - **Requirement**: FR-5
-  - **Deliverables**: `mod/src/PTMod/Features/GpuProductLine/Services/GpuProduction.cs` (фаза `TickPhase.PreContractSellTick`, F28 / F28' с клиентами-литейщиками через `BusinessContractManager.GetFoundryServicesContract` / `BusinessContract.ContractedProductionCapacity` и суммой линий CPU (`CpuLinesInUse`) в режиме `cpuPriority`, F17 с вызовом `ProductionMath.WaferMaterialCost`, F29, пересчёт `U` по F12, `ReservedOn(node)`)
+  - **Deliverables**: `mod/src/PTMod/Features/GpuProductLine/Logic/Services/GpuProduction.cs` (фаза `TickPhase.PreContractSellTick`, F28 / F28' с клиентами-литейщиками через `BusinessContractManager.GetFoundryServicesContract` / `BusinessContract.ContractedProductionCapacity` и суммой линий CPU (`CpuLinesInUse`) в режиме `cpuPriority`, F17 с вызовом `ProductionMath.WaferMaterialCost`, F29, пересчёт `U` по F12, `ReservedOn(node)`)
   - **Acceptance**: на фейковой фабрике выполнены AC-5.1…AC-5.3, AC-5.5 и AC-5.6; `totalAllocatedLines` после резерва ≤ `ProductionCapacity`; расходы по статье `Factories`; режим «авто» по F29; предупреждение «Не хватает линий» в состоянии продукта; переключатель `cpuPriority` читается каждый день (`ModSettings`)
   - **Depends**: TSK-010, TSK-011, TSK-015; mod-framework: TSK-024
 
@@ -141,19 +141,19 @@ XL-фича делится на три поставки. Каждая закан
 
 - [x] **TSK-018**: `GpuRivalGenerator` — генератор дизайна по году (F22–F23) (авто 2026-10-10)
   - **Requirement**: FR-6 (фон), FR-13
-  - **Deliverables**: `mod/src/PTMod/Features/GpuProductLine/Rivals/GpuRivalGenerator.cs`, `IGpuRandom` поверх `ModRandom` (потоки `gpu-product-line/rivals` и `gpu-product-line/background`); `mod/tests/PTMod.Tests/GpuProductLine/GpuRivalGeneratorTests.cs`
+  - **Deliverables**: `mod/src/PTMod/Features/GpuProductLine/Logic/Rivals/GpuRivalGenerator.cs`, `IGpuRandom` поверх `ModRandom` (потоки `gpu-product-line/rivals` и `gpu-product-line/background`); `mod/tests/PTMod.Tests/Features/GpuProductLine/GpuRivalGeneratorTests.cs`
   - **Acceptance**: одинаковый сид → одинаковые дизайны; выбор архитектуры, памяти и охлаждения по `techYear` (AC-13.2); `Temp ≤ 85`; VRAM — степень двойки ≤ `maxVramMB`; цена ≥ `1.3 × U`
   - **Depends**: TSK-007, TSK-009; mod-framework: TSK-012 (логика `ModRandom`), TSK-025 (`ModRandom` в сейве)
 
 - [x] **TSK-019**: `GpuMarketService` — дневной рынок этапа 1, фон и засев (авто 2026-10-10)
   - **Requirement**: FR-6, FR-9
-  - **Deliverables**: `mod/src/PTMod/Features/GpuProductLine/Services/GpuMarketService.cs` (фазы `MarketSellTick`, `DayPassed`, `MonthPassed`; `SeedForYear`, фон по `background`, чтение каналов `gpu.demand`, `gpu.rating`, `popularity.gain` через `GpuModifierBridge`, выручка `EarnMoney(…, Sales)`); засев на `TickPhase.FastForwardEnded` (новая игра) и `ModTicks.GameReady(Loaded)` (сейв без секции)
+  - **Deliverables**: `mod/src/PTMod/Features/GpuProductLine/Logic/Services/GpuMarketService.cs` (фазы `MarketSellTick`, `DayPassed`, `MonthPassed`; `SeedForYear`, фон по `background`, чтение каналов `gpu.demand`, `gpu.rating`, `popularity.gain` через `GpuModifierBridge`, выручка `EarnMoney(…, Sales)`); засев на `TickPhase.FastForwardEnded` (новая игра) и `ModTicks.GameReady(Loaded)` (сейв без секции)
   - **Acceptance**: AC-6.1…AC-6.4 на фейках; рынок идёт без подразделения игрока (FR-6 п. 8); засев один раз (флаг `market.seeded`) на старте новой игры и при загрузке сейва без секции (AC-9.1); фон обновляется раз в 12 месяцев
   - **Depends**: TSK-009, TSK-012, TSK-018; mod-framework: TSK-024 (`FastForwardEnded`, `GameReady`), TSK-025 (`ModSave`)
 
 - [x] **TSK-020**: `GpuLineup` — управление линейкой (авто 2026-10-10)
   - **Requirement**: FR-7, FR-4
-  - **Deliverables**: `mod/src/PTMod/Features/GpuProductLine/Services/GpuLineup.cs` (Release, SetPrice, SetSelling, SetLines, SetUnitsPerDay, SetAuto, Retire F31, хранение F32, помесячная бухгалтерия, метка «устарел»)
+  - **Deliverables**: `mod/src/PTMod/Features/GpuProductLine/Logic/Services/GpuLineup.cs` (Release, SetPrice, SetSelling, SetLines, SetUnitsPerDay, SetAuto, Retire F31, хранение F32, помесячная бухгалтерия, метка «устарел»)
   - **Acceptance**: AC-7.1…AC-7.3; цена применяется со следующего рыночного тика; бухгалтерия не длиннее 600 месяцев; снятый продукт не участвует в рынке и резерве
   - **Depends**: TSK-016, TSK-019
 
@@ -181,6 +181,7 @@ XL-фича делится на три поставки. Каждая закан
   - **Requirement**: FR-3, FR-17 (строка скидки), NFR-1, NFR-5
   - **Deliverables**: `mod/src/PTMod/Features/GpuProductLine/UI/GpuDesignerTab.cs`
   - **Acceptance**: AC-3.1…AC-3.3 в UI; пересчёт только по `OnValueChanged` (замер ≤ 1 мс); таблица «Оценка по сегментам»; предупреждения «Упор в память», «Перегрев», блок «Кристалл не помещается»; имя ≤ 32 символов без TMP-тегов; «Разработать» создаёт проект; подсказки характеристик через `ModUI.Tooltip`
+  - Could (FR-3.8, «На основе…» у существующего GPU): Отложено (2026-10-11): Could, не реализовано в первой версии.
   - **Depends**: TSK-015, TSK-022; mod-framework: TSK-064
 
 - [x] **TSK-025**: Диалог «Выпуск GPU» и вкладка «Линейка» (авто 2026-10-10)
@@ -197,13 +198,13 @@ XL-фича делится на три поставки. Каждая закан
 
 - [x] **TSK-027**: Строки ru/en этапа 1 (авто 2026-10-10)
   - **Requirement**: NFR-4
-  - **Deliverables**: ключи `gpu.*` в `mod/src/PTMod/L10n/ru.json` и `mod/src/PTMod/L10n/en.json` (окно, вкладки, конструктор, линейка, рынок, уведомления, настройки, названия архитектур, памяти, охлаждения, сегмента `consumer`)
-  - **Acceptance**: тест `mod/tests/PTMod.Tests/GpuProductLine/GpuL10nKeysTests.cs` находит все ключи, используемые в коде и контенте, в обоих файлах; все ключи начинаются с `gpu.` (проверка `ModIds`); числа форматируются `StringFormatter.FloatToMoney` / `FloatToFrequency` / `FloatToPercentageString`
+  - **Deliverables**: ключи `gpu.*` в `mod/src/PTMod/L10n/ru/gpu-product-line.json` и `mod/src/PTMod/L10n/en/gpu-product-line.json` (окно, вкладки, конструктор, линейка, рынок, уведомления, настройки, названия архитектур, памяти, охлаждения, сегмента `consumer`)
+  - **Acceptance**: тест `mod/tests/PTMod.Tests/Features/GpuProductLine/GpuL10nKeysTests.cs` находит все ключи, используемые в коде и контенте, в обоих файлах; все ключи начинаются с `gpu.` (проверка `ModIds`); числа форматируются `StringFormatter.FloatToMoney` / `FloatToFrequency` / `FloatToPercentageString`
   - **Depends**: TSK-022…TSK-026; mod-framework: TSK-013 и TSK-043 (`ModL10n`, строки ядра), TSK-066 (`ModIds`)
 
 - [x] **TSK-028**: Интеграционная симуляция этапа 1 и замер производительности (авто 2026-10-10)
   - **Requirement**: FR-5, FR-6, NFR-1, NFR-2, NFR-7
-  - **Deliverables**: `mod/tests/PTMod.Tests/GpuProductLine/GpuSimulationTests.cs` (фейковые `IGpuGame` и фабрика, бот-игрок: основание 1995, карта каждые 2 года, авто-линии), отладочный `Stopwatch` в обработчиках
+  - **Deliverables**: `mod/tests/PTMod.Tests/Features/GpuProductLine/GpuSimulationTests.cs` (фейковые `IGpuGame` и фабрика, бот-игрок: основание 1995, карта каждые 2 года, авто-линии), отладочный `Stopwatch` в обработчиках
   - **Acceptance**: прогон 1981–2010 без исключений; дневная работа ≤ 0.5 мс и месячная ≤ 5 мс на машине владельца (лог); «Прочие» ≥ 15 % рынка до 2000
   - **Depends**: TSK-019, TSK-020
 
@@ -223,7 +224,7 @@ XL-фича делится на три поставки. Каждая закан
 
 - [x] **TSK-031**: `GpuEras` — открытие сегментов, требования, миграция режима (авто 2026-10-10)
   - **Requirement**: FR-11
-  - **Deliverables**: `mod/src/PTMod/Features/GpuProductLine/Services/GpuEras.cs`; подключение F33/F34 в `GpuMarketService`; `ApplyModeSwitchIfNeeded` (вызывается на `GameReady(Loaded)`)
+  - **Deliverables**: `mod/src/PTMod/Features/GpuProductLine/Logic/Services/GpuEras.cs`; подключение F33/F34 в `GpuMarketService`; `ApplyModeSwitchIfNeeded` (вызывается на `GameReady(Loaded)`)
   - **Acceptance**: AC-11.1…AC-11.3; при открытии сегмента у активных продуктов популярность 0.05 и событие `SegmentOpened`; закрытый сегмент не продаёт; сейв этапа 1 мигрирует (`consumer` → открытые сегменты эпох с коэффициентом 1.0); открытие и закрытие по разности дат (догоняет после простоя)
   - **Depends**: TSK-019, TSK-030
 
@@ -235,7 +236,7 @@ XL-фича делится на три поставки. Каждая закан
 
 - [x] **TSK-033**: `GpuRivals` — реестр, вход, уход, слияние, привязка к ИИ (авто 2026-10-10)
   - **Requirement**: FR-12
-  - **Deliverables**: `mod/src/PTMod/Features/GpuProductLine/Rivals/GpuRivals.cs` (`ResolveBinding` через `ModCompanies.Resolve("ai:<UniqueID>")`; `CheckBoundCompanies` на `TickPhase.DayPassed` по `ICompany.get_IsBankrupt` вместо подписки на `BankruptcyHandler.OnCompanyWentBankrupt`; `fallbackVirtual`; переключатель `rivals`; название продукта `<series> <launchCount>`)
+  - **Deliverables**: `mod/src/PTMod/Features/GpuProductLine/Logic/Rivals/GpuRivals.cs` (`ResolveBinding` через `ModCompanies.Resolve("ai:<UniqueID>")`; `CheckBoundCompanies` на `TickPhase.DayPassed` по `ICompany.get_IsBankrupt` вместо подписки на `BankruptcyHandler.OnCompanyWentBankrupt`; `fallbackVirtual`; переключатель `rivals`; название продукта `<series> <launchCount>`)
   - **Acceptance**: AC-12.1…AC-12.4 на фейках; виртуальные вендоры не создают компаний игры; при выключенном `rivals` на рынке только фон; после загрузки сейва состояния вендоров восстановлены; прямых подписок на события игры нет
   - **Depends**: TSK-018, TSK-032; mod-framework: TSK-026 (`ModCompanies`), TSK-024
 
@@ -247,13 +248,13 @@ XL-фича делится на три поставки. Каждая закан
 
 - [x] **TSK-035**: Тесты эпох и соперников (авто 2026-10-10)
   - **Requirement**: FR-11, FR-12, FR-13, NFR-6
-  - **Deliverables**: `mod/tests/PTMod.Tests/GpuProductLine/GpuErasTests.cs`, `GpuRivalsTests.cs`, расширение `GpuSimulationTests` режимом `eras`
+  - **Deliverables**: `mod/tests/PTMod.Tests/Features/GpuProductLine/GpuErasTests.cs`, `GpuRivalsTests.cs`, расширение `GpuSimulationTests` режимом `eras`
   - **Acceptance**: детерминизм: два прогона 1990–2010 с одним сидом дают одинаковые журналы запусков; слияние ATI → AMD в 2006 переносит продукты с популярностью; слияние 3dfx → NVIDIA в 2001; ни один вендор не держит > 70 % сегмента дольше 3 лет (NFR-7)
   - **Depends**: TSK-031, TSK-034; mod-framework: TSK-067
 
 - [x] **TSK-036**: `GpuNews` — письма рынка GPU (авто 2026-10-10)
   - **Requirement**: FR-14
-  - **Deliverables**: `mod/src/PTMod/Features/GpuProductLine/Services/GpuNews.cs` (`ModMail.Send`: эпохи и вендоры — `Normal`, новый лидер с паузой 3 мес. на сегмент — `Low`; теги `gpu:era:…`, `gpu:segment:…`, `gpu:vendor:<id>:<enter|exit|merge>`, `gpu:leader:<segmentId>`; переключатель `news`; письма только о событиях не старше предыдущего месяца)
+  - **Deliverables**: `mod/src/PTMod/Features/GpuProductLine/Logic/Services/GpuNews.cs` (`ModMail.Send`: эпохи и вендоры — `Normal`, новый лидер с паузой 3 мес. на сегмент — `Low`; теги `gpu:era:…`, `gpu:segment:…`, `gpu:vendor:<id>:<enter|exit|merge>`, `gpu:leader:<segmentId>`; переключатель `news`; письма только о событиях не старше предыдущего месяца)
   - **Acceptance**: AC-14.1, AC-14.2; во время перемотки и загрузки писем нет; письма об эпохах приходят и при выключенном `news`; фича не выбирает ID писем и не вводит дневных лимитов (лимиты и очередь — у ядра)
   - **Depends**: TSK-031, TSK-033; mod-framework: TSK-037 и TSK-062 (`ModMail`: приоритеты, `Tag`), TSK-066 (`ModIds.IsTagAllowed`)
 
@@ -265,7 +266,7 @@ XL-фича делится на три поставки. Каждая закан
 
 - [x] **TSK-038**: Строки ru/en этапа 2 (авто 2026-10-10)
   - **Requirement**: NFR-4
-  - **Deliverables**: ключи `gpu.seg.*`, `gpu.era.*`, `gpu.mail.*`, названия серий вендоров в `ru.json` / `en.json`
+  - **Deliverables**: ключи `gpu.seg.*`, `gpu.era.*`, `gpu.mail.*`, названия серий вендоров в `mod/src/PTMod/L10n/ru/gpu-product-line.json` / `mod/src/PTMod/L10n/en/gpu-product-line.json`
   - **Acceptance**: `GpuL10nKeysTests` зелёный для контента этапа 2
   - **Depends**: TSK-036, TSK-037
 
@@ -279,7 +280,7 @@ XL-фича делится на три поставки. Каждая закан
 
 - [x] **TSK-040**: `GpuSynergy` — платформенная синергия (авто 2026-10-10)
   - **Requirement**: FR-15
-  - **Deliverables**: `mod/src/PTMod/Features/GpuProductLine/Math/GpuSynergyMath.cs`, `Services/GpuSynergy.cs` (кольца долей за 30 дней по `MarketDataProvider.MarketShare` и продажам GPU, месячный пересчёт в словарь по ключам компаний, провайдеры `market.rating.cpu` и `gpu.rating` через `RegisterReasonedProvider` для игрока и привязанных компаний ИИ, `ModModifiers.Invalidate`); блок синергии с `Explain` во вкладке «Рынок»
+  - **Deliverables**: `mod/src/PTMod/Features/GpuProductLine/Logic/Math/GpuSynergyMath.cs`, `mod/src/PTMod/Features/GpuProductLine/Logic/Services/GpuSynergy.cs` (кольца долей за 30 дней по `MarketDataProvider.MarketShare` и продажам GPU, месячный пересчёт в словарь по ключам компаний, провайдеры `market.rating.cpu` и `gpu.rating` через `RegisterReasonedProvider` для игрока и привязанных компаний ИИ, `ModModifiers.Invalidate`); блок синергии с `Explain` во вкладке «Рынок»
   - **Acceptance**: AC-15.1, AC-15.2, AC-15.3; вклад в `market.rating.cpu` ≤ ×1,08 и в `gpu.rating` ≤ ×1,10 (тест `GpuSynergyTests`); при выключенном `synergy` провайдеры возвращают 1,0 в тот же кадр после `Invalidate`; кольца долей сохраняются в секции; записей `ModModifiers.Add` и `RemoveAll` фича не использует
   - **Depends**: TSK-012, TSK-019, TSK-033; mod-framework: TSK-027 и TSK-059 (`ModModifiers`: провайдеры, балансовый диапазон), TSK-067
 
@@ -297,19 +298,19 @@ XL-фича делится на три поставки. Каждая закан
 
 - [x] **TSK-043**: `GpuApi`, предикаты `ModConditions`, передача линейки (авто 2026-10-10)
   - **Requirement**: FR-18, FR-12
-  - **Deliverables**: `mod/src/PTMod/Features/GpuProductLine/GpuApi.cs` (методы из design.md, событие `ProductReleased`), регистрация `gpu.divisionFounded`, `gpu.hasProductOnMarket`, `gpu.marketShareAtLeast`, `gpu.researched` через `ModConditions.Register(type, "gpu-product-line", factory)`; `GpuRivals.TransferProducts`, `GpuApi.TransferVendorProducts` (с `GpuDivision.FoundFree`, если подразделение игрока не основано)
+  - **Deliverables**: `mod/src/PTMod/Features/GpuProductLine/Api/GpuApi.cs` (методы из design.md, событие `ProductReleased`), регистрация `gpu.divisionFounded`, `gpu.hasProductOnMarket`, `gpu.marketShareAtLeast`, `gpu.researched` через `ModConditions.Register(type, "gpu-product-line", factory)`; `GpuRivals.TransferProducts`, `GpuApi.TransferVendorProducts` (с `GpuDivision.FoundFree`, если подразделение игрока не основано)
   - **Acceptance**: AC-18.1 (запись `gpu.demand` × 1.5 на 90 дней через `ModifierTimed` на фейке), AC-18.2, AC-18.3, AC-18.4; при выключенной фиче `GpuApi.IsAvailable == false`, предикаты возвращают false; имена предикатов проходят `ModIds.IsPredicateNameAllowed`
   - **Depends**: TSK-019, TSK-033; mod-framework: TSK-019 и TSK-032 (`ModConditions`), TSK-066 (`ModIds`)
 
 - [x] **TSK-044**: Тесты этапа 3 (авто 2026-10-10)
   - **Requirement**: FR-15, FR-16, FR-17, FR-18
-  - **Deliverables**: `mod/tests/PTMod.Tests/GpuProductLine/GpuSynergyTests.cs`, `GpuSynergyMathTests.cs`, `GpuApiTests.cs`
+  - **Deliverables**: `mod/tests/PTMod.Tests/Features/GpuProductLine/GpuSynergyTests.cs`, `GpuSynergyMathTests.cs`, `GpuApiTests.cs`
   - **Acceptance**: F25 — клампы и нули; перемножение с чужим вкладом в канале и ограничение 2,0 (AC-15.3); `TransferProducts` переносит продукты с популярностью и ключом компании владельца; предикаты на граничных значениях
   - **Depends**: TSK-040…TSK-043; mod-framework: TSK-067
 
 - [x] **TSK-045**: Баланс-прогон и калибровка контента (авто 2026-10-10)
   - **Requirement**: NFR-7, NFR-1
-  - **Deliverables**: сценарий `GpuSimulationTests.BalanceReference` (IDM 1990, Normal, основание 1995) и отчёт `mod/tests/PTMod.Tests/GpuProductLine/balance-report.md`; правки чисел только в `Content/gpu-product-line/*.json`; калибровка черновых чисел `balance.console` и `consoles.json`
+  - **Deliverables**: сценарий `GpuSimulationTests.BalanceReference` (IDM 1990, Normal, основание 1995) и отчёт `mod/tests/PTMod.Tests/Features/GpuProductLine/balance-report.md`; правки чисел только в `Content/gpu-product-line/*.json`; калибровка черновых чисел `balance.console` и `consoles.json`
   - **Acceptance**: все 4 ориентира NFR-7 выполнены; дневная работа ≤ 0.5 мс при 150 продуктах; изменения баланса перечислены в отчёте с причиной
   - **Depends**: TSK-035, TSK-044
 
@@ -327,13 +328,13 @@ XL-фича делится на три поставки. Каждая закан
 
 - [x] **TSK-048**: Консольные заказы — контент и чистая логика (Could) (авто 2026-10-10)
   - **Requirement**: FR-19
-  - **Deliverables**: `mod/src/PTMod/Content/gpu-product-line/consoles.json` (6 записей из design.md), блок `console` в `balance.json`, `mod/src/PTMod/Features/GpuProductLine/Math/GpuConsoleMath.cs` (F35: `Qualifies`, `OrderPrice`, `DailyUnits`, `MissedShare`, `ShouldCancel`), `GpuConsoleDto`; `mod/tests/PTMod.Tests/GpuProductLine/GpuConsoleMathTests.cs`
+  - **Deliverables**: `mod/src/PTMod/Content/gpu-product-line/consoles.json` (6 записей из design.md), блок `console` в `balance.json`, `mod/src/PTMod/Features/GpuProductLine/Logic/Math/GpuConsoleMath.cs` (F35: `Qualifies`, `OrderPrice`, `DailyUnits`, `MissedShare`, `ShouldCancel`), `GpuConsoleDto`; `mod/tests/PTMod.Tests/Features/GpuProductLine/GpuConsoleMathTests.cs`
   - **Acceptance**: F35 на ручных примерах (порог 0,6 от лучшей карты, цена `max(1,15·U, 0,55·бюджет)`, объём `floor(0,25·N_s)`); расторжение не раньше `graceDays` и только при недопоставке > 25 %; валидация `consoles.json` без предупреждений
   - **Depends**: TSK-003, TSK-009; mod-framework: TSK-067
 
 - [x] **TSK-049**: Консольные заказы — сервис, письмо-предложение и блок во вкладке «Линейка» (Could) (авто 2026-10-10)
   - **Requirement**: FR-19, FR-7
-  - **Deliverables**: `mod/src/PTMod/Features/GpuProductLine/Services/GpuConsoleOrders.cs` (предложения по `offerYear`, письмо `Critical` с тегом `gpu:console:<orderId>`, `TimeoutDays` 60, `RegisterChoiceHandler`, `SetChoiceState` + `Refresh` на `ModMail.Delivered` и раз в `revalidateDays`, поставка на `TickPhase.ContractSellTick`, `EarnMoney(…, Contracts)`, штраф `ModReputation.Add`, `BuildDisableConfirmation` для `ctx.ConfirmBeforeDisable`, расторжение в `OnDisabled` и при снятии закреплённого GPU), блок «Консольные заказы» в `GpuLineupTab`, ключи `gpu.console.*`; `mod/tests/PTMod.Tests/GpuProductLine/GpuConsoleOrdersTests.cs` (на фейках)
+  - **Deliverables**: `mod/src/PTMod/Features/GpuProductLine/Logic/Services/GpuConsoleOrders.cs` (предложения по `offerYear`, письмо `Critical` с тегом `gpu:console:<orderId>`, `TimeoutDays` 60, `RegisterChoiceHandler`, `SetChoiceState` + `Refresh` на `ModMail.Delivered` и раз в `revalidateDays`, поставка на `TickPhase.ContractSellTick`, `EarnMoney(…, Contracts)`, штраф `ModReputation.Add`, `BuildDisableConfirmation` для `ctx.ConfirmBeforeDisable`, расторжение в `OnDisabled` и при снятии закреплённого GPU), блок «Консольные заказы» в `GpuLineupTab`, ключи `gpu.console.*`; `mod/tests/PTMod.Tests/Features/GpuProductLine/GpuConsoleOrdersTests.cs` (на фейках)
   - **Acceptance**: AC-19.1…AC-19.5 на фейках; состояние кнопок писем пересчитывается после загрузки (`GameReady(Loaded)`); ID письма хранится в `GpuConsoleOrderSave.mailId`; заказ не создаётся во время перемотки и загрузки; выручка не проходит через канал `contract.reward`
   - **Depends**: TSK-048, TSK-019, TSK-020, TSK-025; mod-framework: TSK-024, TSK-026 (`ModReputation`), TSK-038 и TSK-062 (`ModMail`: выбор, `SetChoiceState`, `Delivered`), TSK-065 (`ConfirmBeforeDisable`)
 

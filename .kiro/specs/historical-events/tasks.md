@@ -22,7 +22,7 @@
 
 ### Implementation Strategy
 
-- Код — `mod/src/PTMod/Features/HistoricalEvents/`; чистая логика — в подпапке `Logic/` (общее подмножество API .NET Framework 4.8 и `mscorlib` Unity: без `init`, `record`, `Index`, `Range`), тесты — `mod/tests/PTMod.Tests/HistoricalEvents/` (мини-раннер ядра: `[Test]`, `[Covers(typeof(X))]`, `Assert.*`; запуск `python mod/build.py --tests`; каждый публичный тип `Logic/` указан в `[Covers]`).
+- Код — `mod/src/PTMod/Features/HistoricalEvents/`; чистая логика — в подпапке `Logic/` (общее подмножество API .NET Framework 4.8 и `mscorlib` Unity: без `init`, `record`, `Index`, `Range`), тесты — `mod/tests/PTMod.Tests/Features/HistoricalEvents/` (мини-раннер ядра: `[Test]`, `[Covers(typeof(X))]`, `Assert.*`; запуск `python mod/build.py --tests`; каждый публичный тип `Logic/` указан в `[Covers]`).
 - Сборка — `python mod/build.py --game-dir <папка игры> [--tests]` (Roslyn `csc` из VS Build Tools, результат `mod/build/PTMod.dll`).
 - Контент — `mod/src/PTMod/Content/historical-events/{calendar,events,params}.json`; строки — `mod/src/PTMod/L10n/{ru,en}.json` (ключи `hist.*`).
 - Эффекты, окна, таймеры, письма и журнал — `event-system`. Фича только решает, когда и с кем срабатывает событие.
@@ -78,7 +78,7 @@
 
 - [x] **TSK-002**: Схема календаря и валидатор (авто 2026-10-10)
   - **Requirement**: FR-1, NFR-7, NFR-8
-  - **Deliverables**: `mod/src/PTMod/Features/HistoricalEvents/Logic/CalendarModel.cs` (`CalendarEntry`, `StageSpec`, `FireSpec`, `RoleSpec`, `HistoryInfo`), `mod/src/PTMod/Features/HistoricalEvents/Logic/CalendarValidator.cs`, `mod/src/PTMod/Content/historical-events/params.json`, `mod/tests/PTMod.Tests/HistoricalEvents/CalendarValidatorTests.cs`
+  - **Deliverables**: `mod/src/PTMod/Features/HistoricalEvents/Logic/CalendarModel.cs` (`CalendarEntry`, `StageSpec`, `FireSpec`, `RoleSpec`, `HistoryInfo`), `mod/src/PTMod/Features/HistoricalEvents/Logic/CalendarValidator.cs`, `mod/src/PTMod/Content/historical-events/params.json`, `mod/tests/PTMod.Tests/Features/HistoricalEvents/CalendarValidatorTests.cs`
   - **Acceptance**:
     - загрузка через `ModContent.LoadRecords<CalendarEntry>`; условия разбираются `ModConditions.Parse` (нотация `type` + параметры на верхнем уровне), сегменты ролей — в `Segment`;
     - валидатор проверяет все правила раздела Security design (по тесту на правило), включая существование `eventId` в паке, префикс `hist.` у `id` и ключей L10n (`ModIds`), блок `acquisitionAntitrust`;
@@ -86,9 +86,9 @@
     - `params.json` совпадает с примером design (включая `acquisitionAntitrust`).
   - **Depends**: TSK-001, mod-framework TSK-015 (`ModContent`), TSK-019 (`ModConditions`), TSK-066 (`ModIds`), TSK-067
 
-- [ ] **TSK-003**: Секция сохранения
+- [x] **TSK-003**: Секция сохранения (авто 2026-10-11)
   - **Requirement**: FR-18, NFR-3, NFR-8
-  - **Deliverables**: `mod/src/PTMod/Features/HistoricalEvents/Save/HistSaveData.cs`, `mod/src/PTMod/Features/HistoricalEvents/Save/HistSaveSection.cs`, `mod/tests/PTMod.Tests/HistoricalEvents/HistSaveSectionTests.cs`
+  - **Deliverables**: `mod/src/PTMod/Features/HistoricalEvents/Logic/Save/HistSaveData.cs`, `mod/src/PTMod/Features/HistoricalEvents/Save/HistSaveSection.cs`, `mod/tests/PTMod.Tests/Features/HistoricalEvents/HistSaveSectionTests.cs`
   - **Acceptance**:
     - `HistSaveSection : IModSaveParticipant` (`SectionId = "historical-events"`, `SchemaVersion = 1`); `Read(section, schema)`; `Write()` возвращает данные БЕЗ `_schema` (версию пишет ядро);
     - в `HistSaveData` нет поля версии;
@@ -97,13 +97,13 @@
     - схема новее → ядро выдаёт значения по умолчанию и сохраняет исходную секцию, фича выключается для сейва;
     - недопустимые значения нормализуются; компании — ключами `ModCompanies`.
   - **Depends**: TSK-001, mod-framework TSK-016, TSK-025 (`ModSave`), TSK-010 (`ModJson`)
-  - **Частично** (авто 2026-10-10, кусок 1; задача не закрыта): **сделано всё, кроме одного пункта Acceptance** — «фича выключается для сейва», когда секция новее мода. Ядро (`SideFileModel`) не передаёт такую секцию в `Read`, вызывает `ResetToDefaults` и пишет исходный текст секции обратно (проверено тестом на настоящем `SideFileModel`), `ModSave` показывает `core.save.newer`; но способа узнать, что новее именно секция этой фичи, у фичи нет (`ModSave.Status == Newer` верен и при чужой секции, `NewerSections` наружу не отдаётся). Поэтому фича в таком сейве работает на значениях по умолчанию, её данные туда не пишутся. Нужен публичный `ModSave.IsSectionNewer(featureId)`: запрос в `mod/requests/historical-events.md`, п. 2; после него один вызов в `HistoricalEventsFeature.OnGameReady` закрывает пункт.
+  - **Закрыто** (авто 2026-10-11): пункт «фича выключается для сейва» сделан. `HistoricalEventsFeature.SaveLocked` читает публичный признак ядра `ModSave.IsSectionNewer(FeatureId)`, `CalendarScheduler` выходит при `SaveLocked`, `WarnIfLocked` пишет одно предупреждение. Юнит-теста ветки `SaveLocked` в репозитории нет; сценарий «сейв с секцией новее мода» проверяется в игре владельцем.
 
 ## Фаза 2 — Роли, условия, планировщик, диспетчер
 
 - [x] **TSK-004**: Доли рынка и `IWorldView` (авто 2026-10-10)
   - **Requirement**: FR-3, NFR-1
-  - **Deliverables**: `mod/src/PTMod/Features/HistoricalEvents/Logic/IWorldView.cs`, `mod/src/PTMod/Features/HistoricalEvents/Logic/MarketShareCache.cs`, `mod/src/PTMod/Features/HistoricalEvents/Game/GameWorldView.cs`, `mod/tests/PTMod.Tests/HistoricalEvents/ShareMathTests.cs`, `mod/tests/PTMod.Tests/HistoricalEvents/FakeWorld.cs`
+  - **Deliverables**: `mod/src/PTMod/Features/HistoricalEvents/Logic/IWorldView.cs`, `mod/src/PTMod/Features/HistoricalEvents/Logic/MarketShareCache.cs`, `mod/src/PTMod/Features/HistoricalEvents/Game/GameWorldView.cs`, `mod/tests/PTMod.Tests/Features/HistoricalEvents/ShareMathTests.cs`, `mod/tests/PTMod.Tests/Features/HistoricalEvents/FakeWorld.cs`
   - **Acceptance**:
     - доля по полным месяцам без текущего (индексы `Count-1-M .. Count-2` журналов `CpuBase.MarketData`);
     - сегменты (`Segment`, маска) и «все» (`Sold` + `SoldByContracts`); нулевой знаменатель → 0; ничья — детерминированно;
@@ -114,7 +114,7 @@
 
 - [x] **TSK-005**: Роли и условия (авто 2026-10-10)
   - **Requirement**: FR-3
-  - **Deliverables**: `mod/src/PTMod/Features/HistoricalEvents/Logic/RoleResolver.cs`, `mod/src/PTMod/Features/HistoricalEvents/Logic/ConditionEvaluator.cs`, `mod/src/PTMod/Features/HistoricalEvents/HistConditions.cs` (регистрация `hist.*` в `EventConditions`), `mod/src/PTMod/Features/HistoricalEvents/HistRoleScope.cs`, `mod/tests/PTMod.Tests/HistoricalEvents/RoleResolverTests.cs`, `mod/tests/PTMod.Tests/HistoricalEvents/ConditionEvaluatorTests.cs`
+  - **Deliverables**: `mod/src/PTMod/Features/HistoricalEvents/Logic/RoleResolver.cs`, `mod/src/PTMod/Features/HistoricalEvents/Logic/ConditionEvaluator.cs`, `mod/src/PTMod/Features/HistoricalEvents/HistConditions.cs` (регистрация `hist.*` в `EventConditions`), `mod/src/PTMod/Features/HistoricalEvents/Logic/HistRoleScope.cs`, `mod/tests/PTMod.Tests/Features/HistoricalEvents/RoleResolverTests.cs`, `mod/tests/PTMod.Tests/Features/HistoricalEvents/ConditionEvaluatorTests.cs`
   - **Acceptance**:
     - все виды ролей из таблицы design;
     - `minShare`, цепочка `fallback`, режим `strict`, истец ≠ ответчик;
@@ -126,7 +126,7 @@
 
 - [x] **TSK-006**: Планировщик календаря (авто 2026-10-10)
   - **Requirement**: FR-2, FR-17, NFR-5, NFR-6
-  - **Deliverables**: `mod/src/PTMod/Features/HistoricalEvents/CalendarScheduler.cs`, `mod/src/PTMod/Features/HistoricalEvents/Logic/SchedulerCore.cs`, `mod/tests/PTMod.Tests/HistoricalEvents/CalendarSchedulerTests.cs`
+  - **Deliverables**: `mod/src/PTMod/Features/HistoricalEvents/CalendarScheduler.cs`, `mod/src/PTMod/Features/HistoricalEvents/Logic/SchedulerCore.cs`, `mod/tests/PTMod.Tests/Features/HistoricalEvents/CalendarSchedulerTests.cs`
   - **Acceptance**:
     - сдвиг бросается один раз на партию (`ModRandom.Stream("historical-events")`) и сохраняется;
     - очередь `due` с указателем, дни от 1971-01-01: в обычный день O(1);
@@ -141,17 +141,18 @@
 
 - [x] **TSK-007**: Поздний старт и догоняющие эффекты (авто 2026-10-10)
   - **Requirement**: FR-4
-  - **Deliverables**: `mod/src/PTMod/Features/HistoricalEvents/CatchUpService.cs`, `mod/tests/PTMod.Tests/HistoricalEvents/CatchUpServiceTests.cs`
+  - **Deliverables**: `mod/src/PTMod/Features/HistoricalEvents/CatchUpService.cs`, `mod/tests/PTMod.Tests/Features/HistoricalEvents/CatchUpServiceTests.cs`
   - **Acceptance**:
     - на `TickPhase.FastForwardEnded` (новая игра) записи до старта → `SkippedBeforeStart`;
     - стандартные эффекты ещё действующих стадий записей с `catchUp` → `ModModifiers.Add` с остатком срока (каналы по таблице design, причина `hist.catchup`); идентификаторы записей сохраняются; записи выключенных категорий (по умолчанию `disaster`) и с ложным `featureActive` не догоняются;
     - одно письмо «Обстановка в отрасли» (`ModMail.Send`, `MailPriority.Normal`, `Tag = "hist:catchup"`);
     - AC-4.1 (699 и 334 дня при включённой `disaster`), AC-4.2 (по умолчанию), AC-4.3 (криптобум, остаток 90 дней).
+    - Could (FR-4.4, «Хроника до вашего старта» — 3–5 строк о пропущенных событиях): Отложено (2026-10-11): Could, не реализовано в первой версии.
   - **Depends**: TSK-006, mod-framework TSK-027, TSK-059 (`ModModifiers.Add`), TSK-062 (`ModMail`)
 
 - [x] **TSK-008**: Диспетчер срабатываний (авто 2026-10-10)
   - **Requirement**: FR-2, FR-10
-  - **Deliverables**: `mod/src/PTMod/Features/HistoricalEvents/HistoricalDispatcher.cs`, `mod/tests/PTMod.Tests/HistoricalEvents/HistoricalDispatcherTests.cs`
+  - **Deliverables**: `mod/src/PTMod/Features/HistoricalEvents/HistoricalDispatcher.cs`, `mod/tests/PTMod.Tests/Features/HistoricalEvents/HistoricalDispatcherTests.cs`
   - **Acceptance**:
     - для каждой `FireSpec` стадии и каждой компании роли вызывается `EventBus.Fire(eventId, EventFireContext { CompanyKey, Args, IgnoreConditions = true })`; `global` → цель «игрок»; групповые роли → по компании;
     - `Args` по таблице design (id записи, имена ролей, ключ второй роли, `ExtraArgs`);
@@ -164,7 +165,7 @@
 
 - [x] **TSK-009**: Антимонопольные дела (`AntitrustCase`) (авто 2026-10-10)
   - **Requirement**: FR-5
-  - **Deliverables**: `mod/src/PTMod/Features/HistoricalEvents/Logic/AntitrustCaseMachine.cs`, `mod/src/PTMod/Features/HistoricalEvents/Effects/CaseService.cs`, события `hist.decide.antitrust.fine`, `hist.decide.antitrust.consent`, `hist.decide.antitrust.reimpose` в `mod/src/PTMod/Content/historical-events/events.json`, `mod/tests/PTMod.Tests/HistoricalEvents/AntitrustCaseMachineTests.cs`
+  - **Deliverables**: `mod/src/PTMod/Features/HistoricalEvents/Logic/AntitrustCaseMachine.cs`, `mod/src/PTMod/Features/HistoricalEvents/Effects/CaseService.cs`, события `hist.decide.antitrust.fine`, `hist.decide.antitrust.consent`, `hist.decide.antitrust.reimpose` в `mod/src/PTMod/Content/historical-events/events.json`, `mod/tests/PTMod.Tests/Features/HistoricalEvents/AntitrustCaseMachineTests.cs`
   - **Acceptance**:
     - обработчик реализует `IEventEffectHandler`: `Resolve` считает штраф один раз, `Describe` показывает сумму;
     - режимы `fine`, `consent`, `warning`;
@@ -180,7 +181,7 @@
 
 - [x] **TSK-010**: Иск пострадавшего (`AntitrustSettlement`) (авто 2026-10-10)
   - **Requirement**: FR-6
-  - **Deliverables**: `mod/src/PTMod/Features/HistoricalEvents/Effects/SettlementService.cs`, событие `hist.decide.settlement`, `mod/tests/PTMod.Tests/HistoricalEvents/SettlementTests.cs`
+  - **Deliverables**: `mod/src/PTMod/Features/HistoricalEvents/Effects/SettlementService.cs`, событие `hist.decide.settlement`, `mod/tests/PTMod.Tests/Features/HistoricalEvents/SettlementTests.cs`
   - **Acceptance**:
     - условие `hist.CaseActive` и порог доли игрока 0.10;
     - 12 месяцев судебных расходов, затем выигрыш с `pWin` → перевод 3 % выручки ответчика (`Fines` → `Royalties`);
@@ -190,7 +191,7 @@
 
 - [x] **TSK-011**: Экспортный контроль (`ExportControl`) (авто 2026-10-10)
   - **Requirement**: FR-7
-  - **Deliverables**: `mod/src/PTMod/Features/HistoricalEvents/Logic/ExportRuleMath.cs`, `mod/src/PTMod/Features/HistoricalEvents/Effects/ExportRuleService.cs`, `mod/src/PTMod/Features/HistoricalEvents/HistRatingProvider.cs`, события `hist.2022.export.rule`, `hist.2023.export.update`, `hist.decide.export`, `hist.decide.export.update`, `mod/tests/PTMod.Tests/HistoricalEvents/ExportRuleMathTests.cs`
+  - **Deliverables**: `mod/src/PTMod/Features/HistoricalEvents/Logic/ExportRuleMath.cs`, `mod/src/PTMod/Features/HistoricalEvents/Effects/ExportRuleService.cs`, `mod/src/PTMod/Features/HistoricalEvents/HistRatingProvider.cs`, события `hist.2022.export.rule`, `hist.2023.export.update`, `hist.decide.export`, `hist.decide.export.update`, `mod/tests/PTMod.Tests/Features/HistoricalEvents/ExportRuleMathTests.cs`
   - **Acceptance**:
     - перцентиль по `Ips` CPU на рынке; месячная индексация к `Market.Instance.AverageIps`;
     - провайдер `ModModifiers.RegisterReasonedProvider("historical-events", "market.rating.cpu", …)` за O(1) по `ModifierContext.Cpu`/`Segment`, один раз в `Register`; причина `hist.mod.export` с порогом в аргументах;
@@ -203,7 +204,7 @@
 
 - [x] **TSK-012**: Ценовые войны (`PriceWar`) (авто 2026-10-10)
   - **Requirement**: FR-8
-  - **Deliverables**: `mod/src/PTMod/Features/HistoricalEvents/Effects/PriceWarService.cs`, `mod/src/PTMod/Features/HistoricalEvents/Logic/PriceWarFallback.cs`, события `hist.decide.pricewar.aggressor`, `hist.decide.pricewar.follower`, `mod/tests/PTMod.Tests/HistoricalEvents/PriceWarTests.cs`
+  - **Deliverables**: `mod/src/PTMod/Features/HistoricalEvents/Effects/PriceWarService.cs`, `mod/src/PTMod/Features/HistoricalEvents/Logic/PriceWarFallback.cs`, события `hist.decide.pricewar.aggressor`, `hist.decide.pricewar.follower`, `mod/tests/PTMod.Tests/Features/HistoricalEvents/PriceWarTests.cs`
   - **Acceptance**:
     - при `ModFeatures.IsActive("rival-personalities")` — `RivalPersonalities.Api.ApplyPriceCut("hist:<warId>", rival, segment, depth, floorMargin)` и `RestorePriceCut("hist:<warId>")` (фейк в тесте), прямых изменений цен нет (AC-8.2);
     - иначе (`Api.IsEnabled == false`) fallback: срез `Cpu.Price` и `CpuBase.AIStrategy.TargetPrice` с полом `RealUnitCost × 1.05`, возврат исходных целей по окончании (AC-8.1);
@@ -214,7 +215,7 @@
 
 - [x] **TSK-013**: Патентные споры (`PatentDispute`) (авто 2026-10-10)
   - **Requirement**: FR-9
-  - **Deliverables**: `mod/src/PTMod/Features/HistoricalEvents/Logic/DisputeMath.cs`, `mod/src/PTMod/Features/HistoricalEvents/Effects/DisputeService.cs`, события `hist.decide.patent.plaintiff`, `hist.decide.patent.withdrawal`, `hist.decide.patent.infringement`, `mod/tests/PTMod.Tests/HistoricalEvents/DisputeMathTests.cs`
+  - **Deliverables**: `mod/src/PTMod/Features/HistoricalEvents/Logic/DisputeMath.cs`, `mod/src/PTMod/Features/HistoricalEvents/Effects/DisputeService.cs`, события `hist.decide.patent.plaintiff`, `hist.decide.patent.withdrawal`, `hist.decide.patent.infringement`, `mod/tests/PTMod.Tests/Features/HistoricalEvents/DisputeMathTests.cs`
   - **Acceptance**:
     - все ветки п. 8 «Формул и баланса»;
     - платежи `ExpenseOrigin.Royalties` и `RevenueOrigin.Royalties`;
@@ -225,7 +226,7 @@
 
 - [x] **TSK-014**: Гонки характеристик (`AttributeRace`) (авто 2026-10-10)
   - **Requirement**: FR-11
-  - **Deliverables**: `mod/src/PTMod/Features/HistoricalEvents/Effects/RaceService.cs`, `mod/tests/PTMod.Tests/HistoricalEvents/RaceServiceTests.cs`
+  - **Deliverables**: `mod/src/PTMod/Features/HistoricalEvents/Effects/RaceService.cs`, `mod/tests/PTMod.Tests/Features/HistoricalEvents/RaceServiceTests.cs`
   - **Acceptance**:
     - месячный пересчёт топ-N по `Frequency` или `CoreCount` (ничья — `Ips`);
     - вклад в провайдер `market.rating.cpu` за O(1) в диапазоне [1,00; 1,10], причины `hist.mod.race.frequency` / `hist.mod.race.cores`; `ModModifiers.Invalidate("market.rating.cpu")` после пересчёта; снятие по окончании;
@@ -234,7 +235,7 @@
 
 - [x] **TSK-015**: Мост к механике брака (`ForceDesignFlaw`) и `HistFlag` (авто 2026-10-10)
   - **Requirement**: FR-12, FR-2
-  - **Deliverables**: `mod/src/PTMod/Features/HistoricalEvents/Effects/FlawBridge.cs`, `mod/src/PTMod/Features/HistoricalEvents/Effects/HistFlagEffect.cs`, `mod/tests/PTMod.Tests/HistoricalEvents/FlawBridgeTests.cs`
+  - **Deliverables**: `mod/src/PTMod/Features/HistoricalEvents/Effects/FlawBridge.cs`, `mod/src/PTMod/Features/HistoricalEvents/Effects/HistFlagEffect.cs`, `mod/tests/PTMod.Tests/Features/HistoricalEvents/FlawBridgeTests.cs`
   - **Acceptance**:
     - правила `topSellingHighEnd24m` и `perCompanyAboveAvgIps60m`;
     - вызов `DesignFlawRecallsFeature.Registry.ForceFlaw` при активной `design-flaw-recalls`, иначе (или нет CPU) — `EventBus.Fire(fallbackEventId)`;
@@ -244,7 +245,7 @@
 
 - [x] **TSK-016**: Выбор ИИ (`HistoricalAiChooser`) (авто 2026-10-10)
   - **Requirement**: FR-13
-  - **Deliverables**: `mod/src/PTMod/Features/HistoricalEvents/HistoricalAiChooser.cs`, `mod/src/PTMod/Features/HistoricalEvents/Logic/HistoricalAiChooserCore.cs`, `mod/tests/PTMod.Tests/HistoricalEvents/HistoricalAiChooserTests.cs`
+  - **Deliverables**: `mod/src/PTMod/Features/HistoricalEvents/HistoricalAiChooser.cs`, `mod/src/PTMod/Features/HistoricalEvents/Logic/HistoricalAiChooserCore.cs`, `mod/tests/PTMod.Tests/Features/HistoricalEvents/HistoricalAiChooserTests.cs`
   - **Acceptance**:
     - регистрация `EventAi.AddChooser(chooser, priority из params.json)`; `Choose(…, IModRng rng)`;
     - для чужих событий — `null`; два выборщика (100 и 10): первый ненулевой ответ побеждает, `null` первого передаёт решение второму;
@@ -259,7 +260,7 @@
 
 - [x] **TSK-017**: Записи 1971–1989 (№ 1–12) и их события (авто 2026-10-10)
   - **Requirement**: FR-1, FR-10
-  - **Deliverables**: записи 1–12 в `mod/src/PTMod/Content/historical-events/calendar.json`; события пака для них (глобальные эффекты, `hist.decide.secondsource`) в `events.json`; ключи `hist.<id>.title` / `.text` / `.fact` в `mod/src/PTMod/L10n/{ru,en}.json`
+  - **Deliverables**: записи 1–12 в `mod/src/PTMod/Content/historical-events/calendar.json`; события пака для них (глобальные эффекты, `hist.decide.secondsource`) в `events.json`; ключи `hist.<id>.title` / `.text` / `.fact` в `mod/src/PTMod/L10n/{ru,en}/historical-events.json`
   - **Acceptance**:
     - 12 записей проходят валидатор календаря, события — валидацию движка;
     - числа и роли совпадают с таблицей design; стандартные эффекты помечены `scalable`; компании в ролях — по `UniqueID` (Toshiba = 6, Intel = 0, AMD = 1), имена не вшиты;
@@ -340,7 +341,7 @@
 
 - [x] **TSK-028**: Антимонопольная надбавка к цене поглощений (`acquisition.price`) (авто 2026-10-10)
   - **Requirement**: FR-19, NFR-9
-  - **Deliverables**: `mod/src/PTMod/Features/HistoricalEvents/Logic/AcquisitionAntitrustMath.cs`, `mod/src/PTMod/Features/HistoricalEvents/AcquisitionAntitrust.cs` (провайдер), `mod/tests/PTMod.Tests/HistoricalEvents/AcquisitionAntitrustMathTests.cs`
+  - **Deliverables**: `mod/src/PTMod/Features/HistoricalEvents/Logic/AcquisitionAntitrustMath.cs`, `mod/src/PTMod/Features/HistoricalEvents/AcquisitionAntitrust.cs` (провайдер), `mod/tests/PTMod.Tests/Features/HistoricalEvents/AcquisitionAntitrustMathTests.cs`
   - **Acceptance**:
     - провайдер `ModModifiers.RegisterReasonedProvider("historical-events", "acquisition.price", …)` регистрируется один раз в `Register` (порядок `Register` фич не важен, связывание ленивое); читает кэш `MarketShareCache` за O(1);
     - таблица формулы 11: S' 0,30 → 1,00 без причины; 0,50 → 1,25; 0,65 с делом → ≈ 2,03; 0,97 с делом → предел 3,00 (AC-19.1–19.3);
@@ -353,7 +354,7 @@
 
 - [x] **TSK-025**: Строки ru/en (авто 2026-10-10)
   - **Requirement**: NFR-4
-  - **Deliverables**: ключи `hist.*` (страница, кнопки, тексты и справки событий, письмо догона, причины `hist.rep.*` и `hist.mod.*`, `hist.feature.desc`) в `mod/src/PTMod/L10n/ru.json` и `en.json`
+  - **Deliverables**: ключи `hist.*` (страница, кнопки, тексты и справки событий, письмо догона, причины `hist.rep.*` и `hist.mod.*`, `hist.feature.desc`) в `mod/src/PTMod/L10n/ru/historical-events.json` и `mod/src/PTMod/L10n/en/historical-events.json`
   - **Acceptance**:
     - все ключи из `calendar.json`, `events.json` и UI есть в обоих языках и начинаются с `hist.` (`ModIds.IsL10nKeyAllowed`);
     - тест полноты ключей фичи зелёный;
@@ -363,7 +364,7 @@
 
 - [x] **TSK-026**: Симуляция календаря (авто 2026-10-10)
   - **Requirement**: FR-2, FR-3, NFR-1, NFR-6
-  - **Deliverables**: `mod/tests/PTMod.Tests/HistoricalEvents/CalendarSimulationTests.cs`, генератор синтетических миров `mod/tests/PTMod.Tests/HistoricalEvents/SyntheticWorlds.cs`
+  - **Deliverables**: `mod/tests/PTMod.Tests/Features/HistoricalEvents/CalendarSimulationTests.cs`, генератор синтетических миров `mod/tests/PTMod.Tests/Features/HistoricalEvents/SyntheticWorlds.cs`
   - **Acceptance**:
     - 100 миров 1975–2030: срабатывает 27–35 записей по умолчанию (30–38 с включённой `disaster`);
     - в «среднем» мире 7–13 решений игрока (8–14 с `disaster`);
@@ -436,7 +437,7 @@ TSK-001 ─> 004 ─> 005 ─> 008 ─> 009 ─> 017 ─> 018 ─> 019 ─> 020 
 |---|---|
 | TSK-001 Каркас фичи и настройки | Complete (авто 2026-10-10, кусок 1: `HistoricalEventsFeature` (`[ModFeature]`, `Id` = `historical-events`, `NameKey` = `hist.feature.name`, `DescriptionKey` = `hist.feature.desc`, `DependsOn` = { `event-system` }, `EnabledByDefault` и `SupportsHotToggle` = true) + `HistSettings` + чистая таблица `Logic/HistParamSpecs`: 17 `ParamSpec` (`mode` Int 0/1, `intensity` Float 1.0 в 0.5…1.5, 12 переключателей категорий — все включены, кроме `disaster`, `historyNotes`, `spoilers`, `debug`); пак регистрируется `EventRegistry.RegisterPack("historical-events", "content/historical-events", PackOptions { SettingsFeatureId, Severity = intensity })`, `Severity` меняется на месте по `ModSettings.Changed`; `OnDisabled` пуст, `RemoveAll` нигде не вызывается, `OnEnabled` только читает календарь, записи `ModModifiers` не создаёт; заглушки `events.json` и `calendar.json` (`{ "schema": 1, "records": [] }`); строки `hist.feature.*` и `hist.param.*` в ru/en; сборка фичи без предупреждений, тесты (в том числе проверки исходника класса: объявление, пак, отсутствие `RemoveAll` и патчей) зелёные; видимость в хабе и горячее переключение — в игре, TSK-027) |
 | TSK-002 Схема календаря и валидатор | Complete (авто 2026-10-10, кусок 1: `Logic/CalendarModel` (`CalendarEntry`, `StageSpec`, `FireSpec`, `RoleSpec`, `HistoryInfo`, `ConditionUse`; маппер `CalendarEntry.FromJson` проверяет форму, отсутствующее читается по умолчанию), `Logic/SimpleDate`, `Logic/HistVocabulary` (`EntryStatus`, 12 категорий, виды ролей), `Logic/CalendarValidator` (все правила Security: даты и окно, `jitterDays` 0…60, `offsetDays` 0…1825, `minShare` 0…1, `uniqueId` 0…12, уникальные `id` с префиксом `hist.` через `ModIds`, существование `eventId` в паке (две фазы: при загрузке и `ValidateEventsExist`, когда паки уже прочитаны), ≥ 1 источник `https://`, ключи `hist.` и предупреждение о ключе без текста, предикаты только ядра, `es.` и `hist.`, роли условий объявлены, блок `acquisitionAntitrust`), `HistContentParams` и `params.json` = пример design; загрузка `CalendarContent` через `ModContent.LoadRecords<CalendarEntry>` и `ModConditions.Parse`, на первом `GameReady` меньше 25 валидных записей → `ModFeatures.MarkUnavailable`; тесты `CalendarValidatorTests` (по тесту на правило), `CalendarModelTests`, `HistParamsTests` зелёные; диапазоны, которых нет в design, выбраны автором: `months` роли 1…120, `majorSpacingDays` 0…365, `aiChooserPriority` ±1000, стадия 0 имеет `offsetDays` 0 и стадии идут по возрастанию, `fires` стадии не пусты, `skipIfFlag` — простое имя до 40 знаков; проверка «42 записи, у каждой источник» появится с контентом TSK-017…019; до него фича на первом `GameReady` будет `Unavailable` — ожидаемо, см. `mod/requests/historical-events.md`, п. 5) |
-| TSK-003 Секция сохранения | Частично (авто 2026-10-10, кусок 1: `HistSaveSection : HistSaveSectionBase, IModSaveParticipant` (`SectionId` = `historical-events`, `SchemaVersion` = 1; чистая часть `Logic/Save/HistSaveSectionBase`, DTO `HistSaveData` и `HistSaveCodec` лежат в `Logic/Save/`, потому что сборка тестов берёт только `Logic/`), `Write()` без `_schema`, в DTO поля версии нет (проверяет тест по рефлексии), круговая сериализация примера design и секции со всеми видами объектов, нормализация (отрицательные дни и суммы → 0, статус вне enum → `Pending`, сдвиг в ±60, ключи не `CompanyKey` отбрасываются вместе с объектом, повторные `id`, нулевые элементы), `ResetToDefaults` без секции: якорь раньше текущей даты → `SkippedBeforeStart`, остальные `Pending`, `initialized` = true (календарь и дата ещё неизвестны при чтении файла — статусы выставляет `TryApplyDefaults` на `GameReady(Loaded)`), новая секция и отсутствующая секция проверены на настоящем `SideFileModel`; **не сделано**: «фича выключается для сейва» при секции новее — нужен публичный признак из ядра, `mod/requests/historical-events.md`, п. 2) |
+| TSK-003 Секция сохранения | Complete (авто 2026-10-11, кусок 1 и закрытие пункта «фича выключается для сейва»: `HistSaveSection : HistSaveSectionBase, IModSaveParticipant` (`SectionId` = `historical-events`, `SchemaVersion` = 1; чистая часть `Logic/Save/HistSaveSectionBase`, DTO `HistSaveData` и `HistSaveCodec` лежат в `Logic/Save/`, потому что сборка тестов берёт только `Logic/`), `Write()` без `_schema`, в DTO поля версии нет (проверяет тест по рефлексии), круговая сериализация примера design и секции со всеми видами объектов, нормализация (отрицательные дни и суммы → 0, статус вне enum → `Pending`, сдвиг в ±60, ключи не `CompanyKey` отбрасываются вместе с объектом, повторные `id`, нулевые элементы), `ResetToDefaults` без секции: якорь раньше текущей даты → `SkippedBeforeStart`, остальные `Pending`, `initialized` = true (календарь и дата ещё неизвестны при чтении файла — статусы выставляет `TryApplyDefaults` на `GameReady(Loaded)`), новая секция и отсутствующая секция проверены на настоящем `SideFileModel`; пункт «фича выключается для сейва» сделан через `ModSave.IsSectionNewer` (`HistoricalEventsFeature.SaveLocked`, `CalendarScheduler`, `WarnIfLocked`); юнит-теста ветки нет) |
 | TSK-004 Доли рынка и IWorldView | Complete (авто 2026-10-10, кусок 2: `Logic/IWorldView` (`IWorldView`, `CompanyInfo`, `CpuInfo` с журналами `MarketData` как есть, `SegmentMask`, `WorldMath`: основной сегмент CPU по D15 — ИИ `AIStrategy.TargetMarket`, игрок `ModSegments.FromSales` по последнему полному месяцу, затем `ModSegments.Classify`; `CashHeadroom` = деньги − порог; возраст CPU по году), `Logic/MarketShareCache` (окно полных месяцев `Count-1-M … Count-2` без текущего, сегменты и «все» = `Sold` + `SoldByContracts`, нулевой знаменатель → 0, `Ranking`: ничья — игрок, затем меньший `UniqueID`, банкроты вне рейтинга, но в знаменателе; перестройка раз в месяц (`EnsureFresh` по `MonthsSinceStart`), ответы запоминаются до следующей), `Game/GameWorldView` (`ModCompanies.All`, `CpuDataProvider.GetAllCpus`, `CompanyFinance.Reports` — выручка за 12 месяцев перед текущим, `Market.AverageIps`, `ModCredit.ThresholdOf`, `ModFeatures.IsActive`; снимок раз в игровой день и при смене версии `ModCompanies`, `CentralBank.DebtLimit` не читается), `HistTickPriority`; тесты `ShareMathTests` + `FakeWorld`: окно, сегменты, ничья, перестройка 400 CPU × 36 месяцев ≤ 2 мс, AC-3.4, проверка исходника `GameWorldView`; пути, отличающиеся от списка Deliverables, — `mod/requests/historical-events.md`, п. 7) |
 | TSK-005 Роли и условия | Complete (авто 2026-10-10, кусок 2: `Logic/RoleResolver` (`RoleResult`, `RoleOptions`): все 12 видов ролей, `minShare` (для группы — отсев участников), цепочка `fallback` (в `strict` у `named` не используется), одна компания — одна роль, пустая группа — роль не распознана, встроенные роли (`player`, `allCpuCompanies`, `allManufacturers`, `allFabless`), которые называют срабатывания и условия без объявления; `Logic/HistPredicates` + `HistConditions` (`hist.ShareAtLeast`, `hist.HasCpuSince`, `hist.CaseActive`, `hist.PlayerHasCpuAbove`, `hist.IsFabless` — `EventConditions.Register` в `Register` фичи, имена с префиксом `hist.`; та же функция, что прямой вызов в тестах), `Logic/ConditionEvaluator` + `Logic/HistRoleScope` (роли записи в области видимости на время вычисления, условия записи — конъюнкция; стандартные условия ядра и движка работают рядом), флаг `debugForceLeader` (`RoleOptions.ForceLeader`, `HistState.ForceLeader`, `HistRuntime.ForceLeader` — только при включённом `debug`), `HistRuntime` (стык с `ModConditions`, `ModRandom`, настройками); тесты `RoleResolverTests`, `ConditionEvaluatorTests`: AC-3.1…3.4; `HistRoleScope` лежит в `Logic/`, а не в корне фичи — `mod/requests/historical-events.md`, п. 7) |
 | TSK-006 Планировщик календаря | Complete (авто 2026-10-10, кусок 2: `Logic/SchedulerCore` (очередь «проверить запись / сыграть стадию» по дням от 1971-01-01 с указателем, в тихий день одно сравнение; порядок в один день — якорь, затем `id`; сдвиг бросается один раз на партию, один `rng.Value()` на запись, и сохраняется; повторная проверка 1-го числа и в последний день окна, истечение → `news`/`skip` и `Expired`, запись с окном, закончившимся больше 31 дня назад, закрывается без новости; `major` с интервалом `majorSpacingDays` (45) и переносом в пределах окна; категория выключена → `Disabled` (запись возвращается на месячном проходе, если категорию включили и окно открыто); `skipIfFlag`; стадии по сохранённым ролям; `Error` при исключении с `id` и отчёт в `ModHooks`; `Initialize` ровно один раз по `initialized`, `Rebuild` после загрузки и при смене объекта секции; `DebugFireNow`) и `CalendarScheduler` (`DayPassed`, `MonthPassed` после пересчёта долей, `FastForwardEnded`, резерв `GameReady(NewGame)`, восстановление на `GameReady(Loaded)` и `OnEnabled`; всё под `ModHooks.Guard`; `ModRandom.Stream("historical-events")`; патчей нет, пакетный прогон идёт по дням); тесты `CalendarSchedulerTests`, сквозной `HistoricalPipelineTests`: AC-2.1…2.3, AC-2.2 до конца окна; подписки и порядок тиков проверены по исходнику, в игре — TSK-027) |

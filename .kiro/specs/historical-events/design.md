@@ -1303,7 +1303,7 @@ sequenceDiagram
 
 ## Testing Strategy
 
-### Юнит-тесты (`mod/tests/PTMod.Tests/HistoricalEvents/`, мини-раннер ядра, без Unity, `IWorldView` — фейк)
+### Юнит-тесты (`mod/tests/PTMod.Tests/Features/HistoricalEvents/`, мини-раннер ядра, без Unity, `IWorldView` — фейк)
 
 Тесты помечены `[Test]`, каждый публичный тип `Logic/` указан в `[Covers(typeof(X))]`; запуск — `python mod/build.py --tests`.
 

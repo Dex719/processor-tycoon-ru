@@ -281,6 +281,9 @@ namespace PTMod.Features.BankruptcyRecovery
             _env.ResetCache();
             _bailout.ResetSession();
             _creditLine.EnsureOpened();
+#if PTMOD_DEBUG
+            RecoveryDebugActions.LogThreshold(this, reason);   // TSK-003 (the spike): the threshold on the first day of the game, only with the flag debug.recovery
+#endif
         }
 
         private void OnBatchEnded()

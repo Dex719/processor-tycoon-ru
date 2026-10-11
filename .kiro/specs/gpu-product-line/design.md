@@ -1253,7 +1253,7 @@ public sealed class GpuTimelineDto { public List<GpuYearNode> nodeByYear = new L
 - Слева входы:
   - `DropdownUI` — архитектура, техпроцесс, память, шина, охлаждение;
   - `SliderUI` — площадь (мм²), частота (МГц, `StringFormatter.FloatToFrequency`), VRAM (шаги степени двойки);
-  - `InputFieldUI` — имя; «На основе…» (`DropdownUI` по существующим GPU, Could).
+  - `InputFieldUI` — имя; «На основе…» (`DropdownUI` по существующим GPU, Could). Отложено (2026-10-11): Could, не реализовано в первой версии.
 - Справа `InfoText`: транзисторы, блоки, вычислительная мощность, ПСП, эффективная производительность, мощность, температура, брак, себестоимость, стоимость и срок разработки, «Совместная разработка: −15 %».
 - Ниже таблица «Оценка по сегментам»: для каждого открытого сегмента — рейтинг относительно лучшего продукта рынка (%), множители функций и VRAM, бюджет.
 - Предупреждения цветом темы (негативный цвет `Colors.Instance.DynamicNegativeColor`): «Упор в память: −N %», «Перегрев», «Кристалл не помещается на пластину». Кнопка «Разработать» (`ButtonUI`), неактивна с подсказкой причины.
@@ -1488,7 +1488,7 @@ sequenceDiagram
 
 ## Testing Strategy
 
-### Юнит-тесты чистой логики (`mod/tests/PTMod.Tests/GpuProductLine/`)
+### Юнит-тесты чистой логики (`mod/tests/PTMod.Tests/Features/GpuProductLine/`)
 Тесты идут в мини-раннере ядра на .NET Framework 4.8 (`[Test]`, `[Covers(typeof(X))]`, `Assert.True/False/Equal/NotEqual/Near/InRange/Throws<T>/Fail`; запуск `python mod/build.py --tests`); каждый публичный тип `GpuProductLine/Logic` указан в `[Covers]`. Тесты не требуют Unity: чистые классы работают на примитивах, а `IGpuGame` подменяется фейком.
 - `GpuDesignMathTests` — F2–F9, F12–F13 на 4 калибровочных примерах (допуск 0.5 %); граничные случаи: S ≥ 1, r ≥ 0.05, температура выше 95, нулевая частота.
 - `PortEquivalenceTests` — порты F1, F10, F11 против ручных расчётов по формулам `CpuMath.TransistorCount`, `ProductionMath.DiesPerWafer`, `CpuMath.RealUnitCost` (значения из CODEMAP).

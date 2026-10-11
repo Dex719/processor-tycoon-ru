@@ -191,7 +191,7 @@ graph LR
 
 | Слой | Технология | Обоснование |
 |---|---|---|
-| Модели | C# latest, общее подмножество API .NET Framework 4.8 и `mscorlib` Unity (без `init`, `record`, `Index`, `Range`), без `UnityEngine` | Решение 0003; тестируются мини-раннером в `mod/tests/PTMod.Tests/PlatformGenerations/` |
+| Модели | C# latest, общее подмножество API .NET Framework 4.8 и `mscorlib` Unity (без `init`, `record`, `Index`, `Range`), без `UnityEngine` | Решение 0003; тестируются мини-раннером в `mod/tests/PTMod.Tests/Features/PlatformGenerations/` |
 | Патчи | Harmony 2.3.x через `ModHooks` | Решение 0002 |
 | Эффекты | Каналы `ModModifiers` | Контракт фреймворка: единственная точка патча формул |
 | Данные | `ModContent` (JSON), `ModSave` (JSON) | Решения 0004, 0006 |
@@ -841,7 +841,7 @@ sequenceDiagram
 
 ## Testing Strategy
 
-### Unit Testing (`mod/tests/PTMod.Tests/PlatformGenerations/`, мини-раннер ядра: `python mod/build.py --tests`)
+### Unit Testing (`mod/tests/PTMod.Tests/Features/PlatformGenerations/`, мини-раннер ядра: `python mod/build.py --tests`)
 
 Каждый публичный тип `Logic/` указан в `[Covers(typeof(X))]`. Файлы контента (`generations.json`, `balance.json`) тесты читают с диска из `mod/src/PTMod/Content/platform-generations/`, поэтому правка баланса не требует правки тестов, кроме примеров с явными числами.
 

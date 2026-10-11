@@ -42,7 +42,7 @@ namespace PTMod.Tests.Features.RivalAcquisitions
               ""dividendsPaid"": 3000000.0, ""lastDividend"": 1000000.0, ""since"": ""1986-01-01"" }
           ],
           ""auctions"": [
-            { ""targetUniqueId"": 7, ""targetSaveId"": 355, ""bankruptOn"": ""1987-05-03"", ""until"": ""1988-05-03"",
+            { ""targetUniqueId"": 7, ""targetSaveId"": 355, ""bankruptOn"": ""1987-05-03"", ""until"": ""1988-05-02"",
               ""snapshotCpuSaveIds"": [ 980, 991, 1015 ], ""closed"": false }
           ],
           ""rescueOrders"": [ { ""targetUniqueId"": 10, ""targetSaveId"": 388, ""maxAmount"": 100000000.0, ""active"": true } ],
@@ -158,7 +158,7 @@ namespace PTMod.Tests.Features.RivalAcquisitions
             Assert.Equal("1986-01-01", state.stakes[0].since);
 
             Assert.Equal(1, state.auctions.Count);
-            Assert.Equal("1988-05-03", state.auctions[0].until);
+            Assert.Equal("1988-05-02", state.auctions[0].until);
             Assert.Equal(new[] { 980, 991, 1015 }, state.auctions[0].snapshotCpuSaveIds.ToArray());
             Assert.False(state.auctions[0].closed);
 

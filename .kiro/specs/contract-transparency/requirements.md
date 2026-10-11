@@ -442,7 +442,7 @@
 - Приватные члены игры (`Contract.ChooseCpu`, `Contract.mipsToleranceMultiplier`, `ContractAutomation.SendOffers`, `ContractWindow.UpdateProbabilityText`, `ContractNegotiationWindow.SignContract`) доступны только через Harmony/AccessTools. Приватный `Contract.GetBestOffers` фича **вызывает**, но не патчит: цель закреплена за ядром (P23), `ModHooks` отклонил бы такой патч. Наличие членов проверяет самопроверка `ModHooks`.
 - Лямбды игры (`ContractWindow.<Start>b__50_3` и т. п.) не патчатся.
 - Числовые пороги (риск по вероятности, лимиты журнала, порог маржи ИИ 0.45) лежат в `Content/contract-transparency/rules.json`.
-- Тесты чистой логики — мини-раннер ядра (`python mod/build.py --tests`, .NET Framework 4.8, `mod/tests/PTMod.Tests/ContractTransparency/`); код `Logic/` использует общее подмножество API .NET Framework 4.8 и `mscorlib` Unity (без `init`, `record`, `Index`, `Range`). Сборка — `python mod/build.py --game-dir <папка игры>` (Roslyn `csc` из VS Build Tools).
+- Тесты чистой логики — мини-раннер ядра (`python mod/build.py --tests`, .NET Framework 4.8, `mod/tests/PTMod.Tests/Features/ContractTransparency/`); код `Logic/` использует общее подмножество API .NET Framework 4.8 и `mscorlib` Unity (без `init`, `record`, `Index`, `Range`). Сборка — `python mod/build.py --game-dir <папка игры>` (Roslyn `csc` из VS Build Tools).
 
 ### Business Constraints
 - Баланс не меняется (FR-12.4). Это требование владельца к волне 1: фичи «просьб игроков» безопасны для сейвов и баланса.
